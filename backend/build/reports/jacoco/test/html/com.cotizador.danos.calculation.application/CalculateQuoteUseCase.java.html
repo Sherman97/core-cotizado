@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CalculateQuoteUseCase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.calculation.application</a> &gt; <span class="el_source">CalculateQuoteUseCase.java</span></div><h1>CalculateQuoteUseCase.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.calculation.application;
+
+import com.cotizador.danos.calculation.domain.CalculationTraceDetail;
+import com.cotizador.danos.calculation.domain.CalculationTraceRepository;
+import com.cotizador.danos.calculation.domain.LocationCalculationResult;
+import com.cotizador.danos.calculation.domain.PremiumCalculator;
+import com.cotizador.danos.calculation.domain.QuoteCalculationResult;
+import com.cotizador.danos.calculation.domain.QuoteCalculationResultRepository;
+import com.cotizador.danos.coverage.domain.QuoteCoverageRepository;
+import com.cotizador.danos.coverage.domain.QuoteCoverageSelection;
+import com.cotizador.danos.location.domain.LocationValidationStatus;
+import com.cotizador.danos.location.domain.LocationRepository;
+import com.cotizador.danos.location.domain.QuoteLocation;
+import com.cotizador.danos.quote.domain.Quote;
+import com.cotizador.danos.quote.domain.QuoteNotFoundException;
+import com.cotizador.danos.quote.domain.QuoteRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+public class CalculateQuoteUseCase {
+
+  private static final String UNKNOWN_EXCLUSION_REASON = &quot;Unknown exclusion reason&quot;;
+  private static final String MISSING_GIRO_CLAVE_INCENDIO_REASON = &quot;missing giro.claveIncendio&quot;;
+  private static final String MISSING_TARIFFABLE_GUARANTEES_REASON = &quot;missing tariffable guarantees&quot;;
+  private static final String INVALID_POSTAL_CODE_REASON = &quot;invalid postal code&quot;;
+  private static final String NO_LOCATIONS_CONFIGURED_ALERT = &quot;No locations configured for calculation&quot;;
+  private static final String NO_COVERAGES_CONFIGURED_ALERT = &quot;No coverage options configured for calculation&quot;;
+<span class="fc" id="L31">  private static final Pattern POSTAL_CODE_PATTERN = Pattern.compile(&quot;^\\d{5,6}$&quot;);</span>
+<span class="fc" id="L32">  private static final CalculationTraceRepository NO_OP_TRACE_REPOSITORY = traceDetails -&gt; {</span>
+<span class="fc" id="L33">  };</span>
+<span class="fc" id="L34">  private static final QuoteCalculationResultRepository NO_OP_RESULT_REPOSITORY = new QuoteCalculationResultRepository() {</span>
+    @Override
+    public java.util.Optional&lt;QuoteCalculationResult&gt; findByQuoteFolio(String folio) {
+<span class="nc" id="L37">      return java.util.Optional.empty();</span>
+    }
+
+    @Override
+    public QuoteCalculationResult save(String folio, QuoteCalculationResult result) {
+<span class="fc" id="L42">      return result;</span>
+    }
+  };
+
+  private final QuoteRepository quoteRepository;
+  private final LocationRepository locationRepository;
+  private final QuoteCoverageRepository quoteCoverageRepository;
+  private final PremiumCalculator premiumCalculator;
+  private final CalculationTraceRepository calculationTraceRepository;
+  private final QuoteCalculationResultRepository quoteCalculationResultRepository;
+
+  public CalculateQuoteUseCase(
+      QuoteRepository quoteRepository,
+      LocationRepository locationRepository,
+      QuoteCoverageRepository quoteCoverageRepository,
+      PremiumCalculator premiumCalculator
+  ) {
+<span class="fc" id="L59">    this(</span>
+        quoteRepository,
+        locationRepository,
+        quoteCoverageRepository,
+        premiumCalculator,
+        NO_OP_TRACE_REPOSITORY,
+        NO_OP_RESULT_REPOSITORY
+    );
+<span class="fc" id="L67">  }</span>
+
+  public CalculateQuoteUseCase(
+      QuoteRepository quoteRepository,
+      LocationRepository locationRepository,
+      QuoteCoverageRepository quoteCoverageRepository,
+      PremiumCalculator premiumCalculator,
+      CalculationTraceRepository calculationTraceRepository
+  ) {
+<span class="fc" id="L76">    this(</span>
+        quoteRepository,
+        locationRepository,
+        quoteCoverageRepository,
+        premiumCalculator,
+        calculationTraceRepository,
+        NO_OP_RESULT_REPOSITORY
+    );
+<span class="fc" id="L84">  }</span>
+
+  public CalculateQuoteUseCase(
+      QuoteRepository quoteRepository,
+      LocationRepository locationRepository,
+      QuoteCoverageRepository quoteCoverageRepository,
+      PremiumCalculator premiumCalculator,
+      CalculationTraceRepository calculationTraceRepository,
+      QuoteCalculationResultRepository quoteCalculationResultRepository
+<span class="fc" id="L93">  ) {</span>
+<span class="fc" id="L94">    this.quoteRepository = quoteRepository;</span>
+<span class="fc" id="L95">    this.locationRepository = locationRepository;</span>
+<span class="fc" id="L96">    this.quoteCoverageRepository = quoteCoverageRepository;</span>
+<span class="fc" id="L97">    this.premiumCalculator = premiumCalculator;</span>
+<span class="fc" id="L98">    this.calculationTraceRepository = calculationTraceRepository;</span>
+<span class="fc" id="L99">    this.quoteCalculationResultRepository = quoteCalculationResultRepository;</span>
+<span class="fc" id="L100">  }</span>
+
+  @Transactional
+  public QuoteCalculationResult handle(String folio) {
+<span class="fc" id="L104">    Quote quote = quoteRepository.findByFolio(folio)</span>
+<span class="fc" id="L105">        .orElseThrow(() -&gt; new QuoteNotFoundException(folio));</span>
+
+<span class="fc" id="L107">    List&lt;QuoteLocation&gt; locations = locationRepository.findByQuoteFolio(folio);</span>
+<span class="fc" id="L108">    List&lt;QuoteCoverageSelection&gt; coverages = quoteCoverageRepository.findByQuoteFolio(folio);</span>
+
+<span class="fc" id="L110">    List&lt;LocationCalculationResult&gt; locationResults = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L111">    List&lt;String&gt; alerts = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L112">    List&lt;CalculationTraceDetail&gt; traceDetails = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L113">    addPreCalculationAlerts(locations, coverages, alerts);</span>
+
+<span class="fc bfc" id="L115" title="All 2 branches covered.">    for (QuoteLocation location : locations) {</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">      if (location.getValidationStatus() == LocationValidationStatus.COMPLETE) {</span>
+<span class="fc" id="L117">        List&lt;String&gt; nonCalculableReasons = nonCalculableReasons(location, coverages);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (!nonCalculableReasons.isEmpty()) {</span>
+<span class="fc" id="L119">          alerts.add(&quot;Location &quot; + location.getLocationName() + &quot; excluded: &quot; + String.join(&quot;, &quot;, nonCalculableReasons));</span>
+<span class="fc" id="L120">          continue;</span>
+        }
+
+<span class="fc" id="L123">        double premium = premiumCalculator.calculate(location, coverages);</span>
+<span class="fc" id="L124">        locationResults.add(toLocationResult(location, premium));</span>
+<span class="fc" id="L125">        traceDetails.addAll(traceDetailsFor(location, coverages));</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">      } else if (location.getValidationStatus() == LocationValidationStatus.INVALID) {</span>
+<span class="fc" id="L127">        alerts.add(exclusionAlertFor(location));</span>
+      } else {
+<span class="fc" id="L129">        locationResults.add(toLocationResult(location, 0.0));</span>
+<span class="fc" id="L130">        alerts.add(&quot;Location &quot; + location.getLocationName() + &quot; skipped due to incomplete data&quot;);</span>
+      }
+<span class="fc" id="L132">    }</span>
+
+<span class="fc" id="L134">    QuoteCalculationResult result = QuoteCalculationResult.fromLocationResults(locationResults, alerts);</span>
+<span class="fc" id="L135">    QuoteCalculationResult savedResult = quoteCalculationResultRepository.save(folio, result);</span>
+<span class="fc" id="L136">    calculationTraceRepository.saveAll(traceDetails);</span>
+<span class="fc" id="L137">    quoteRepository.save(quote.markAsCalculated());</span>
+<span class="fc" id="L138">    return savedResult;</span>
+  }
+
+  private LocationCalculationResult toLocationResult(QuoteLocation location, double premium) {
+<span class="fc" id="L142">    return new LocationCalculationResult(</span>
+<span class="fc" id="L143">        location.getId(),</span>
+<span class="fc" id="L144">        location.getLocationName(),</span>
+<span class="fc" id="L145">        location.getValidationStatus(),</span>
+        premium,
+<span class="fc" id="L147">        location.getAlerts()</span>
+    );
+  }
+
+  private List&lt;CalculationTraceDetail&gt; traceDetailsFor(
+      QuoteLocation location,
+      List&lt;QuoteCoverageSelection&gt; coverages
+  ) {
+<span class="fc" id="L155">    return premiumCalculator.traceFor(location, coverages);</span>
+  }
+
+  private String exclusionAlertFor(QuoteLocation location) {
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">    String reason = location.getAlerts().isEmpty() ? UNKNOWN_EXCLUSION_REASON : location.getAlerts().get(0);</span>
+<span class="fc" id="L160">    return &quot;Location &quot; + location.getLocationName() + &quot; excluded: &quot; + reason;</span>
+  }
+
+  private List&lt;String&gt; nonCalculableReasons(QuoteLocation location, List&lt;QuoteCoverageSelection&gt; coverages) {
+<span class="fc" id="L164">    List&lt;String&gt; reasons = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">    if (!isPostalCodeValid(location.getPostalCode())) {</span>
+<span class="fc" id="L166">      reasons.add(INVALID_POSTAL_CODE_REASON);</span>
+    }
+<span class="fc bfc" id="L168" title="All 2 branches covered.">    if (!StringUtils.hasText(location.getOccupancyType())) {</span>
+<span class="fc" id="L169">      reasons.add(MISSING_GIRO_CLAVE_INCENDIO_REASON);</span>
+    }
+<span class="fc bfc" id="L171" title="All 2 branches covered.">    if (!hasTariffableGuarantees(coverages)) {</span>
+<span class="fc" id="L172">      reasons.add(MISSING_TARIFFABLE_GUARANTEES_REASON);</span>
+    }
+<span class="fc" id="L174">    return reasons;</span>
+  }
+
+  private boolean hasTariffableGuarantees(List&lt;QuoteCoverageSelection&gt; coverages) {
+<span class="fc" id="L178">    return coverages.stream().anyMatch(QuoteCoverageSelection::isSelected);</span>
+  }
+
+  private boolean isPostalCodeValid(String postalCode) {
+<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (!StringUtils.hasText(postalCode)) {</span>
+<span class="nc" id="L183">      return false;</span>
+    }
+<span class="fc" id="L185">    return POSTAL_CODE_PATTERN.matcher(postalCode).matches();</span>
+  }
+
+  private void addPreCalculationAlerts(
+      List&lt;QuoteLocation&gt; locations,
+      List&lt;QuoteCoverageSelection&gt; coverages,
+      List&lt;String&gt; alerts
+  ) {
+<span class="pc bpc" id="L193" title="1 of 2 branches missed.">    if (locations.isEmpty()) {</span>
+<span class="nc" id="L194">      alerts.add(NO_LOCATIONS_CONFIGURED_ALERT);</span>
+    }
+<span class="fc bfc" id="L196" title="All 2 branches covered.">    if (!hasTariffableGuarantees(coverages)) {</span>
+<span class="fc" id="L197">      alerts.add(NO_COVERAGES_CONFIGURED_ALERT);</span>
+    }
+<span class="fc" id="L199">  }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

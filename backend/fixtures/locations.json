@@ -1,0 +1,24 @@
+{
+  "locations": [
+    {
+      "locationName": "Matriz Centro",
+      "city": "Bogota",
+      "department": "Cundinamarca",
+      "address": "Calle 100 #10-20",
+      "postalCode": "110111",
+      "constructionType": "CONCRETO",
+      "occupancyType": "OFICINA",
+      "insuredValue": 1500000
+    },
+    {
+      "locationName": "Sucursal Norte",
+      "city": "Bogota",
+      "department": "Cundinamarca",
+      "address": null,
+      "postalCode": null,
+      "constructionType": "CONCRETO",
+      "occupancyType": "OFICINA",
+      "insuredValue": 900000
+    }
+  ]
+}

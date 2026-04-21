@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CreateQuoteVersionUseCase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.quote.application</a> &gt; <span class="el_source">CreateQuoteVersionUseCase.java</span></div><h1>CreateQuoteVersionUseCase.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.quote.application;
+
+import com.cotizador.danos.quote.domain.FolioGenerator;
+import com.cotizador.danos.quote.domain.Quote;
+import com.cotizador.danos.quote.domain.QuoteNotFoundException;
+import com.cotizador.danos.quote.domain.QuoteRepository;
+import java.time.Clock;
+import java.time.Instant;
+
+public class CreateQuoteVersionUseCase {
+
+  private final QuoteRepository quoteRepository;
+  private final FolioGenerator folioGenerator;
+  private final Clock clock;
+
+  public CreateQuoteVersionUseCase(
+      QuoteRepository quoteRepository,
+      FolioGenerator folioGenerator,
+      Clock clock
+<span class="fc" id="L20">  ) {</span>
+<span class="fc" id="L21">    this.quoteRepository = quoteRepository;</span>
+<span class="fc" id="L22">    this.folioGenerator = folioGenerator;</span>
+<span class="fc" id="L23">    this.clock = clock;</span>
+<span class="fc" id="L24">  }</span>
+
+  public Quote handle(String parentFolio) {
+<span class="fc" id="L27">    Quote previousVersion = loadPreviousVersion(parentFolio);</span>
+<span class="fc" id="L28">    Quote newVersion = createVersionFrom(previousVersion);</span>
+<span class="fc" id="L29">    return quoteRepository.save(newVersion);</span>
+  }
+
+  private Quote loadPreviousVersion(String parentFolio) {
+<span class="fc" id="L33">    return quoteRepository.findByFolio(parentFolio)</span>
+<span class="fc" id="L34">        .orElseThrow(() -&gt; new QuoteNotFoundException(parentFolio));</span>
+  }
+
+  private Quote createVersionFrom(Quote previousVersion) {
+<span class="fc" id="L38">    return previousVersion.createNewVersion(</span>
+<span class="fc" id="L39">        generateUniqueFolio(),</span>
+<span class="fc" id="L40">        Instant.now(clock)</span>
+    );
+  }
+
+  private String generateUniqueFolio() {
+<span class="fc" id="L45">    String folio = folioGenerator.generate();</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">    while (quoteRepository.existsByFolio(folio)) {</span>
+<span class="nc" id="L47">      folio = folioGenerator.generate();</span>
+    }
+<span class="fc" id="L49">    return folio;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

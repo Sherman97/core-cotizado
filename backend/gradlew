@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+set -eu
+
+APP_HOME=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+CLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
+
+if [ -n "${JAVA_HOME:-}" ]; then
+  JAVACMD="$JAVA_HOME/bin/java"
+else
+  JAVACMD="java"
+fi
+
+if [ ! -x "$(command -v "$JAVACMD" 2>/dev/null || true)" ] && [ ! -x "$JAVACMD" ]; then
+  echo "ERROR: Java not found. Set JAVA_HOME or add java to PATH." >&2
+  exit 1
+fi
+
+exec "$JAVACMD" \
+  "-Dorg.gradle.appname=gradlew" \
+  -classpath "$CLASSPATH" \
+  org.gradle.wrapper.GradleWrapperMain \
+  "$@"
