@@ -1,6 +1,6 @@
 # 02. Business Flow
 
-## Flujo minimo demostrable implementado
+## Flujo operativo implementado
 
 1. `POST /v1/folios`
 2. `PUT /v1/quotes/{folio}/general-info`
@@ -10,69 +10,45 @@
 6. `POST /v1/quotes/{folio}/calculate`
 7. `GET /v1/quotes/{folio}/state`
 
-## Reglas de flujo implementadas
+## Reglas de negocio implementadas
 
-### Creacion de folio
+### Creacion de folio e idempotencia
 
-- con `Idempotency-Key` nueva -> crea y responde `201`
-- con `Idempotency-Key` repetida -> replay y responde `200`
-- sin `Idempotency-Key` -> crea normalmente (`201`)
+- con `Idempotency-Key` nueva: crea y responde `201`
+- con `Idempotency-Key` repetida: replay del mismo folio y responde `200`
+- sin `Idempotency-Key`: crea normalmente y responde `201`
 
-### Edicion funcional
+### Versionado de negocio
 
-Cada operacion funcional incrementa version de negocio y actualiza fecha de modificacion:
+Se incrementa `businessVersion` y se actualiza `modifiedAt` en:
 
 - general-info
-- layout de ubicaciones
-- operaciones sobre locations
+- locations/layout
+- locations (replace y patch)
 - coverage-options
 
-### Ubicaciones
+### Regla de calculabilidad por ubicacion
 
-Estados de validacion del dominio:
+Una ubicacion se excluye de calculo si:
 
-- `COMPLETE`
-- `INCOMPLETE`
-- `INVALID`
-
-Comportamiento:
-
-- `INCOMPLETE`: se mantiene en flujo y genera alerta
-- `INVALID`: no se calcula y genera razon de exclusion
-
-### Calculo
-
-Se calcula por ubicacion elegible y luego se consolida:
-
-- prima neta
-- gastos
-- impuestos
-- prima comercial
-
-El backend persiste:
-
-- resultado financiero consolidado
-- resultados por ubicacion
-- alertas
-- trazabilidad de factores
-
-## Elegibilidad de ubicacion en calculo
-
-Una ubicacion queda excluida del calculo si:
-
-- tiene codigo postal invalido
+- no tiene codigo postal valido
 - no tiene `giro.claveIncendio`
 - no tiene garantias tarifables
 
-Mapeo conservador aplicado:
+Mapeos conservadores del dominio actual:
 
 - `giro.claveIncendio` -> `occupancyType`
-- garantias tarifables -> coberturas seleccionadas (`selected=true`)
+- `garantias tarifables` -> coberturas con `selected=true`
 
-## Resultado final
+### Resultado del calculo
 
-Al finalizar calculo:
+- se calculan solo ubicaciones elegibles
+- se consolida prima neta, gastos, impuestos y prima comercial
+- se persisten alertas y trazabilidad
+- la quote termina en estado `CALCULATED`
 
-- quote cambia a estado `CALCULATED`
-- se conserva la trazabilidad de factores aplicados
-- se expone estado final con primas y alertas
+## Flujos cubiertos por E2E REST
+
+1. creacion de folio + replay idempotente
+2. captura y edicion de ubicaciones
+3. cotizacion completa con calculo y consulta de estado final

@@ -1,35 +1,39 @@
 # Cotizador de Seguros de Danos - Backend
 
-Backend Spring Boot para cotizacion de seguros de danos.  
-Estado final sincronizado: API REST, persistencia JPA/MariaDB, Flyway, calculo MVP trazable, idempotencia en creacion de folio, versionado de negocio en ediciones parciales, pruebas unitarias y E2E REST.
+Backend Spring Boot para cotizacion MVP de seguros de danos.
 
-## 1. Alcance backend implementado
+Estado documentado en este archivo: implementacion real actual del backend, incluyendo idempotencia en creacion de folio, versionado de negocio, calculo MVP trazable, pruebas E2E REST y capa read-only para tablas maestras de rating.
+
+## 1. Alcance implementado
 
 Incluye:
 
-- gestion de folios y cotizaciones
+- API REST bajo `/v1`
+- creacion de folios
 - captura de `general-info`
-- configuracion de `locations/layout`
-- alta, edicion y resumen de ubicaciones
+- captura de layout y ubicaciones
 - configuracion de coberturas
-- ejecucion de calculo por ubicacion
-- persistencia de resultado financiero y trazabilidad
+- calculo MVP por ubicacion
+- persistencia de resultado y trazabilidad
 - consulta de estado final
+- idempotencia en `POST /v1/folios`
+- versionado de negocio en ediciones funcionales
+- integracion read-only de catalogos/factores de rating (sin reemplazar aun el motor de calculo)
 
 No incluye:
 
 - frontend
 - autenticacion/autorizacion
-- integraciones externas reales con servicios core
-- formula actuarial productiva
+- motor actuarial real
+- integraciones externas productivas
 
 ## 2. Requisitos
 
 - Java 21
-- Docker + Docker Compose (recomendado para MariaDB)
-- bash
+- Docker y Docker Compose (recomendado para MariaDB local)
+- Bash
 
-## 3. Variables de entorno
+## 3. Perfiles y variables de entorno
 
 | Variable | Default | Uso |
 |---|---|---|
@@ -41,46 +45,46 @@ No incluye:
 
 Perfiles:
 
-- `mariadb`: runtime normal, JPA + Flyway habilitados
+- `mariadb`: runtime local normal, JPA + Flyway habilitados
 - `local`: arranque sin datasource
-- `test`: pruebas E2E con H2 en memoria
+- `test`: pruebas con H2 en memoria
 
 ## 4. Ejecucion local
 
-### Opcion recomendada (MariaDB + backend)
+### Runtime con MariaDB (recomendado)
 
 ```bash
 docker compose up -d mariadb
 ./backend/scripts/run-mariadb.sh
 ```
 
-### Opcion sin base de datos (perfil local)
+### Arranque sin base de datos
 
 ```bash
 ./backend/scripts/run-local.sh
 ```
 
-## 5. Contrato de idempotencia en creacion de folio
+## 5. Contrato idempotente de creacion de folio
 
 Endpoint:
 
 - `POST /v1/folios`
 
-Header opcional:
+Header:
 
-- `Idempotency-Key: <valor>`
+- `Idempotency-Key` (opcional)
 
 Comportamiento:
 
-- primera solicitud con una clave nueva: crea cotizacion y responde `201`
-- reintento con la misma clave: no crea nueva cotizacion, responde el mismo folio con `200`
-- sin `Idempotency-Key`: comportamiento tradicional de creacion (`201`)
+- clave nueva: crea folio y responde `201`
+- misma clave ya registrada: replay del mismo folio y responde `200`
+- sin header: creacion normal y responde `201`
 
 Persistencia:
 
-- tabla `folio_idempotency_keys` (Flyway `V3__add_folio_idempotency.sql`)
+- tabla `folio_idempotency_keys` (migracion `V3__add_folio_idempotency.sql`)
 
-## 6. Endpoints del backend
+## 6. Endpoints soportados
 
 - `POST /v1/folios`
 - `GET /v1/quotes/{folio}/general-info`
@@ -97,9 +101,9 @@ Persistencia:
 - `POST /v1/quotes/{folio}/calculate`
 - `GET /v1/quotes/{folio}/state`
 
-## 7. Reglas funcionales clave implementadas
+## 7. Flujos funcionales criticos
 
-### 7.1 Versionado de negocio en ediciones parciales
+### 7.1 Versionado de negocio
 
 Se incrementa `businessVersion` y se actualiza `modifiedAt` en:
 
@@ -108,7 +112,7 @@ Se incrementa `businessVersion` y se actualiza `modifiedAt` en:
 - `locations` (replace y patch)
 - `coverage-options`
 
-### 7.2 Elegibilidad de calculo por ubicacion
+### 7.2 Regla de calculabilidad por ubicacion
 
 Una ubicacion no se calcula si:
 
@@ -116,61 +120,85 @@ Una ubicacion no se calcula si:
 - no tiene `giro.claveIncendio`
 - no tiene garantias tarifables
 
-Resolucion conservadora actual del modelo:
+Mapeo conservador vigente:
 
-- `giro.claveIncendio` -> campo `occupancyType`
-- garantias tarifables -> coberturas seleccionadas (`selected=true`)
+- `giro.claveIncendio` se representa con `occupancyType`
+- garantias tarifables se representan con coberturas `selected=true`
 
-Si una ubicacion no es calculable:
+Comportamiento:
 
-- se excluye del calculo
+- la ubicacion no calculable se excluye
 - se agrega alerta de exclusion
-- el calculo continua con ubicaciones validas
+- las ubicaciones validas restantes si se calculan
 
-## 8. Datos de prueba y coleccion API
+## 8. Estado de calculo y rating
 
-- seeds: `backend/src/main/resources/db/migration/V2__seed_coverage_catalog.sql`
-- fixtures JSON: `backend/fixtures/`
-- script demo: `backend/scripts/demo-flow.sh`
-- Postman: `backend/postman/cotizador-danos-backend.postman_collection.json`
+- El motor de calculo activo sigue siendo MVP (`StubPremiumCalculator`).
+- La formula sigue siendo simplificada (no actuarial real).
+- Ya existe integracion read-only de tablas maestras de rating en modulo `catalog`:
+  - entities JPA
+  - Spring Data repositories
+  - adapters de dominio
+  - servicios de consulta
+- Esa capa aun no reemplaza el flujo de calculo productivo.
 
-## 9. Pruebas
+## 9. Tablas maestras integradas (read-only)
 
-Ejecutar suite completa:
+Soportadas en codigo:
+
+- `postal_code_zone_map`
+- `zone_factors`
+- `occupancy_catalog`
+- `occupancy_factors`
+- `construction_factors`
+- `coverage_rate_tables`
+- `coverage_factor_tables`
+- `calculation_parameters`
+
+Codigos canonicos tecnicos:
+
+- `productCode`: `DANOS`
+- `occupancyType`: `OFFICE`, `COMMERCE`, `RESTAURANT`, `WAREHOUSE`, `LIGHT_INDUSTRY`
+- `constructionType`: `CONCRETE`, `MIXED`, `WOOD`
+- `coverageCode`: `FIRE`, `EARTHQUAKE`, `FLOOD`
+
+## 10. Pruebas y cobertura
+
+Suite completa:
 
 ```bash
 cd backend
 ./gradlew test
 ```
 
-Ejecutar cobertura:
+Cobertura:
 
 ```bash
 ./gradlew jacocoTestReport jacocoTestCoverageVerification
 ```
 
-Estado actual validado:
+Estado validado:
 
-- `./gradlew test` -> OK
-- `./gradlew jacocoTestCoverageVerification` -> OK
+- `./gradlew test` en verde
+- `./gradlew jacocoTestCoverageVerification` en verde
 
 Pruebas E2E REST:
 
-- `QuoteApiE2ETest` (Spring Boot + MockMvc, perfil `test`)
-- usa H2 en memoria para entorno de test
+- `QuoteApiE2ETest`
+- stack: `@SpringBootTest` + `MockMvc`
+- perfil `test` con H2 en memoria
 
-## 10. Notas de runtime y test
+## 11. Notas de base de datos
 
-- runtime productivo local: MariaDB (`mariadb` profile)
-- pruebas de integracion/E2E: H2 (`test` profile)
-- Flyway aplica esquema runtime en MariaDB
+- Runtime local: MariaDB (`mariadb` profile), Flyway habilitado.
+- Test: H2 en memoria (`test` profile), Flyway deshabilitado en pruebas y esquema generado para tests.
 
-## 11. Supuestos y limitaciones MVP
+## 12. Limitaciones y supuestos del MVP
 
-- calculo simplificado (no actuarial real)
-- sin autenticacion/autorizacion
-- sin integraciones externas reales de catalogos/tarifas
-- modulos `catalog` y `document` sin capacidad funcional completa
-- mapeo conservador de datos tecnicos:
-  - `occupancyType` como `giro.claveIncendio`
-  - `selected=true` como garantia tarifable
+- formula de prima simplificada, no actuarial
+- sin authn/authz
+- sin integraciones externas productivas
+- mapeos conservadores explicitos:
+  - `occupancyType` como representacion temporal de `giro.claveIncendio`
+  - `selected=true` como representacion temporal de garantia tarifable
+- capa de rating en BD integrada solo para consulta read-only en esta etapa

@@ -2,17 +2,26 @@
 
 ## Persistencia implementada
 
-Motor runtime: MariaDB.  
-ORM: Spring Data JPA.  
-Migraciones: Flyway.
+- Motor runtime: MariaDB
+- ORM: Spring Data JPA
+- Migraciones: Flyway
 
-## Migraciones actuales
+## Migraciones vigentes
 
 - `V1__init_schema.sql`
 - `V2__seed_coverage_catalog.sql`
 - `V3__add_folio_idempotency.sql`
+- `V4__create_rating_master_tables.sql`
+- `V5__seed_postal_code_zones.sql`
+- `V6__seed_zone_factors.sql`
+- `V7__seed_occupancy_catalog.sql`
+- `V8__seed_occupancy_factors.sql`
+- `V9__seed_construction_factors.sql`
+- `V10__seed_coverage_rate_tables.sql`
+- `V11__seed_coverage_factor_tables.sql`
+- `V12__seed_calculation_parameters.sql`
 
-## Tablas principales implementadas
+## Tablas operativas principales
 
 - `quotes`
 - `quote_locations`
@@ -27,7 +36,25 @@ Migraciones: Flyway.
 - `calculation_trace_metadata`
 - `folio_idempotency_keys`
 
-## Persistencia de idempotencia
+## Tablas maestras de rating integradas
+
+- `postal_code_zone_map`
+- `zone_factors`
+- `occupancy_catalog`
+- `occupancy_factors`
+- `construction_factors`
+- `coverage_rate_tables`
+- `coverage_factor_tables`
+- `calculation_parameters`
+
+## Codigos tecnicos canonicos (normalizados)
+
+- `product_code`: `DANOS`
+- `coverage_code`: `FIRE`, `EARTHQUAKE`, `FLOOD`
+- `occupancy_code`: `OFFICE`, `COMMERCE`, `RESTAURANT`, `WAREHOUSE`, `LIGHT_INDUSTRY`
+- `construction_type`: `CONCRETE`, `MIXED`, `WOOD`
+
+## Idempotencia de folios
 
 Tabla:
 
@@ -35,49 +62,25 @@ Tabla:
 
 Uso:
 
-- guarda relacion entre `Idempotency-Key` y folio creado
-- permite replay consistente en retries
+- evita duplicidad funcional de creacion ante reintentos de cliente
 
 ## Versionado optimista
 
-Implementado con `@Version` en:
+Implementado en:
 
 - `quotes.lock_version`
 - `quote_calculation_results.lock_version`
 
-Manejo API:
+Conflictos traducidos a `409 CONFLICT` en API.
 
-- conflicto optimista se responde como `409 CONFLICT`
-
-## Persistencia de calculo y trazabilidad
-
-Resultado financiero:
-
-- `quote_calculation_results`
-- `location_calculation_results`
-
-Alertas:
-
-- `quote_calculation_alerts`
-- `location_calculation_alerts`
-
-Trazabilidad:
+## Persistencia de trazabilidad de calculo
 
 - `calculation_traces`
 - `calculation_trace_metadata`
 
-## Catalogo de coberturas seed
+Guarda factor, valor aplicado, orden y metadata por ubicacion/quote.
 
-Inicializado por migracion:
-
-- `FIRE`
-- `EARTHQUAKE`
-- `FLOOD`
-
-## Notas de pruebas
-
-Para pruebas E2E REST:
+## Nota de entorno de pruebas
 
 - perfil `test` usa H2 en memoria
-- schema test agrega secuencia `quote_location_seq`
-- runtime productivo local sigue en MariaDB
+- runtime local usa MariaDB

@@ -2,20 +2,20 @@
 
 ## Runtime objetivo
 
-- backend Spring Boot
+- Spring Boot backend
 - MariaDB 11
 - Flyway habilitado en perfil `mariadb`
 
-## Ejecucion recomendada
+## Ejecucion local recomendada
 
 ```bash
 docker compose up -d mariadb
 ./backend/scripts/run-mariadb.sh
 ```
 
-## Variables de entorno backend
+## Variables de entorno relevantes
 
-- `SPRING_PROFILES_ACTIVE` (`mariadb` por defecto)
+- `SPRING_PROFILES_ACTIVE` (default `mariadb`)
 - `SERVER_PORT` (default `8080`)
 - `SPRING_DATASOURCE_URL`
 - `SPRING_DATASOURCE_USERNAME`
@@ -23,19 +23,17 @@ docker compose up -d mariadb
 
 ## Perfiles
 
-- `mariadb`: runtime real local con MariaDB y Flyway
+- `mariadb`: runtime local real con DB
 - `local`: arranque sin datasource
 - `test`: pruebas con H2 en memoria
 
-## Migraciones
+## Migraciones runtime
 
-Flyway aplica automaticamente:
+Flyway aplica:
 
-- `V1__init_schema.sql`
-- `V2__seed_coverage_catalog.sql`
-- `V3__add_folio_idempotency.sql`
+- `V1` a `V12` (esquema operativo + idempotencia + tablas maestras de rating + seeds)
 
-## Ejecucion de pruebas
+## Setup de pruebas
 
 ```bash
 cd backend
@@ -43,15 +41,15 @@ cd backend
 ./gradlew jacocoTestCoverageVerification
 ```
 
-## Entorno E2E REST
+Entorno de pruebas:
 
-- `@SpringBootTest` + `MockMvc`
-- perfil `test`
+- Spring Boot Test + MockMvc
 - H2 en memoria
-- secuencia `quote_location_seq` creada en `src/test/resources/schema.sql`
+- perfil `test`
 
-## Notas operativas
+## Nota MariaDB vs H2
 
-- runtime local para evaluacion funcional: MariaDB
-- test/integracion automatizada: H2
-- no se requiere infraestructura adicional para ejecutar suite de pruebas
+- Runtime del backend: MariaDB
+- Pruebas automatizadas: H2
+
+Este desacople esta implementado para mantener ejecucion de pruebas rapida y aislada.

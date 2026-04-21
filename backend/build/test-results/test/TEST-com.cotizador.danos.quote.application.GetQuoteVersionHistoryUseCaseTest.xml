@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.GetQuoteVersionHistoryUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:31:42.841Z" hostname="MacBook-Pro-de-German.local" time="0.012">
+<testsuite name="com.cotizador.danos.quote.application.GetQuoteVersionHistoryUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:49:35.571Z" hostname="MacBook-Pro-de-German.local" time="0.012">
   <properties/>
   <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.quote.application.GetQuoteVersionHistoryUseCaseTest" time="0.003"/>
   <testcase name="shouldReturnVersionHistoryWithVersionDateAndStatus()" classname="com.cotizador.danos.quote.application.GetQuoteVersionHistoryUseCaseTest" time="0.004"/>
