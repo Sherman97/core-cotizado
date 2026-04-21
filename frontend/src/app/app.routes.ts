@@ -1,11 +1,18 @@
 import { Routes } from '@angular/router';
-import { CreateQuotePageComponent } from './features/quote/pages/create-quote-page/create-quote-page.component';
-import { QuoteWizardPageComponent } from './features/quote/pages/quote-wizard-page/quote-wizard-page.component';
-import { QuoteStatusPageComponent } from './features/quote/pages/quote-status-page/quote-status-page.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { QuotesListPageComponent } from './features/quotes/pages/quotes-list-page/quotes-list-page.component';
+import { QuoteWizardPageComponent } from './features/quotes/pages/quote-wizard-page/quote-wizard-page.component';
+import { QuoteResultPageComponent } from './features/quotes/pages/quote-result-page/quote-result-page.component';
 
 export const appRoutes: Routes = [
-  { path: '', component: CreateQuotePageComponent },
-  { path: 'quotes/:folio/wizard', component: QuoteWizardPageComponent },
-  { path: 'quotes/:folio/status', component: QuoteStatusPageComponent },
-  { path: '**', redirectTo: '' }
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      { path: '', component: QuotesListPageComponent },
+      { path: 'quotes/:folio/wizard', component: QuoteWizardPageComponent },
+      { path: 'quotes/:folio/result', component: QuoteResultPageComponent },
+      { path: '**', redirectTo: '' }
+    ]
+  }
 ];

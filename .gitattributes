@@ -1,0 +1,6 @@
+* text=auto
+
+# Keep scripts with Unix EOL where needed
+*.sh text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
