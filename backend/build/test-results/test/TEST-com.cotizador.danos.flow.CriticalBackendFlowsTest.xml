@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.flow.CriticalBackendFlowsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T16:25:05.151Z" hostname="MacBook-Pro-de-German.local" time="0.007">
+<testsuite name="com.cotizador.danos.flow.CriticalBackendFlowsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:31:41.261Z" hostname="MacBook-Pro-de-German.local" time="0.011">
   <properties/>
-  <testcase name="shouldCreateFolioFlow()" classname="com.cotizador.danos.flow.CriticalBackendFlowsTest" time="0.003"/>
-  <testcase name="shouldCompleteLocationsFlow()" classname="com.cotizador.danos.flow.CriticalBackendFlowsTest" time="0.001"/>
-  <testcase name="shouldRunCalculationFlowAndPersistTraceability()" classname="com.cotizador.danos.flow.CriticalBackendFlowsTest" time="0.001"/>
+  <testcase name="shouldCreateFolioFlow()" classname="com.cotizador.danos.flow.CriticalBackendFlowsTest" time="0.004"/>
+  <testcase name="shouldCompleteLocationsFlow()" classname="com.cotizador.danos.flow.CriticalBackendFlowsTest" time="0.003"/>
+  <testcase name="shouldRunCalculationFlowAndPersistTraceability()" classname="com.cotizador.danos.flow.CriticalBackendFlowsTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -19,7 +19,7 @@ class QuoteGeneralDataTest {
 
     Quote updatedQuote = quote.updateGeneralData(patch, FIRST_MODIFIED_AT);
 
-    assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS_MVP");
+    assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS");
     assertThat(updatedQuote.getCustomerName()).isEqualTo("Cliente Demo");
     assertThat(updatedQuote.getCurrency()).isEqualTo("USD");
     assertThat(updatedQuote.getObservations()).isEqualTo("Observacion inicial");
@@ -42,7 +42,7 @@ class QuoteGeneralDataTest {
         SECOND_MODIFIED_AT
     );
 
-    assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS_MVP");
+    assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS");
     assertThat(updatedQuote.getCustomerName()).isEqualTo("Cliente Demo");
     assertThat(updatedQuote.getCurrency()).isEqualTo("EUR");
     assertThat(updatedQuote.getObservations()).isEqualTo("Observacion inicial");
@@ -52,7 +52,7 @@ class QuoteGeneralDataTest {
 
   private QuoteGeneralDataPatch completePatch() {
     return new QuoteGeneralDataPatch(
-        "DANOS_MVP",
+        "DANOS",
         "Cliente Demo",
         "USD",
         "Observacion inicial"

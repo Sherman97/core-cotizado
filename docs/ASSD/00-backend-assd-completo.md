@@ -97,7 +97,7 @@ No hay cliente HTTP ni adapter implementado hacia servicios externos.
 - Motor: MariaDB.
 - Migraciones Flyway:
   - `V1__init_schema.sql`: esquema completo.
-  - `V2__seed_coverage_catalog.sql`: seed de catalogo (`INCENDIO`, `TERREMOTO`, `INUNDACION`).
+  - `V2__seed_coverage_catalog.sql`: seed de catalogo (`FIRE`, `EARTHQUAKE`, `FLOOD`).
 
 ### 5.2 Modelo relacional implementado
 

@@ -1,7 +1,7 @@
 {
   "coverages": [
     {
-      "coverageCode": "INCENDIO",
+      "coverageCode": "FIRE",
       "coverageName": "Incendio",
       "insuredLimit": 1000000,
       "deductibleType": "FIXED",
@@ -9,7 +9,7 @@
       "selected": true
     },
     {
-      "coverageCode": "TERREMOTO",
+      "coverageCode": "EARTHQUAKE",
       "coverageName": "Terremoto",
       "insuredLimit": 750000,
       "deductibleType": "PERCENTAGE",

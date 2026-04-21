@@ -70,9 +70,9 @@ Trazabilidad:
 
 Inicializado por migracion:
 
-- `INCENDIO`
-- `TERREMOTO`
-- `INUNDACION`
+- `FIRE`
+- `EARTHQUAKE`
+- `FLOOD`
 
 ## Notas de pruebas
 

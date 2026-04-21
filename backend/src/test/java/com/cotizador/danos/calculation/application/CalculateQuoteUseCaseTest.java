@@ -154,7 +154,7 @@ class CalculateQuoteUseCaseTest {
     QuoteCalculationResult result = useCase.handle(FOLIO);
 
     assertThat(result.getNetPremium()).isZero();
-    assertThat(result.getAlerts()).contains("Location Bodega Sur excluded: missing giro.claveIncendio");
+    assertThat(result.getAlerts()).contains("Location Bodega Sur excluded: missing occupancy.fireKey");
     verify(premiumCalculator, never()).calculate(any(), any());
   }
 
@@ -210,8 +210,8 @@ class CalculateQuoteUseCaseTest {
             "Cundinamarca",
             "Calle 100 #10-20",
             "110111",
-            "CONCRETO",
-            "OFICINA",
+            "CONCRETE",
+            "OFFICE",
             1500000
         )
     );
@@ -227,8 +227,8 @@ class CalculateQuoteUseCaseTest {
             "Cundinamarca",
             null,
             null,
-            "CONCRETO",
-            "OFICINA",
+            "CONCRETE",
+            "OFFICE",
             900000
         )
     );
@@ -253,7 +253,7 @@ class CalculateQuoteUseCaseTest {
             "Cundinamarca",
             "Calle 10 #2-30",
             "110911",
-            "CONCRETO",
+            "CONCRETE",
             null,
             750000
         )
@@ -270,8 +270,8 @@ class CalculateQuoteUseCaseTest {
             "Cundinamarca",
             "Carrera 15 #45-20",
             "ABC12",
-            "CONCRETO",
-            "OFICINA",
+            "CONCRETE",
+            "OFFICE",
             600000
         )
     );
@@ -281,7 +281,7 @@ class CalculateQuoteUseCaseTest {
     return List.of(
         QuoteCoverageSelection.create(
             FOLIO,
-            new QuoteCoveragePatch("INCENDIO", "Incendio", 1000000L, "FIXED", 50000L, true)
+            new QuoteCoveragePatch("FIRE", "Incendio", 1000000L, "FIXED", 50000L, true)
         )
     );
   }

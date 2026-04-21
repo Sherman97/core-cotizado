@@ -114,8 +114,8 @@ class CalculateQuoteTraceabilityTest {
             "Cundinamarca",
             "Calle 100 #10-20",
             "110111",
-            "CONCRETO",
-            "OFICINA",
+            "CONCRETE",
+            "OFFICE",
             1500000
         )
     );
@@ -131,8 +131,8 @@ class CalculateQuoteTraceabilityTest {
             "Cundinamarca",
             null,
             null,
-            "CONCRETO",
-            "OFICINA",
+            "CONCRETE",
+            "OFFICE",
             900000
         )
     );
@@ -156,7 +156,7 @@ class CalculateQuoteTraceabilityTest {
   private QuoteCoverageSelection fireCoverage() {
     return QuoteCoverageSelection.create(
         FOLIO,
-        new QuoteCoveragePatch("INCENDIO", "Incendio", 1000000L, "FIXED", 50000L, true)
+        new QuoteCoveragePatch("FIRE", "Incendio", 1000000L, "FIXED", 50000L, true)
     );
   }
 
@@ -167,7 +167,7 @@ class CalculateQuoteTraceabilityTest {
         "BASE_RATE",
         0.015,
         1,
-        Map.of("coverageCode", "INCENDIO")
+        Map.of("coverageCode", "FIRE")
     );
   }
 }

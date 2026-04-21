@@ -21,8 +21,8 @@ class ListActiveCoveragesUseCaseTest {
   @Test
   void shouldReturnActiveCoveragesWithCodeAndName() {
     ListActiveCoveragesUseCase useCase = new ListActiveCoveragesUseCase(coverageCatalogRepository);
-    CoverageCatalogItem fireCoverage = coverage("INCENDIO", "Incendio");
-    CoverageCatalogItem earthquakeCoverage = coverage("TERREMOTO", "Terremoto");
+    CoverageCatalogItem fireCoverage = coverage("FIRE", "Incendio");
+    CoverageCatalogItem earthquakeCoverage = coverage("EARTHQUAKE", "Terremoto");
 
     when(coverageCatalogRepository.findActive()).thenReturn(List.of(fireCoverage, earthquakeCoverage));
 
@@ -30,7 +30,7 @@ class ListActiveCoveragesUseCaseTest {
 
     assertThat(coverages).hasSize(2);
     assertThat(coverages).extracting(CoverageCatalogItem::code)
-        .containsExactly("INCENDIO", "TERREMOTO");
+        .containsExactly("FIRE", "EARTHQUAKE");
     assertThat(coverages).extracting(CoverageCatalogItem::name)
         .containsExactly("Incendio", "Terremoto");
     verify(coverageCatalogRepository).findActive();
