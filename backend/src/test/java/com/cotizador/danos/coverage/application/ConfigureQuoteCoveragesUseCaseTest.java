@@ -54,7 +54,7 @@ class ConfigureQuoteCoveragesUseCaseTest {
 
     assertThat(savedCoverages).hasSize(2);
     assertThat(savedCoverages).extracting(QuoteCoverageSelection::getCoverageCode)
-        .containsExactly("INCENDIO", "TERREMOTO");
+        .containsExactly("FIRE", "EARTHQUAKE");
     ArgumentCaptor<Quote> savedQuoteCaptor = ArgumentCaptor.forClass(Quote.class);
     verify(quoteRepository).save(savedQuoteCaptor.capture());
     assertThat(savedQuoteCaptor.getValue().getVersion()).isEqualTo(2);
@@ -110,11 +110,11 @@ class ConfigureQuoteCoveragesUseCaseTest {
   private List<QuoteCoveragePatch> requestedCoverages() {
     return List.of(
         fireCoverage(1000000L, 50000L),
-        new QuoteCoveragePatch("TERREMOTO", "Terremoto", 800000L, null, null, true)
+        new QuoteCoveragePatch("EARTHQUAKE", "Terremoto", 800000L, null, null, true)
     );
   }
 
   private QuoteCoveragePatch fireCoverage(long insuredLimit, long deductibleValue) {
-    return new QuoteCoveragePatch("INCENDIO", "Incendio", insuredLimit, "FIXED", deductibleValue, true);
+    return new QuoteCoveragePatch("FIRE", "Incendio", insuredLimit, "FIXED", deductibleValue, true);
   }
 }

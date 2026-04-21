@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.e2e.QuoteApiE2ETest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T16:25:03.722Z" hostname="MacBook-Pro-de-German.local" time="1.426">
+<testsuite name="com.cotizador.danos.e2e.QuoteApiE2ETest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:31:39.403Z" hostname="MacBook-Pro-de-German.local" time="1.854">
   <properties/>
-  <testcase name="shouldCreateFolioWithIdempotencyAndRetrieveGeneralInfo()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.744"/>
-  <testcase name="shouldCalculateAndExposeFinalStateWithAlertsForNonCalculableLocation()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.553"/>
-  <testcase name="shouldCompleteLocationsFlowThroughRestApi()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.125"/>
-  <system-out><![CDATA[11:24:50.323 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.cotizador.danos.e2e.QuoteApiE2ETest]: QuoteApiE2ETest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-11:24:50.758 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.cotizador.danos.DanosBackendApplication for test class com.cotizador.danos.e2e.QuoteApiE2ETest
-2026-04-21T11:24:52.673-05:00  INFO 65472 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : Starting QuoteApiE2ETest using Java 21.0.2 with PID 65472 (started by germanrojas in /Users/germanrojas/Desktop/core_seguros/backend)
-2026-04-21T11:24:52.688-05:00  INFO 65472 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : The following 1 profile is active: "test"
-2026-04-21T11:25:03.606-05:00  INFO 65472 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : Started QuoteApiE2ETest in 12.333 seconds (process running for 18.623)
+  <testcase name="shouldCreateFolioWithIdempotencyAndRetrieveGeneralInfo()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.954"/>
+  <testcase name="shouldCalculateAndExposeFinalStateWithAlertsForNonCalculableLocation()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.727"/>
+  <testcase name="shouldCompleteLocationsFlowThroughRestApi()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.17"/>
+  <system-out><![CDATA[13:31:24.068 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.cotizador.danos.e2e.QuoteApiE2ETest]: QuoteApiE2ETest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+13:31:24.607 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.cotizador.danos.DanosBackendApplication for test class com.cotizador.danos.e2e.QuoteApiE2ETest
+2026-04-21T13:31:26.724-05:00  INFO 3003 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : Starting QuoteApiE2ETest using Java 21.0.2 with PID 3003 (started by germanrojas in /Users/germanrojas/Desktop/core_seguros/backend)
+2026-04-21T13:31:26.727-05:00  INFO 3003 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : The following 1 profile is active: "test"
+2026-04-21T13:31:39.235-05:00  INFO 3003 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : Started QuoteApiE2ETest in 13.962 seconds (process running for 21.336)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

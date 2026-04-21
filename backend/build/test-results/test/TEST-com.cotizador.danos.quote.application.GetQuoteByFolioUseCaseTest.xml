@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.GetQuoteByFolioUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T16:25:06.509Z" hostname="MacBook-Pro-de-German.local" time="0.005">
+<testsuite name="com.cotizador.danos.quote.application.GetQuoteByFolioUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:31:42.823Z" hostname="MacBook-Pro-de-German.local" time="0.005">
   <properties/>
   <testcase name="shouldThrowControlledErrorWhenFolioDoesNotExist()" classname="com.cotizador.danos.quote.application.GetQuoteByFolioUseCaseTest" time="0.002"/>
   <testcase name="shouldReturnQuoteWhenFolioExists()" classname="com.cotizador.danos.quote.application.GetQuoteByFolioUseCaseTest" time="0.002"/>

@@ -79,8 +79,8 @@ class QuoteApiE2ETest {
                       "department": "Cundinamarca",
                       "address": "Calle 100 #10-20",
                       "postalCode": "110111",
-                      "constructionType": "CONCRETO",
-                      "occupancyType": "OFICINA",
+                      "constructionType": "CONCRETE",
+                      "occupancyType": "OFFICE",
                       "insuredValue": 1500000
                     },
                     {
@@ -89,8 +89,8 @@ class QuoteApiE2ETest {
                       "department": "Cundinamarca",
                       "address": null,
                       "postalCode": null,
-                      "constructionType": "CONCRETO",
-                      "occupancyType": "OFICINA",
+                      "constructionType": "CONCRETE",
+                      "occupancyType": "OFFICE",
                       "insuredValue": 900000
                     }
                   ]
@@ -130,7 +130,7 @@ class QuoteApiE2ETest {
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
                 {
-                  "productCode": "DANOS-PYME",
+                  "productCode": "DANOS",
                   "customerName": "Comercial Andina",
                   "currency": "COP",
                   "observations": "Flujo E2E calculo"
@@ -149,8 +149,8 @@ class QuoteApiE2ETest {
                       "department": "Cundinamarca",
                       "address": "Calle 100 #10-20",
                       "postalCode": "110111",
-                      "constructionType": "CONCRETO",
-                      "occupancyType": "OFICINA",
+                      "constructionType": "CONCRETE",
+                      "occupancyType": "OFFICE",
                       "insuredValue": 1500000
                     },
                     {
@@ -159,7 +159,7 @@ class QuoteApiE2ETest {
                       "department": "Cundinamarca",
                       "address": "Carrera 10 #22-50",
                       "postalCode": "110911",
-                      "constructionType": "CONCRETO",
+                      "constructionType": "CONCRETE",
                       "occupancyType": null,
                       "insuredValue": 800000
                     }
@@ -174,7 +174,7 @@ class QuoteApiE2ETest {
                 {
                   "coverages": [
                     {
-                      "coverageCode": "INCENDIO",
+                      "coverageCode": "FIRE",
                       "coverageName": "Incendio",
                       "insuredLimit": 1000000,
                       "deductibleType": "FIXED",
@@ -191,13 +191,13 @@ class QuoteApiE2ETest {
         .andExpect(jsonPath("$.data.primaNeta").isNumber())
         .andExpect(jsonPath("$.data.primaNeta").value(org.hamcrest.Matchers.greaterThan(0.0)))
         .andExpect(jsonPath("$.data.alertas").isArray())
-        .andExpect(jsonPath("$.data.alertas[0]").value(org.hamcrest.Matchers.containsString("excluded: missing giro.claveIncendio")));
+        .andExpect(jsonPath("$.data.alertas[0]").value(org.hamcrest.Matchers.containsString("excluded: missing occupancy.fireKey")));
 
     mockMvc.perform(get("/v1/quotes/{folio}/state", folio))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.estadoCotizacion").value("CALCULATED"))
         .andExpect(jsonPath("$.data.primaNeta").value(org.hamcrest.Matchers.greaterThan(0.0)))
-        .andExpect(jsonPath("$.data.alertas[0]").value(org.hamcrest.Matchers.containsString("excluded: missing giro.claveIncendio")));
+        .andExpect(jsonPath("$.data.alertas[0]").value(org.hamcrest.Matchers.containsString("excluded: missing occupancy.fireKey")));
   }
 
   private String createFolio() throws Exception {

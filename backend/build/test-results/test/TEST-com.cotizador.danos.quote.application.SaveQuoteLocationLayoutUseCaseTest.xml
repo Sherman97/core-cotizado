@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T16:25:06.536Z" hostname="MacBook-Pro-de-German.local" time="0.007">
+<testsuite name="com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:31:42.855Z" hostname="MacBook-Pro-de-German.local" time="0.008">
   <properties/>
-  <testcase name="shouldSaveLocationLayoutForExistingQuote()" classname="com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCaseTest" time="0.004"/>
+  <testcase name="shouldSaveLocationLayoutForExistingQuote()" classname="com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCaseTest" time="0.005"/>
   <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCaseTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

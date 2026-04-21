@@ -22,7 +22,7 @@ class CalculationTraceDetailTest {
     assertThat(traceDetail.factorType()).isEqualTo(FACTOR_TYPE);
     assertThat(traceDetail.appliedValue()).isEqualTo(APPLIED_VALUE);
     assertThat(traceDetail.factorOrder()).isEqualTo(FACTOR_ORDER);
-    assertThat(traceDetail.metadata()).containsEntry("coverageCode", "INCENDIO");
+    assertThat(traceDetail.metadata()).containsEntry("coverageCode", "FIRE");
   }
 
   private CalculationTraceDetail traceDetail() {
@@ -32,7 +32,7 @@ class CalculationTraceDetailTest {
         FACTOR_TYPE,
         APPLIED_VALUE,
         FACTOR_ORDER,
-        Map.of("coverageCode", "INCENDIO")
+        Map.of("coverageCode", "FIRE")
     );
   }
 }

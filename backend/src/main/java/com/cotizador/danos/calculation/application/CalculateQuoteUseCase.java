@@ -23,7 +23,7 @@ import org.springframework.util.StringUtils;
 public class CalculateQuoteUseCase {
 
   private static final String UNKNOWN_EXCLUSION_REASON = "Unknown exclusion reason";
-  private static final String MISSING_GIRO_CLAVE_INCENDIO_REASON = "missing giro.claveIncendio";
+  private static final String MISSING_OCCUPANCY_FIRE_KEY_REASON = "missing occupancy.fireKey";
   private static final String MISSING_TARIFFABLE_GUARANTEES_REASON = "missing tariffable guarantees";
   private static final String INVALID_POSTAL_CODE_REASON = "invalid postal code";
   private static final String NO_LOCATIONS_CONFIGURED_ALERT = "No locations configured for calculation";
@@ -166,7 +166,7 @@ public class CalculateQuoteUseCase {
       reasons.add(INVALID_POSTAL_CODE_REASON);
     }
     if (!StringUtils.hasText(location.getOccupancyType())) {
-      reasons.add(MISSING_GIRO_CLAVE_INCENDIO_REASON);
+      reasons.add(MISSING_OCCUPANCY_FIRE_KEY_REASON);
     }
     if (!hasTariffableGuarantees(coverages)) {
       reasons.add(MISSING_TARIFFABLE_GUARANTEES_REASON);

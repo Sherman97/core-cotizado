@@ -51,7 +51,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"productCode\": \"DANOS-PYME\",\n  \"customerName\": \"Comercial Andina SAS\",\n  \"currency\": \"COP\",\n  \"observations\": \"Cotizacion demo desde Postman\"\n}"
+          "raw": "{\n  \"productCode\": \"DANOS\",\n  \"customerName\": \"Comercial Andina SAS\",\n  \"currency\": \"COP\",\n  \"observations\": \"Cotizacion demo desde Postman\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/v1/quotes/{{folio}}/general-info",
@@ -147,7 +147,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"locations\": [\n    {\n      \"locationName\": \"Matriz Centro\",\n      \"city\": \"Bogota\",\n      \"department\": \"Cundinamarca\",\n      \"address\": \"Calle 100 #10-20\",\n      \"postalCode\": \"110111\",\n      \"constructionType\": \"CONCRETO\",\n      \"occupancyType\": \"OFICINA\",\n      \"insuredValue\": 1500000\n    },\n    {\n      \"locationName\": \"Sucursal Norte\",\n      \"city\": \"Bogota\",\n      \"department\": \"Cundinamarca\",\n      \"address\": null,\n      \"postalCode\": null,\n      \"constructionType\": \"CONCRETO\",\n      \"occupancyType\": \"OFICINA\",\n      \"insuredValue\": 900000\n    }\n  ]\n}"
+          "raw": "{\n  \"locations\": [\n    {\n      \"locationName\": \"Matriz Centro\",\n      \"city\": \"Bogota\",\n      \"department\": \"Cundinamarca\",\n      \"address\": \"Calle 100 #10-20\",\n      \"postalCode\": \"110111\",\n      \"constructionType\": \"CONCRETE\",\n      \"occupancyType\": \"OFFICE\",\n      \"insuredValue\": 1500000\n    },\n    {\n      \"locationName\": \"Sucursal Norte\",\n      \"city\": \"Bogota\",\n      \"department\": \"Cundinamarca\",\n      \"address\": null,\n      \"postalCode\": null,\n      \"constructionType\": \"CONCRETE\",\n      \"occupancyType\": \"OFFICE\",\n      \"insuredValue\": 900000\n    }\n  ]\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations",
@@ -262,7 +262,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"coverages\": [\n    {\n      \"coverageCode\": \"INCENDIO\",\n      \"coverageName\": \"Incendio\",\n      \"insuredLimit\": 1000000,\n      \"deductibleType\": \"FIXED\",\n      \"deductibleValue\": 50000,\n      \"selected\": true\n    },\n    {\n      \"coverageCode\": \"TERREMOTO\",\n      \"coverageName\": \"Terremoto\",\n      \"insuredLimit\": 750000,\n      \"deductibleType\": \"PERCENTAGE\",\n      \"deductibleValue\": 5,\n      \"selected\": true\n    }\n  ]\n}"
+          "raw": "{\n  \"coverages\": [\n    {\n      \"coverageCode\": \"FIRE\",\n      \"coverageName\": \"Incendio\",\n      \"insuredLimit\": 1000000,\n      \"deductibleType\": \"FIXED\",\n      \"deductibleValue\": 50000,\n      \"selected\": true\n    },\n    {\n      \"coverageCode\": \"EARTHQUAKE\",\n      \"coverageName\": \"Terremoto\",\n      \"insuredLimit\": 750000,\n      \"deductibleType\": \"PERCENTAGE\",\n      \"deductibleValue\": 5,\n      \"selected\": true\n    }\n  ]\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/v1/quotes/{{folio}}/coverage-options",

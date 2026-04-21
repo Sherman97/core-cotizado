@@ -60,8 +60,8 @@ class LocationControllerValidationTest {
                       "department": "Cundinamarca",
                       "address": "Calle 100 #10-20",
                       "postalCode": "110111",
-                      "constructionType": "CONCRETO",
-                      "occupancyType": "OFICINA",
+                      "constructionType": "CONCRETE",
+                      "occupancyType": "OFFICE",
                       "insuredValue": 1500000
                     }
                   ]

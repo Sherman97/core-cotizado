@@ -73,8 +73,8 @@ class CriticalBackendFlowsTest {
     );
 
     replaceLocationsUseCase.handle(folio, List.of(
-        new QuoteLocationPatch("Matriz Centro", "Bogota", "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETO", "OFICINA", 1_500_000),
-        new QuoteLocationPatch("Sucursal Norte", "Bogota", "Cundinamarca", null, null, "CONCRETO", "OFICINA", 900_000)
+        new QuoteLocationPatch("Matriz Centro", "Bogota", "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", "OFFICE", 1_500_000),
+        new QuoteLocationPatch("Sucursal Norte", "Bogota", "Cundinamarca", null, null, "CONCRETE", "OFFICE", 900_000)
     ));
 
     List<QuoteLocation> currentLocations = listQuoteLocationsUseCase.handle(folio);
@@ -107,12 +107,12 @@ class CriticalBackendFlowsTest {
     String folio = createBaseQuote(quoteRepository);
 
     new ReplaceQuoteLocationsUseCase(quoteRepository, locationRepository, FIXED_CLOCK).handle(folio, List.of(
-        new QuoteLocationPatch("Matriz Centro", "Bogota", "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETO", "OFICINA", 1_500_000),
-        new QuoteLocationPatch("Sucursal Norte", "Bogota", "Cundinamarca", null, null, "CONCRETO", "OFICINA", 900_000)
+        new QuoteLocationPatch("Matriz Centro", "Bogota", "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", "OFFICE", 1_500_000),
+        new QuoteLocationPatch("Sucursal Norte", "Bogota", "Cundinamarca", null, null, "CONCRETE", "OFFICE", 900_000)
     ));
     new ConfigureQuoteCoveragesUseCase(quoteRepository, quoteCoverageRepository, FIXED_CLOCK).handle(
         folio,
-        List.of(new QuoteCoveragePatch("INCENDIO", "Incendio", 1_000_000, "FIXED", 50_000L, true))
+        List.of(new QuoteCoveragePatch("FIRE", "Incendio", 1_000_000, "FIXED", 50_000L, true))
     );
 
     CalculateQuoteUseCase calculateQuoteUseCase = new CalculateQuoteUseCase(
@@ -157,7 +157,7 @@ class CriticalBackendFlowsTest {
           "BASE_RATE",
           0.015,
           1,
-          Map.of("coverageCode", "INCENDIO")
+          Map.of("coverageCode", "FIRE")
       ));
     }
   }

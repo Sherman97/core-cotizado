@@ -17,7 +17,7 @@ class QuoteCoverageSelectionTest {
     );
 
     assertThat(selection.getQuoteFolio()).isEqualTo(FOLIO);
-    assertThat(selection.getCoverageCode()).isEqualTo("INCENDIO");
+    assertThat(selection.getCoverageCode()).isEqualTo("FIRE");
     assertThat(selection.getCoverageName()).isEqualTo("Incendio");
     assertThat(selection.getInsuredLimit()).isEqualTo(1000000L);
     assertThat(selection.getDeductibleType()).isEqualTo("FIXED");
@@ -43,16 +43,16 @@ class QuoteCoverageSelectionTest {
 
     assertThat(updatedSelections).hasSize(2);
     assertThat(updatedSelections).extracting(QuoteCoverageSelection::getCoverageCode)
-        .containsExactly("INCENDIO", "TERREMOTO");
+        .containsExactly("FIRE", "EARTHQUAKE");
     assertThat(updatedSelections).extracting(QuoteCoverageSelection::getInsuredLimit)
         .containsExactly(1200000L, 800000L);
   }
 
   private QuoteCoveragePatch fireCoverage(long insuredLimit, long deductibleValue) {
-    return new QuoteCoveragePatch("INCENDIO", "Incendio", insuredLimit, "FIXED", deductibleValue, true);
+    return new QuoteCoveragePatch("FIRE", "Incendio", insuredLimit, "FIXED", deductibleValue, true);
   }
 
   private QuoteCoveragePatch earthquakeCoverage() {
-    return new QuoteCoveragePatch("TERREMOTO", "Terremoto", 800000L, null, null, true);
+    return new QuoteCoveragePatch("EARTHQUAKE", "Terremoto", 800000L, null, null, true);
   }
 }
