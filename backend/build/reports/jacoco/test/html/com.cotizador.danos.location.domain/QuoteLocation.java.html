@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuoteLocation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.location.domain</a> &gt; <span class="el_source">QuoteLocation.java</span></div><h1>QuoteLocation.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.location.domain;
+
+import java.util.List;
+
+public final class QuoteLocation {
+
+  private static final String INCOMPLETE_REQUIRED_DATA_ALERT = &quot;Location has incomplete required data&quot;;
+
+  private final long id;
+  private final String quoteFolio;
+  private final String locationName;
+  private final String city;
+  private final String department;
+  private final String address;
+  private final String postalCode;
+  private final String constructionType;
+  private final String occupancyType;
+  private final long insuredValue;
+  private final LocationValidationStatus validationStatus;
+  private final List&lt;String&gt; alerts;
+
+  private QuoteLocation(
+      long id,
+      String quoteFolio,
+      String locationName,
+      String city,
+      String department,
+      String address,
+      String postalCode,
+      String constructionType,
+      String occupancyType,
+      long insuredValue,
+      LocationValidationStatus validationStatus,
+      List&lt;String&gt; alerts
+<span class="fc" id="L35">  ) {</span>
+<span class="fc" id="L36">    this.id = id;</span>
+<span class="fc" id="L37">    this.quoteFolio = quoteFolio;</span>
+<span class="fc" id="L38">    this.locationName = locationName;</span>
+<span class="fc" id="L39">    this.city = city;</span>
+<span class="fc" id="L40">    this.department = department;</span>
+<span class="fc" id="L41">    this.address = address;</span>
+<span class="fc" id="L42">    this.postalCode = postalCode;</span>
+<span class="fc" id="L43">    this.constructionType = constructionType;</span>
+<span class="fc" id="L44">    this.occupancyType = occupancyType;</span>
+<span class="fc" id="L45">    this.insuredValue = insuredValue;</span>
+<span class="fc" id="L46">    this.validationStatus = validationStatus;</span>
+<span class="fc" id="L47">    this.alerts = alerts;</span>
+<span class="fc" id="L48">  }</span>
+
+  public static QuoteLocation create(long id, String quoteFolio, QuoteLocationPatch patch) {
+<span class="fc" id="L51">    boolean isComplete = patch.hasRequiredData();</span>
+<span class="fc" id="L52">    return new QuoteLocation(</span>
+        id,
+        quoteFolio,
+<span class="fc" id="L55">        patch.locationName(),</span>
+<span class="fc" id="L56">        patch.city(),</span>
+<span class="fc" id="L57">        patch.department(),</span>
+<span class="fc" id="L58">        patch.address(),</span>
+<span class="fc" id="L59">        patch.postalCode(),</span>
+<span class="fc" id="L60">        patch.constructionType(),</span>
+<span class="fc" id="L61">        patch.occupancyType(),</span>
+<span class="fc" id="L62">        patch.insuredValue(),</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        isComplete ? LocationValidationStatus.COMPLETE : LocationValidationStatus.INCOMPLETE,</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        isComplete ? List.of() : List.of(INCOMPLETE_REQUIRED_DATA_ALERT)</span>
+    );
+  }
+
+  public static QuoteLocation invalid(long id, String quoteFolio, String locationName, List&lt;String&gt; alerts) {
+<span class="fc" id="L69">    return new QuoteLocation(</span>
+        id,
+        quoteFolio,
+        locationName,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        0L,
+        LocationValidationStatus.INVALID,
+        alerts
+    );
+  }
+
+  public QuoteLocation update(QuoteLocationUpdatePatch patch) {
+<span class="fc" id="L86">    String updatedLocationName = keepCurrentIfMissing(patch.locationName(), locationName);</span>
+<span class="fc" id="L87">    String updatedCity = keepCurrentIfMissing(patch.city(), city);</span>
+<span class="fc" id="L88">    String updatedDepartment = keepCurrentIfMissing(patch.department(), department);</span>
+<span class="fc" id="L89">    String updatedAddress = keepCurrentIfMissing(patch.address(), address);</span>
+<span class="fc" id="L90">    String updatedPostalCode = keepCurrentIfMissing(patch.postalCode(), postalCode);</span>
+<span class="fc" id="L91">    String updatedConstructionType = keepCurrentIfMissing(patch.constructionType(), constructionType);</span>
+<span class="fc" id="L92">    String updatedOccupancyType = keepCurrentIfMissing(patch.occupancyType(), occupancyType);</span>
+<span class="pc bpc" id="L93" title="1 of 2 branches missed.">    long updatedInsuredValue = patch.insuredValue() != null ? patch.insuredValue() : insuredValue;</span>
+
+<span class="fc" id="L95">    return recreate(</span>
+        updatedLocationName,
+        updatedCity,
+        updatedDepartment,
+        updatedAddress,
+        updatedPostalCode,
+        updatedConstructionType,
+        updatedOccupancyType,
+        updatedInsuredValue
+    );
+  }
+
+  private QuoteLocation recreate(
+      String locationName,
+      String city,
+      String department,
+      String address,
+      String postalCode,
+      String constructionType,
+      String occupancyType,
+      long insuredValue
+  ) {
+<span class="pc bpc" id="L117" title="2 of 4 branches missed.">    boolean isComplete = hasValue(address) &amp;&amp; hasValue(postalCode);</span>
+
+<span class="fc" id="L119">    return new QuoteLocation(</span>
+        id,
+        quoteFolio,
+        locationName,
+        city,
+        department,
+        address,
+        postalCode,
+        constructionType,
+        occupancyType,
+        insuredValue,
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        isComplete ? LocationValidationStatus.COMPLETE : LocationValidationStatus.INCOMPLETE,</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        isComplete ? List.of() : List.of(INCOMPLETE_REQUIRED_DATA_ALERT)</span>
+    );
+  }
+
+  private static boolean hasValue(String value) {
+<span class="pc bpc" id="L136" title="2 of 4 branches missed.">    return value != null &amp;&amp; !value.isBlank();</span>
+  }
+
+  private String keepCurrentIfMissing(String newValue, String currentValue) {
+<span class="fc bfc" id="L140" title="All 2 branches covered.">    return newValue != null ? newValue : currentValue;</span>
+  }
+
+  public long getId() {
+<span class="fc" id="L144">    return id;</span>
+  }
+
+  public String getQuoteFolio() {
+<span class="fc" id="L148">    return quoteFolio;</span>
+  }
+
+  public String getLocationName() {
+<span class="fc" id="L152">    return locationName;</span>
+  }
+
+  public String getCity() {
+<span class="fc" id="L156">    return city;</span>
+  }
+
+  public String getDepartment() {
+<span class="fc" id="L160">    return department;</span>
+  }
+
+  public String getAddress() {
+<span class="fc" id="L164">    return address;</span>
+  }
+
+  public String getPostalCode() {
+<span class="fc" id="L168">    return postalCode;</span>
+  }
+
+  public String getConstructionType() {
+<span class="fc" id="L172">    return constructionType;</span>
+  }
+
+  public String getOccupancyType() {
+<span class="fc" id="L176">    return occupancyType;</span>
+  }
+
+  public long getInsuredValue() {
+<span class="fc" id="L180">    return insuredValue;</span>
+  }
+
+  public LocationValidationStatus getValidationStatus() {
+<span class="fc" id="L184">    return validationStatus;</span>
+  }
+
+  public List&lt;String&gt; getAlerts() {
+<span class="fc" id="L188">    return alerts;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

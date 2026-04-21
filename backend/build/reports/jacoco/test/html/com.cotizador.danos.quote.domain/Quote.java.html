@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Quote.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.quote.domain</a> &gt; <span class="el_source">Quote.java</span></div><h1>Quote.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.quote.domain;
+
+import java.time.Instant;
+
+public final class Quote {
+
+  public static final int INITIAL_VERSION = 1;
+
+  private final String folio;
+  private final String parentQuoteFolio;
+  private final String productCode;
+  private final String customerName;
+  private final String currency;
+  private final String observations;
+  private final QuoteLocationLayout locationLayout;
+  private final QuoteStatus status;
+  private final int version;
+  private final Instant createdAt;
+  private final Instant modifiedAt;
+
+  private Quote(
+      String folio,
+      String parentQuoteFolio,
+      String productCode,
+      String customerName,
+      String currency,
+      String observations,
+      QuoteLocationLayout locationLayout,
+      QuoteStatus status,
+      int version,
+      Instant createdAt,
+      Instant modifiedAt
+<span class="fc" id="L33">  ) {</span>
+<span class="fc" id="L34">    this.folio = folio;</span>
+<span class="fc" id="L35">    this.parentQuoteFolio = parentQuoteFolio;</span>
+<span class="fc" id="L36">    this.productCode = productCode;</span>
+<span class="fc" id="L37">    this.customerName = customerName;</span>
+<span class="fc" id="L38">    this.currency = currency;</span>
+<span class="fc" id="L39">    this.observations = observations;</span>
+<span class="fc" id="L40">    this.locationLayout = locationLayout;</span>
+<span class="fc" id="L41">    this.status = status;</span>
+<span class="fc" id="L42">    this.version = version;</span>
+<span class="fc" id="L43">    this.createdAt = createdAt;</span>
+<span class="fc" id="L44">    this.modifiedAt = modifiedAt;</span>
+<span class="fc" id="L45">  }</span>
+
+  public static Quote createNew(String folio, Instant createdAt) {
+<span class="fc" id="L48">    return new Quote(</span>
+        folio,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        QuoteStatus.DRAFT,
+        INITIAL_VERSION,
+        createdAt,
+        null
+    );
+  }
+
+  public Quote createNewVersion(String newFolio, Instant createdAt) {
+<span class="fc" id="L64">    return new Quote(</span>
+        newFolio,
+        folio,
+        productCode,
+        customerName,
+        currency,
+        observations,
+        locationLayout,
+        QuoteStatus.DRAFT,
+        version + 1,
+        createdAt,
+        null
+    );
+  }
+
+  public Quote updateGeneralData(QuoteGeneralDataPatch patch, Instant modifiedAt) {
+<span class="fc" id="L80">    return copyWith(</span>
+<span class="fc" id="L81">        keepCurrentIfMissing(patch.productCode(), productCode),</span>
+<span class="fc" id="L82">        keepCurrentIfMissing(patch.customerName(), customerName),</span>
+<span class="fc" id="L83">        keepCurrentIfMissing(patch.currency(), currency),</span>
+<span class="fc" id="L84">        keepCurrentIfMissing(patch.observations(), observations),</span>
+        locationLayout,
+        modifiedAt,
+        version + 1
+    );
+  }
+
+  public Quote updateLocationLayout(QuoteLocationLayout locationLayout, Instant modifiedAt) {
+<span class="fc" id="L92">    return copyWith(</span>
+        productCode,
+        customerName,
+        currency,
+        observations,
+        locationLayout,
+        modifiedAt,
+        version + 1
+    );
+  }
+
+  public Quote markAsCalculated() {
+<span class="fc" id="L104">    return copyWithStatus(QuoteStatus.CALCULATED);</span>
+  }
+
+  public Quote incrementBusinessVersion(Instant modifiedAt) {
+<span class="fc" id="L108">    return copyWith(</span>
+        productCode,
+        customerName,
+        currency,
+        observations,
+        locationLayout,
+        modifiedAt,
+        version + 1
+    );
+  }
+
+  private Quote copyWithStatus(QuoteStatus status) {
+<span class="fc" id="L120">    return new Quote(</span>
+        folio,
+        parentQuoteFolio,
+        productCode,
+        customerName,
+        currency,
+        observations,
+        locationLayout,
+        status,
+        version,
+        createdAt,
+        modifiedAt
+    );
+  }
+
+  private String keepCurrentIfMissing(String newValue, String currentValue) {
+<span class="fc bfc" id="L136" title="All 2 branches covered.">    return newValue != null ? newValue : currentValue;</span>
+  }
+
+  private Quote copyWith(
+      String productCode,
+      String customerName,
+      String currency,
+      String observations,
+      QuoteLocationLayout locationLayout,
+      Instant modifiedAt,
+      int version
+  ) {
+<span class="fc" id="L148">    return new Quote(</span>
+        folio,
+        parentQuoteFolio,
+        productCode,
+        customerName,
+        currency,
+        observations,
+        locationLayout,
+        status,
+        version,
+        createdAt,
+        modifiedAt
+    );
+  }
+
+  public String getFolio() {
+<span class="fc" id="L164">    return folio;</span>
+  }
+
+  public String getParentQuoteFolio() {
+<span class="fc" id="L168">    return parentQuoteFolio;</span>
+  }
+
+  public String getProductCode() {
+<span class="fc" id="L172">    return productCode;</span>
+  }
+
+  public String getCustomerName() {
+<span class="fc" id="L176">    return customerName;</span>
+  }
+
+  public String getCurrency() {
+<span class="fc" id="L180">    return currency;</span>
+  }
+
+  public String getObservations() {
+<span class="fc" id="L184">    return observations;</span>
+  }
+
+  public QuoteLocationLayout getLocationLayout() {
+<span class="fc" id="L188">    return locationLayout;</span>
+  }
+
+  public QuoteStatus getStatus() {
+<span class="fc" id="L192">    return status;</span>
+  }
+
+  public int getVersion() {
+<span class="fc" id="L196">    return version;</span>
+  }
+
+  public Instant getCreatedAt() {
+<span class="fc" id="L200">    return createdAt;</span>
+  }
+
+  public Instant getModifiedAt() {
+<span class="fc" id="L204">    return modifiedAt;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

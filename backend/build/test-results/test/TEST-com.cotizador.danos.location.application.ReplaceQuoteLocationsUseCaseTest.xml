@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.cotizador.danos.location.application.ReplaceQuoteLocationsUseCaseTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T16:25:06.252Z" hostname="MacBook-Pro-de-German.local" time="0.005">
+  <properties/>
+  <testcase name="shouldReplaceLocationsAndIncrementBusinessVersion()" classname="com.cotizador.danos.location.application.ReplaceQuoteLocationsUseCaseTest" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

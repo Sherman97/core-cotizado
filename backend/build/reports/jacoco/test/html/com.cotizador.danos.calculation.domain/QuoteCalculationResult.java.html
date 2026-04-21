@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuoteCalculationResult.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.calculation.domain</a> &gt; <span class="el_source">QuoteCalculationResult.java</span></div><h1>QuoteCalculationResult.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.calculation.domain;
+
+import java.util.List;
+
+public final class QuoteCalculationResult {
+
+  private static final double EXPENSE_RATE = 0.10;
+  private static final double TAX_RATE = 0.16;
+
+  private final double netPremium;
+  private final double expenseAmount;
+  private final double taxAmount;
+  private final double totalPremium;
+  private final List&lt;LocationCalculationResult&gt; locations;
+  private final List&lt;String&gt; alerts;
+
+  private QuoteCalculationResult(
+      double netPremium,
+      double expenseAmount,
+      double taxAmount,
+      double totalPremium,
+      List&lt;LocationCalculationResult&gt; locations,
+      List&lt;String&gt; alerts
+<span class="fc" id="L24">  ) {</span>
+<span class="fc" id="L25">    this.netPremium = netPremium;</span>
+<span class="fc" id="L26">    this.expenseAmount = expenseAmount;</span>
+<span class="fc" id="L27">    this.taxAmount = taxAmount;</span>
+<span class="fc" id="L28">    this.totalPremium = totalPremium;</span>
+<span class="fc" id="L29">    this.locations = locations;</span>
+<span class="fc" id="L30">    this.alerts = alerts;</span>
+<span class="fc" id="L31">  }</span>
+
+  public static QuoteCalculationResult fromLocationResults(
+      List&lt;LocationCalculationResult&gt; locations,
+      List&lt;String&gt; alerts
+  ) {
+<span class="fc" id="L37">    double netPremium = locations.stream()</span>
+<span class="fc" id="L38">        .mapToDouble(LocationCalculationResult::premium)</span>
+<span class="fc" id="L39">        .sum();</span>
+<span class="fc" id="L40">    double expenseAmount = netPremium * EXPENSE_RATE;</span>
+<span class="fc" id="L41">    double taxAmount = (netPremium + expenseAmount) * TAX_RATE;</span>
+<span class="fc" id="L42">    double totalPremium = netPremium + expenseAmount + taxAmount;</span>
+
+<span class="fc" id="L44">    return new QuoteCalculationResult(</span>
+        netPremium,
+        expenseAmount,
+        taxAmount,
+        totalPremium,
+        locations,
+        alerts
+    );
+  }
+
+  public double getNetPremium() {
+<span class="fc" id="L55">    return netPremium;</span>
+  }
+
+  public double getExpenseAmount() {
+<span class="fc" id="L59">    return expenseAmount;</span>
+  }
+
+  public double getTaxAmount() {
+<span class="fc" id="L63">    return taxAmount;</span>
+  }
+
+  public double getTotalPremium() {
+<span class="fc" id="L67">    return totalPremium;</span>
+  }
+
+  public List&lt;LocationCalculationResult&gt; getLocations() {
+<span class="fc" id="L71">    return locations;</span>
+  }
+
+  public List&lt;String&gt; getAlerts() {
+<span class="fc" id="L75">    return alerts;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

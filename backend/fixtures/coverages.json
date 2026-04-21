@@ -1,0 +1,20 @@
+{
+  "coverages": [
+    {
+      "coverageCode": "INCENDIO",
+      "coverageName": "Incendio",
+      "insuredLimit": 1000000,
+      "deductibleType": "FIXED",
+      "deductibleValue": 50000,
+      "selected": true
+    },
+    {
+      "coverageCode": "TERREMOTO",
+      "coverageName": "Terremoto",
+      "insuredLimit": 750000,
+      "deductibleType": "PERCENTAGE",
+      "deductibleValue": 5,
+      "selected": true
+    }
+  ]
+}

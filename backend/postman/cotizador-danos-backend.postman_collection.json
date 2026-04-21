@@ -1,0 +1,330 @@
+{
+  "info": {
+    "_postman_id": "fe58b7f5-3e23-4f4f-a9cc-8e3588f5f5dc",
+    "name": "Cotizador Danos Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleccion para evaluar el flujo minimo del backend de cotizador de danos."
+  },
+  "item": [
+    {
+      "name": "1. Crear folio",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/folios",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "folios"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "var folio = json.data.numeroFolio;",
+              "pm.collectionVariables.set('folio', folio);",
+              "pm.test('folio generado', function () {",
+              "  pm.expect(folio).to.be.a('string').and.not.empty;",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Guardar general-info",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"productCode\": \"DANOS-PYME\",\n  \"customerName\": \"Comercial Andina SAS\",\n  \"currency\": \"COP\",\n  \"observations\": \"Cotizacion demo desde Postman\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/general-info",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "general-info"
+          ]
+        }
+      }
+    },
+    {
+      "name": "3. Obtener general-info",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/general-info",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "general-info"
+          ]
+        }
+      }
+    },
+    {
+      "name": "4. Guardar layout de ubicaciones",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"expectedLocationCount\": 2,\n  \"captureRiskZone\": false,\n  \"captureGeoreference\": false,\n  \"notes\": \"Layout de prueba\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations/layout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "locations",
+            "layout"
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. Obtener layout de ubicaciones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations/layout",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "locations",
+            "layout"
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Guardar ubicaciones",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"locations\": [\n    {\n      \"locationName\": \"Matriz Centro\",\n      \"city\": \"Bogota\",\n      \"department\": \"Cundinamarca\",\n      \"address\": \"Calle 100 #10-20\",\n      \"postalCode\": \"110111\",\n      \"constructionType\": \"CONCRETO\",\n      \"occupancyType\": \"OFICINA\",\n      \"insuredValue\": 1500000\n    },\n    {\n      \"locationName\": \"Sucursal Norte\",\n      \"city\": \"Bogota\",\n      \"department\": \"Cundinamarca\",\n      \"address\": null,\n      \"postalCode\": null,\n      \"constructionType\": \"CONCRETO\",\n      \"occupancyType\": \"OFICINA\",\n      \"insuredValue\": 900000\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "locations"
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Obtener ubicaciones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "locations"
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Editar ubicacion 2",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"address\": \"Calle 80 #15-10\",\n  \"postalCode\": \"110221\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations/2",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "locations",
+            "2"
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. Resumen de ubicaciones",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/locations/summary",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "locations",
+            "summary"
+          ]
+        }
+      }
+    },
+    {
+      "name": "10. Consultar opciones de cobertura",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/coverage-options",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "coverage-options"
+          ]
+        }
+      }
+    },
+    {
+      "name": "11. Guardar opciones de cobertura",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"coverages\": [\n    {\n      \"coverageCode\": \"INCENDIO\",\n      \"coverageName\": \"Incendio\",\n      \"insuredLimit\": 1000000,\n      \"deductibleType\": \"FIXED\",\n      \"deductibleValue\": 50000,\n      \"selected\": true\n    },\n    {\n      \"coverageCode\": \"TERREMOTO\",\n      \"coverageName\": \"Terremoto\",\n      \"insuredLimit\": 750000,\n      \"deductibleType\": \"PERCENTAGE\",\n      \"deductibleValue\": 5,\n      \"selected\": true\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/coverage-options",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "coverage-options"
+          ]
+        }
+      }
+    },
+    {
+      "name": "12. Ejecutar calculo",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/calculate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "calculate"
+          ]
+        }
+      }
+    },
+    {
+      "name": "13. Consultar estado final",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/quotes/{{folio}}/state",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "quotes",
+            "{{folio}}",
+            "state"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "folio",
+      "value": ""
+    }
+  ]
+}

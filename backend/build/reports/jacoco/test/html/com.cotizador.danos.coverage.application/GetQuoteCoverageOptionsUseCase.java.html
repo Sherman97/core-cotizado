@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GetQuoteCoverageOptionsUseCase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.coverage.application</a> &gt; <span class="el_source">GetQuoteCoverageOptionsUseCase.java</span></div><h1>GetQuoteCoverageOptionsUseCase.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.coverage.application;
+
+import com.cotizador.danos.coverage.domain.CoverageCatalogItem;
+import com.cotizador.danos.coverage.domain.CoverageCatalogRepository;
+import com.cotizador.danos.coverage.domain.QuoteCoverageRepository;
+import com.cotizador.danos.coverage.domain.QuoteCoverageSelection;
+import com.cotizador.danos.quote.domain.QuoteNotFoundException;
+import com.cotizador.danos.quote.domain.QuoteRepository;
+import java.util.List;
+
+public class GetQuoteCoverageOptionsUseCase {
+
+<span class="fc" id="L13">  public record Result(</span>
+      List&lt;CoverageCatalogItem&gt; availableCoverages,
+      List&lt;QuoteCoverageSelection&gt; selectedCoverages
+  ) {
+  }
+
+  private final QuoteRepository quoteRepository;
+  private final QuoteCoverageRepository quoteCoverageRepository;
+  private final CoverageCatalogRepository coverageCatalogRepository;
+
+  public GetQuoteCoverageOptionsUseCase(
+      QuoteRepository quoteRepository,
+      QuoteCoverageRepository quoteCoverageRepository,
+      CoverageCatalogRepository coverageCatalogRepository
+<span class="fc" id="L27">  ) {</span>
+<span class="fc" id="L28">    this.quoteRepository = quoteRepository;</span>
+<span class="fc" id="L29">    this.quoteCoverageRepository = quoteCoverageRepository;</span>
+<span class="fc" id="L30">    this.coverageCatalogRepository = coverageCatalogRepository;</span>
+<span class="fc" id="L31">  }</span>
+
+  public Result handle(String folio) {
+<span class="fc" id="L34">    quoteRepository.findByFolio(folio)</span>
+<span class="pc" id="L35">        .orElseThrow(() -&gt; new QuoteNotFoundException(folio));</span>
+
+<span class="fc" id="L37">    return new Result(</span>
+<span class="fc" id="L38">        coverageCatalogRepository.findActive(),</span>
+<span class="fc" id="L39">        quoteCoverageRepository.findByQuoteFolio(folio)</span>
+    );
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

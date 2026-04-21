@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>QuoteCoverageSelection.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.coverage.domain</a> &gt; <span class="el_source">QuoteCoverageSelection.java</span></div><h1>QuoteCoverageSelection.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.coverage.domain;
+
+import java.util.List;
+
+public final class QuoteCoverageSelection {
+
+  private final String quoteFolio;
+  private final String coverageCode;
+  private final String coverageName;
+  private final long insuredLimit;
+  private final String deductibleType;
+  private final Long deductibleValue;
+  private final boolean selected;
+
+  private QuoteCoverageSelection(
+      String quoteFolio,
+      String coverageCode,
+      String coverageName,
+      long insuredLimit,
+      String deductibleType,
+      Long deductibleValue,
+      boolean selected
+<span class="fc" id="L23">  ) {</span>
+<span class="fc" id="L24">    this.quoteFolio = quoteFolio;</span>
+<span class="fc" id="L25">    this.coverageCode = coverageCode;</span>
+<span class="fc" id="L26">    this.coverageName = coverageName;</span>
+<span class="fc" id="L27">    this.insuredLimit = insuredLimit;</span>
+<span class="fc" id="L28">    this.deductibleType = deductibleType;</span>
+<span class="fc" id="L29">    this.deductibleValue = deductibleValue;</span>
+<span class="fc" id="L30">    this.selected = selected;</span>
+<span class="fc" id="L31">  }</span>
+
+  public static QuoteCoverageSelection create(String quoteFolio, QuoteCoveragePatch patch) {
+<span class="fc" id="L34">    return new QuoteCoverageSelection(</span>
+        quoteFolio,
+<span class="fc" id="L36">        patch.coverageCode(),</span>
+<span class="fc" id="L37">        patch.coverageName(),</span>
+<span class="fc" id="L38">        patch.insuredLimit(),</span>
+<span class="fc" id="L39">        patch.deductibleType(),</span>
+<span class="fc" id="L40">        patch.deductibleValue(),</span>
+<span class="fc" id="L41">        patch.selected()</span>
+    );
+  }
+
+  public static List&lt;QuoteCoverageSelection&gt; replaceAll(
+      String quoteFolio,
+      List&lt;QuoteCoverageSelection&gt; currentSelections,
+      List&lt;QuoteCoveragePatch&gt; newSelections
+  ) {
+<span class="fc" id="L50">    return newSelections.stream()</span>
+<span class="fc" id="L51">        .map(patch -&gt; create(quoteFolio, patch))</span>
+<span class="fc" id="L52">        .toList();</span>
+  }
+
+  public String getQuoteFolio() {
+<span class="fc" id="L56">    return quoteFolio;</span>
+  }
+
+  public String getCoverageCode() {
+<span class="fc" id="L60">    return coverageCode;</span>
+  }
+
+  public String getCoverageName() {
+<span class="fc" id="L64">    return coverageName;</span>
+  }
+
+  public long getInsuredLimit() {
+<span class="fc" id="L68">    return insuredLimit;</span>
+  }
+
+  public String getDeductibleType() {
+<span class="fc" id="L72">    return deductibleType;</span>
+  }
+
+  public Long getDeductibleValue() {
+<span class="fc" id="L76">    return deductibleValue;</span>
+  }
+
+  public boolean isSelected() {
+<span class="fc" id="L80">    return selected;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

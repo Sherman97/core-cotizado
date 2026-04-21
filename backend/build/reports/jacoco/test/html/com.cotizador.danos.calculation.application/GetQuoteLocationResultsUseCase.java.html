@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GetQuoteLocationResultsUseCase.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">backend</a> &gt; <a href="index.source.html" class="el_package">com.cotizador.danos.calculation.application</a> &gt; <span class="el_source">GetQuoteLocationResultsUseCase.java</span></div><h1>GetQuoteLocationResultsUseCase.java</h1><pre class="source lang-java linenums">package com.cotizador.danos.calculation.application;
+
+import com.cotizador.danos.calculation.domain.LocationCalculationResult;
+import com.cotizador.danos.calculation.domain.QuoteCalculationResult;
+import com.cotizador.danos.calculation.domain.QuoteCalculationResultRepository;
+import com.cotizador.danos.calculation.domain.QuoteLocationResultView;
+import com.cotizador.danos.location.domain.LocationRepository;
+import com.cotizador.danos.location.domain.QuoteLocation;
+import com.cotizador.danos.location.domain.LocationValidationStatus;
+import com.cotizador.danos.quote.domain.QuoteNotFoundException;
+import com.cotizador.danos.quote.domain.QuoteRepository;
+import java.util.List;
+import java.util.Optional;
+
+public class GetQuoteLocationResultsUseCase {
+
+<span class="fc" id="L17">  private static final QuoteCalculationResult EMPTY_CALCULATION_RESULT =</span>
+<span class="fc" id="L18">      QuoteCalculationResult.fromLocationResults(List.of(), List.of());</span>
+
+  private final QuoteRepository quoteRepository;
+  private final QuoteCalculationResultRepository quoteCalculationResultRepository;
+  private final LocationRepository locationRepository;
+
+  public GetQuoteLocationResultsUseCase(
+      QuoteRepository quoteRepository,
+      QuoteCalculationResultRepository quoteCalculationResultRepository,
+      LocationRepository locationRepository
+<span class="fc" id="L28">  ) {</span>
+<span class="fc" id="L29">    this.quoteRepository = quoteRepository;</span>
+<span class="fc" id="L30">    this.quoteCalculationResultRepository = quoteCalculationResultRepository;</span>
+<span class="fc" id="L31">    this.locationRepository = locationRepository;</span>
+<span class="fc" id="L32">  }</span>
+
+  public List&lt;QuoteLocationResultView&gt; handle(String folio) {
+<span class="fc" id="L35">    quoteRepository.findByFolio(folio)</span>
+<span class="fc" id="L36">        .orElseThrow(() -&gt; new QuoteNotFoundException(folio));</span>
+
+<span class="fc" id="L38">    QuoteCalculationResult calculationResult = quoteCalculationResultRepository.findByQuoteFolio(folio)</span>
+<span class="fc" id="L39">        .orElse(EMPTY_CALCULATION_RESULT);</span>
+<span class="fc" id="L40">    List&lt;QuoteLocation&gt; locations = locationRepository.findByQuoteFolio(folio);</span>
+
+<span class="fc" id="L42">    return locations.stream()</span>
+<span class="fc" id="L43">        .map(location -&gt; toResultView(location, findCalculationResult(location, calculationResult)))</span>
+<span class="fc" id="L44">        .toList();</span>
+  }
+
+  private QuoteLocationResultView toResultView(
+      QuoteLocation location,
+      Optional&lt;LocationCalculationResult&gt; calculationResult
+  ) {
+<span class="fc bfc" id="L51" title="All 2 branches covered.">    if (calculationResult.isPresent()) {</span>
+<span class="fc" id="L52">      LocationCalculationResult result = calculationResult.get();</span>
+<span class="fc" id="L53">      return new QuoteLocationResultView(</span>
+<span class="fc" id="L54">          result.locationId(),</span>
+<span class="fc" id="L55">          result.locationName(),</span>
+<span class="fc" id="L56">          result.status(),</span>
+<span class="fc" id="L57">          result.premium(),</span>
+<span class="fc" id="L58">          isCalculated(result),</span>
+<span class="fc" id="L59">          result.alerts()</span>
+      );
+    }
+
+<span class="fc" id="L63">    return new QuoteLocationResultView(</span>
+<span class="fc" id="L64">        location.getId(),</span>
+<span class="fc" id="L65">        location.getLocationName(),</span>
+<span class="fc" id="L66">        location.getValidationStatus(),</span>
+        0.0,
+        false,
+<span class="fc" id="L69">        location.getAlerts()</span>
+    );
+  }
+
+  private boolean isCalculated(LocationCalculationResult result) {
+<span class="pc bpc" id="L74" title="1 of 4 branches missed.">    return result.status() == LocationValidationStatus.COMPLETE &amp;&amp; result.premium() &gt; 0.0;</span>
+  }
+
+  private Optional&lt;LocationCalculationResult&gt; findCalculationResult(
+      QuoteLocation location,
+      QuoteCalculationResult calculationResult
+  ) {
+<span class="fc" id="L81">    return calculationResult.getLocations().stream()</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        .filter(result -&gt; result.locationId() == location.getId())</span>
+<span class="fc" id="L83">        .findFirst();</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
