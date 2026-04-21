@@ -1,59 +1,48 @@
 # 01. Overview
 
-## Proposito del documento
+## Proposito
 
-Este documento resume el estado final implementado del backend del cotizador de danos y delimita su alcance real para evaluacion tecnica.
+Documentar el estado real implementado del backend del cotizador de danos, sin extender alcance fuera del MVP actual.
 
 ## Objetivo del backend
 
-Soportar un flujo MVP de cotizacion con:
+Soportar el flujo de cotizacion:
 
-1. creacion de folio
-2. captura de datos generales
-3. configuracion de layout de ubicaciones
-4. registro y edicion de ubicaciones
-5. configuracion de coberturas
-6. calculo por ubicacion
-7. consulta de estado final y resultados
+1. crear folio
+2. capturar datos generales
+3. capturar layout y ubicaciones
+4. configurar coberturas
+5. ejecutar calculo por ubicacion
+6. consultar estado final y resultados
 
 ## Capacidades implementadas
 
-- API REST bajo `/v1`
-- persistencia JPA en MariaDB
-- migraciones Flyway
-- idempotencia en `POST /v1/folios` con `Idempotency-Key`
+- API REST `/v1`
+- JPA + MariaDB + Flyway
+- idempotencia en `POST /v1/folios` por `Idempotency-Key`
 - versionado de negocio en ediciones parciales
-- calculo MVP simplificado con trazabilidad
-- pruebas unitarias y E2E REST
+- calculo MVP trazable
+- persistencia de alertas y trazas de calculo
+- pruebas unitarias, de aplicacion y E2E REST
+- integracion read-only de tablas maestras de rating en modulo `catalog`
 
-## Alcance funcional actual
+## Delimitacion de alcance
 
 Incluye:
 
-- folio unico por creacion y replay idempotente por clave
-- estado inicial `DRAFT` y cambio a `CALCULATED` al calcular
-- version de negocio incrementada en operaciones funcionales de edicion
-- exclusion de ubicaciones no calculables con alerta explicita
-- persistencia de resultados financieros y de trazabilidad de calculo
+- cotizador de danos MVP
+- manejo de folios y estado de quote
+- persistencia operacional y tecnica
 
 No incluye:
 
 - frontend
-- autenticacion/autorizacion
-- formulas actuariales reales
-- integraciones reales con servicios core externos
+- autenticacion y autorizacion
+- formula actuarial real
+- integraciones externas productivas
 
-## Glosario operativo
+## Supuestos conservadores vigentes
 
-- `numeroFolio`: identificador de cotizacion.
-- `businessVersion`: version de negocio expuesta en respuestas.
-- `modifiedAt`: fecha de ultima actualizacion de quote.
-- `Idempotency-Key`: clave para evitar duplicidad en reintentos de creacion de folio.
-- ubicacion calculable: ubicacion que cumple reglas minimas para entrar al calculo.
-- trazabilidad: detalle de factores aplicados por ubicacion en el calculo.
-
-## Supuestos declarados del MVP
-
-- `giro.claveIncendio` se representa con el campo de dominio actual `occupancyType`.
-- `garantias tarifables` se representan con coberturas seleccionadas (`selected=true`).
-- la formula de prima es simplificada y no actuarial.
+- `giro.claveIncendio` se representa temporalmente con `occupancyType`.
+- `garantias tarifables` se representan temporalmente con coberturas `selected=true`.
+- el motor de calculo sigue siendo stub MVP, aunque ya existe capa read-only para catalogos/factores persistidos.

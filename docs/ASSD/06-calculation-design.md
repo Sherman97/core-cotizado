@@ -1,41 +1,43 @@
 # 06. Calculation Design
 
-## Objetivo del modulo
+## Estado actual del calculo implementado
 
-Calcular prima por ubicacion elegible, consolidar resultado financiero y persistir trazabilidad de factores aplicados.
+El backend usa un motor MVP simplificado (`StubPremiumCalculator`) con trazabilidad persistida.
 
-## Flujo implementado
+No se implemento aun reemplazo del motor por lectura de tablas maestras en el flujo de `CalculateQuoteUseCase`.
+
+## Flujo de calculo vigente
 
 1. cargar quote por folio
 2. cargar ubicaciones y coberturas
-3. evaluar elegibilidad por ubicacion
-4. calcular primas de ubicaciones elegibles
-5. consolidar prima neta/comercial
+3. evaluar calculabilidad por ubicacion
+4. calcular prima de ubicaciones elegibles
+5. consolidar resultado financiero
 6. persistir resultado y trazabilidad
-7. actualizar quote a estado `CALCULATED`
+7. marcar quote como `CALCULATED`
 
-## Reglas de elegibilidad implementadas
+## Regla de calculabilidad completada
 
-Una ubicacion no es calculable si:
+Una ubicacion no se calcula si:
 
-- codigo postal invalido
-- falta `giro.claveIncendio`
-- faltan garantias tarifables
+- no tiene codigo postal valido
+- no tiene `giro.claveIncendio`
+- no tiene garantias tarifables
 
-Mapeo conservador actual:
+Mapeos conservadores vigentes:
 
 - `giro.claveIncendio` -> `occupancyType`
-- garantias tarifables -> coberturas seleccionadas (`selected=true`)
+- `garantias tarifables` -> coberturas `selected=true`
 
 Comportamiento:
 
-- la ubicacion no calculable se excluye
-- se agrega alerta de exclusion con razon
-- el calculo continua para ubicaciones validas
+- se excluye la ubicacion no calculable
+- se registra alerta con razon de exclusion
+- el calculo continua con ubicaciones validas
 
 ## Formula MVP (no actuarial)
 
-Calculo por ubicacion en `StubPremiumCalculator`:
+Calculo por ubicacion:
 
 - `rate = BASE_RATE + COVERAGE_RATE * cantidadCoberturasSeleccionadas`
 - `BASE_RATE = 0.0015`
@@ -48,15 +50,28 @@ Consolidacion:
 - `impuestos = (primaNeta + gastos) * 0.16`
 - `primaComercial = primaNeta + gastos + impuestos`
 
-## Persistencia de salida
+## Trazabilidad del calculo
 
-Se persisten:
+Persistencia en:
 
-- resultado financiero consolidado
-- primas por ubicacion
-- alertas globales y por ubicacion
-- trazas de calculo (`factor_type`, `applied_value`, `factor_order`, `metadata`)
+- `calculation_traces`
+- `calculation_trace_metadata`
 
-## Trazabilidad funcional
+Incluye:
 
-Por cada ubicacion calculada se guardan factores en `calculation_traces` y metadata en `calculation_trace_metadata`, permitiendo explicar el resultado final.
+- tipo de factor
+- valor aplicado
+- orden
+- metadata explicativa por ubicacion
+
+## Integracion de datos maestros ya disponible (fase read-only)
+
+Se implementaron servicios de consulta en modulo `catalog` para:
+
+- zona/factor por codigo postal
+- ocupacion/factor
+- construccion/factor
+- tasas/factores por cobertura
+- parametros globales
+
+Estos servicios estan listos para ser usados por una siguiente fase de reemplazo del calculo hardcodeado.

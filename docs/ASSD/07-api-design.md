@@ -2,7 +2,7 @@
 
 ## Base path
 
-Todos los endpoints implementados usan base `/v1`.
+Todos los endpoints se publican bajo `/v1`.
 
 ## Endpoints implementados
 
@@ -21,7 +21,7 @@ Todos los endpoints implementados usan base `/v1`.
 - `POST /v1/quotes/{folio}/calculate`
 - `GET /v1/quotes/{folio}/state`
 
-## Contrato de respuesta
+## Envelope de respuesta
 
 Exito:
 
@@ -44,7 +44,7 @@ Error:
 }
 ```
 
-## Idempotencia en `POST /v1/folios`
+## Contrato idempotente de `POST /v1/folios`
 
 Header opcional:
 
@@ -52,27 +52,23 @@ Header opcional:
 
 Reglas:
 
-- clave nueva -> crea folio (`201`)
-- clave ya registrada -> replay del mismo folio (`200`)
-- sin clave -> crea folio (`201`)
+- clave nueva -> crea folio, `201`
+- clave repetida -> replay del mismo folio, `200`
+- sin clave -> crea folio, `201`
 
 ## Errores HTTP relevantes
 
-- `400`: validacion de request, body malformado
-- `404`: folio o ubicacion inexistente
+- `400`: validacion y request invalido
+- `404`: folio o ubicacion no encontrada
 - `409`: conflicto de version optimista
-- `500`: error inesperado
+- `500`: error interno no controlado
 
-## Validaciones de request destacadas
+## Reglas visibles desde API de calculo
 
-- ubicaciones: `locationName` no vacio, `insuredValue >= 0`
-- coberturas: `coverageCode` y `coverageName` obligatorios, montos no negativos
-- layout: `expectedLocationCount >= 0`
-
-## Notas de consistencia con calculo
-
-El endpoint `POST /v1/quotes/{folio}/calculate` puede devolver alertas por ubicaciones excluidas por elegibilidad:
+En `POST /v1/quotes/{folio}/calculate`, puede haber alertas por exclusion de ubicacion:
 
 - codigo postal invalido
 - falta de `giro.claveIncendio` (mapeado a `occupancyType`)
-- falta de garantias tarifables (mapeadas a `selected=true`)
+- falta de garantias tarifables (mapeado a `selected=true`)
+
+La exclusion es por ubicacion; el backend calcula el resto de ubicaciones elegibles.

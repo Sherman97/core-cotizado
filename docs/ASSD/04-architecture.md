@@ -1,8 +1,8 @@
 # 04. Architecture
 
-## Estilo arquitectonico
+## Estilo
 
-Monolito modular Spring Boot, orientado a clean architecture por capas:
+Monolito modular con Spring Boot y separacion por capas:
 
 - `api`
 - `application`
@@ -10,55 +10,53 @@ Monolito modular Spring Boot, orientado a clean architecture por capas:
 - `infrastructure`
 - `mapper`
 
-## Modulos backend reales
+## Modulos backend
 
 - `quote`
 - `location`
 - `coverage`
 - `calculation`
-- `shared`
-
-Modulos presentes como placeholders estructurales:
-
 - `catalog`
-- `document`
+- `shared`
+- `document` (placeholder)
 
-## Componentes tecnicos principales
+## Patrons implementados
 
-- Spring Boot 3.x
-- Spring Web
+- puertos en `domain` y adapters en `infrastructure`
+- casos de uso en `application`
+- controllers REST en `api`
+- mappers de persistencia dedicados
+
+## Integraciones tecnicas clave
+
 - Spring Data JPA
+- Flyway
 - MariaDB (runtime)
-- Flyway (migraciones runtime)
-- H2 (solo perfil de test)
+- H2 (tests)
 
-## Estructura de integracion
+## Cambios arquitectonicos relevantes ya implementados
 
-- API REST bajo `/v1`
-- casos de uso en capa `application`
-- repositorios de dominio implementados por adapters JPA
-- mapeo dominio <-> entidad via mappers dedicados
+### Idempotencia en creacion de folio
 
-## Elementos de arquitectura recientes
-
-### Idempotencia de folios
-
-- contrato por header `Idempotency-Key`
-- persistencia de clave->folio en tabla dedicada
-- replay con `200`, creacion con `201`
+- `POST /v1/folios` con `Idempotency-Key`
+- persistencia de clave y folio
+- respuesta `201` (create) o `200` (replay)
 
 ### Versionado de negocio
 
-- incremento de version y actualizacion de `modifiedAt` en ediciones parciales relevantes
+- incremento de `businessVersion` y actualizacion de `modifiedAt` en ediciones funcionales
 
-### Calculo trazable
+### Trazabilidad de calculo
 
-- resultado financiero consolidado persistido
-- trazabilidad de factores persistida por ubicacion
+- persistencia de factores en `calculation_traces` y metadata
 
-## Principales decisiones tecnicas
+### Integracion read-only de tablas maestras
 
-1. mantener monolito modular (sin microservicios)
-2. no acoplar dominio a JPA
-3. calcular con formula MVP simplificada, pero con elegibilidad explicita y trazabilidad
-4. usar idempotencia simple y persistida para retries seguros de creacion de folio
+En modulo `catalog`:
+
+- 8 entidades JPA de rating
+- repositorios Spring Data
+- adapters de dominio para consulta
+- servicios read-only para zona, ocupacion, construccion, coberturas y parametros
+
+Nota: esta integracion no cambia aun el flujo de `CalculateQuoteUseCase`.

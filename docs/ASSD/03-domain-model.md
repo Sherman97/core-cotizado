@@ -1,64 +1,64 @@
 # 03. Domain Model
 
-## Modelo de dominio implementado
+## Agregado principal
 
-El agregado principal es `Quote`.  
-Subdominios funcionales implementados: `quote`, `location`, `coverage`, `calculation`.
+`Quote` es el agregado raiz del backend.
 
-## Entidades/objetos de dominio clave
+Responsabilidades:
 
-### Quote
-
-- identidad: `folio`
-- estado: `DRAFT`, `CALCULATED`
-- version de negocio: `version`
-- metadatos temporales: `createdAt`, `modifiedAt`
+- identidad por `folio`
+- estado (`DRAFT`, `CALCULATED`)
+- version de negocio (`businessVersion`)
 - datos generales y layout
+- control de timestamps (`createdAt`, `modifiedAt`)
 
-Comportamiento relevante:
+## Objetos de dominio relevantes
 
-- creacion inicial (`version=1`)
-- actualizacion parcial de datos generales
-- actualizacion de layout
-- incremento de version de negocio en ediciones funcionales
-- transicion a `CALCULATED` en calculo
-
-### QuoteLocation
+### `QuoteLocation`
 
 - datos de ubicacion
-- `validationStatus`: `COMPLETE`, `INCOMPLETE`, `INVALID`
+- estado de validacion (`COMPLETE`, `INCOMPLETE`, `INVALID`)
 - alertas por ubicacion
 
-### QuoteCoverageSelection
+### `QuoteCoverageSelection`
 
-- cobertura configurada por folio
-- bandera `selected` usada en calculabilidad
+- cobertura configurada para la quote
+- flag `selected` usado en regla de garantias tarifables
 
-### QuoteCalculationResult y LocationCalculationResult
+### `QuoteCalculationResult` y `LocationCalculationResult`
 
-- resultado financiero consolidado
-- resultado por ubicacion
-- alertas globales y por ubicacion
+- resultado consolidado y por ubicacion
+- alertas de calculo
 
-### CalculationTraceDetail
+### `CalculationTraceDetail`
 
-- trazabilidad de factores aplicados en el calculo
-- metadata por factor
+- factor aplicado
+- valor aplicado
+- orden del factor
+- metadata explicativa
 
-## Invariantes aplicados en el backend
+## Reglas de dominio implementadas
 
-- una quote nueva inicia en `DRAFT`
-- cada edicion funcional incrementa version de negocio
-- cada edicion funcional actualiza `modifiedAt`
-- ubicaciones no calculables no entran a prima
-- la exclusion de ubicaciones conserva razon en alertas
-- el resultado financiero y la trazabilidad se persisten
+- Quote nueva inicia en `DRAFT`.
+- En operaciones funcionales relevantes se incrementa `businessVersion`.
+- En operaciones funcionales relevantes se actualiza `modifiedAt`.
+- Solo ubicaciones elegibles entran a prima.
+- Ubicaciones no elegibles se excluyen con alerta explicita.
+- Al calcular se persisten resultado y trazabilidad.
 
-## Reglas de modelado conservador explicitas
+## Mapeos conservadores declarados
 
-Por ausencia de campos dedicados en el dominio actual:
+- `occupancyType` se usa como representacion temporal de `giro.claveIncendio`.
+- `selected=true` se usa como representacion temporal de garantia tarifable.
 
-- `giro.claveIncendio` se mapea a `occupancyType`
-- `garantias tarifables` se mapean a coberturas con `selected=true`
+## Modelo de catalogos de rating (integrado en fase read-only)
 
-Estos mapeos son deliberados, documentados y limitados al MVP actual.
+Se agregaron puertos de dominio para consulta de datos maestros:
+
+- zona por codigo postal y factor de zona
+- ocupacion y factor de ocupacion
+- factor de construccion
+- tasas y factores por cobertura
+- parametros globales de calculo
+
+Estos puertos estan implementados por adapters JPA, pero aun no reemplazan el motor de calculo MVP.
