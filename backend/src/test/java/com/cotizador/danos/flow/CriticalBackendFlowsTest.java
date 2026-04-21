@@ -192,6 +192,13 @@ class CriticalBackendFlowsTest {
     }
 
     @Override
+    public List<Quote> findAllOrderByCreatedAtDesc() {
+      return storage.values().stream()
+          .sorted((left, right) -> right.getCreatedAt().compareTo(left.getCreatedAt()))
+          .toList();
+    }
+
+    @Override
     public Quote save(Quote quote) {
       storage.put(quote.getFolio(), quote);
       return quote;

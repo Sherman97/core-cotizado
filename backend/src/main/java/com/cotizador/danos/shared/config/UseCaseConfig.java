@@ -5,6 +5,7 @@ import com.cotizador.danos.calculation.application.GetQuoteLocationResultsUseCas
 import com.cotizador.danos.calculation.domain.CalculationTraceRepository;
 import com.cotizador.danos.calculation.domain.PremiumCalculator;
 import com.cotizador.danos.calculation.domain.QuoteCalculationResultRepository;
+import com.cotizador.danos.agent.application.AgentCatalogQueryService;
 import com.cotizador.danos.coverage.application.ConfigureQuoteCoveragesUseCase;
 import com.cotizador.danos.coverage.application.GetQuoteCoverageOptionsUseCase;
 import com.cotizador.danos.coverage.application.ListActiveCoveragesUseCase;
@@ -75,8 +76,12 @@ public class UseCaseConfig {
   }
 
   @Bean
-  UpdateQuoteGeneralDataUseCase updateQuoteGeneralDataUseCase(QuoteRepository quoteRepository, Clock clock) {
-    return new UpdateQuoteGeneralDataUseCase(quoteRepository, clock);
+  UpdateQuoteGeneralDataUseCase updateQuoteGeneralDataUseCase(
+      QuoteRepository quoteRepository,
+      AgentCatalogQueryService agentCatalogQueryService,
+      Clock clock
+  ) {
+    return new UpdateQuoteGeneralDataUseCase(quoteRepository, agentCatalogQueryService, clock);
   }
 
   @Bean

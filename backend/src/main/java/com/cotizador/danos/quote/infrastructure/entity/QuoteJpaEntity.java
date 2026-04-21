@@ -33,6 +33,12 @@ public class QuoteJpaEntity {
   @Column(name = "currency", length = 16)
   private String currency;
 
+  @Column(name = "agent_code", length = 32)
+  private String agentCode;
+
+  @Column(name = "agent_name_snapshot", length = 255)
+  private String agentNameSnapshot;
+
   @Column(name = "observations", length = 1000)
   private String observations;
 
@@ -119,6 +125,22 @@ public class QuoteJpaEntity {
 
   public void setObservations(String observations) {
     this.observations = observations;
+  }
+
+  public String getAgentCode() {
+    return agentCode;
+  }
+
+  public void setAgentCode(String agentCode) {
+    this.agentCode = agentCode;
+  }
+
+  public String getAgentNameSnapshot() {
+    return agentNameSnapshot;
+  }
+
+  public void setAgentNameSnapshot(String agentNameSnapshot) {
+    this.agentNameSnapshot = agentNameSnapshot;
   }
 
   public Integer getLayoutExpectedLocationCount() {

@@ -16,6 +16,8 @@ public class QuotePersistenceMapper {
       String.class,
       String.class,
       String.class,
+      String.class,
+      String.class,
       QuoteLocationLayout.class,
       com.cotizador.danos.quote.domain.QuoteStatus.class,
       int.class,
@@ -38,6 +40,8 @@ public class QuotePersistenceMapper {
         entity.getProductCode(),
         entity.getCustomerName(),
         entity.getCurrency(),
+        entity.getAgentCode(),
+        entity.getAgentNameSnapshot(),
         entity.getObservations(),
         toLayout(entity),
         entity.getStatus(),
@@ -54,6 +58,8 @@ public class QuotePersistenceMapper {
     target.setProductCode(source.getProductCode());
     target.setCustomerName(source.getCustomerName());
     target.setCurrency(source.getCurrency());
+    target.setAgentCode(source.getAgentCode());
+    target.setAgentNameSnapshot(source.getAgentNameSnapshot());
     target.setObservations(source.getObservations());
     target.setStatus(source.getStatus());
     target.setBusinessVersion(source.getVersion());

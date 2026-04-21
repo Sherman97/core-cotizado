@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.cotizador.danos.agent.api.AgentControllerTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:50.505Z" hostname="MacBook-Pro-de-German.local" time="1.146">
+  <properties/>
+  <testcase name="shouldFilterAgentsByActiveFlag()" classname="com.cotizador.danos.agent.api.AgentControllerTest" time="1.089"/>
+  <testcase name="shouldListAgentsFromCatalog()" classname="com.cotizador.danos.agent.api.AgentControllerTest" time="0.018"/>
+  <testcase name="shouldGetAgentByCode()" classname="com.cotizador.danos.agent.api.AgentControllerTest" time="0.036"/>
+  <system-out><![CDATA[16:43:38.990 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.cotizador.danos.agent.api.AgentControllerTest]: AgentControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+16:43:39.332 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.cotizador.danos.DanosBackendApplication for test class com.cotizador.danos.agent.api.AgentControllerTest
+2026-04-21T16:43:40.556-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] c.c.danos.agent.api.AgentControllerTest  : Starting AgentControllerTest using Java 21.0.2 with PID 95738 (started by germanrojas in /Users/germanrojas/Desktop/core_seguros/backend)
+2026-04-21T16:43:40.559-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] c.c.danos.agent.api.AgentControllerTest  : The following 1 profile is active: "test"
+2026-04-21T16:43:50.386-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] c.c.danos.agent.api.AgentControllerTest  : Started AgentControllerTest in 10.694 seconds (process running for 14.091)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/germanrojas/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.17.5/58f9507f5f28d1d3e7adfb4ec2fe37c29d332c9b/byte-buddy-agent-1.17.5.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

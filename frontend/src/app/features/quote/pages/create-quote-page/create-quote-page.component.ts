@@ -10,7 +10,7 @@ import { QuoteApiService } from '../../services/quote-api.service';
       <div class="card">
         <p style="text-transform:uppercase; letter-spacing:0.12em; color:var(--accent); font-weight:700;">MVP Cotizador</p>
         <h1>Cotizador de seguros de daños</h1>
-        <p>Inicia una cotización en estado DRAFT y continúa el flujo completo del wizard.</p>
+        <p>Inicia una cotización en estado borrador y continúa el flujo completo del asistente.</p>
         <div class="actions">
           <button class="btn btn-primary" (click)="createQuote()">Crear folio</button>
         </div>

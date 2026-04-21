@@ -11,6 +11,8 @@ public final class Quote {
   private final String productCode;
   private final String customerName;
   private final String currency;
+  private final String agentCode;
+  private final String agentNameSnapshot;
   private final String observations;
   private final QuoteLocationLayout locationLayout;
   private final QuoteStatus status;
@@ -24,6 +26,8 @@ public final class Quote {
       String productCode,
       String customerName,
       String currency,
+      String agentCode,
+      String agentNameSnapshot,
       String observations,
       QuoteLocationLayout locationLayout,
       QuoteStatus status,
@@ -36,6 +40,8 @@ public final class Quote {
     this.productCode = productCode;
     this.customerName = customerName;
     this.currency = currency;
+    this.agentCode = agentCode;
+    this.agentNameSnapshot = agentNameSnapshot;
     this.observations = observations;
     this.locationLayout = locationLayout;
     this.status = status;
@@ -47,6 +53,8 @@ public final class Quote {
   public static Quote createNew(String folio, Instant createdAt) {
     return new Quote(
         folio,
+        null,
+        null,
         null,
         null,
         null,
@@ -67,6 +75,8 @@ public final class Quote {
         productCode,
         customerName,
         currency,
+        agentCode,
+        agentNameSnapshot,
         observations,
         locationLayout,
         QuoteStatus.DRAFT,
@@ -81,6 +91,8 @@ public final class Quote {
         keepCurrentIfMissing(patch.productCode(), productCode),
         keepCurrentIfMissing(patch.customerName(), customerName),
         keepCurrentIfMissing(patch.currency(), currency),
+        keepCurrentIfMissing(patch.agentCode(), agentCode),
+        keepCurrentIfMissing(patch.agentNameSnapshot(), agentNameSnapshot),
         keepCurrentIfMissing(patch.observations(), observations),
         locationLayout,
         modifiedAt,
@@ -93,6 +105,8 @@ public final class Quote {
         productCode,
         customerName,
         currency,
+        agentCode,
+        agentNameSnapshot,
         observations,
         locationLayout,
         modifiedAt,
@@ -113,6 +127,8 @@ public final class Quote {
         productCode,
         customerName,
         currency,
+        agentCode,
+        agentNameSnapshot,
         observations,
         locationLayout,
         modifiedAt,
@@ -127,6 +143,8 @@ public final class Quote {
         productCode,
         customerName,
         currency,
+        agentCode,
+        agentNameSnapshot,
         observations,
         locationLayout,
         status,
@@ -144,6 +162,8 @@ public final class Quote {
       String productCode,
       String customerName,
       String currency,
+      String agentCode,
+      String agentNameSnapshot,
       String observations,
       QuoteLocationLayout locationLayout,
       Instant modifiedAt,
@@ -155,6 +175,8 @@ public final class Quote {
         productCode,
         customerName,
         currency,
+        agentCode,
+        agentNameSnapshot,
         observations,
         locationLayout,
         status,
@@ -186,6 +208,14 @@ public final class Quote {
 
   public String getObservations() {
     return observations;
+  }
+
+  public String getAgentCode() {
+    return agentCode;
+  }
+
+  public String getAgentNameSnapshot() {
+    return agentNameSnapshot;
   }
 
   public QuoteLocationLayout getLocationLayout() {

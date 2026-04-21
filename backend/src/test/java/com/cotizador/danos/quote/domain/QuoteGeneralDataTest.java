@@ -22,6 +22,8 @@ class QuoteGeneralDataTest {
     assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS");
     assertThat(updatedQuote.getCustomerName()).isEqualTo("Cliente Demo");
     assertThat(updatedQuote.getCurrency()).isEqualTo("USD");
+    assertThat(updatedQuote.getAgentCode()).isEqualTo("AGT-001");
+    assertThat(updatedQuote.getAgentNameSnapshot()).isEqualTo("Juan Perez");
     assertThat(updatedQuote.getObservations()).isEqualTo("Observacion inicial");
     assertThat(updatedQuote.getVersion()).isEqualTo(2);
     assertThat(updatedQuote.getModifiedAt()).isEqualTo(FIRST_MODIFIED_AT);
@@ -37,6 +39,8 @@ class QuoteGeneralDataTest {
             null,
             null,
             "EUR",
+            null,
+            null,
             null
         ),
         SECOND_MODIFIED_AT
@@ -45,6 +49,8 @@ class QuoteGeneralDataTest {
     assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS");
     assertThat(updatedQuote.getCustomerName()).isEqualTo("Cliente Demo");
     assertThat(updatedQuote.getCurrency()).isEqualTo("EUR");
+    assertThat(updatedQuote.getAgentCode()).isEqualTo("AGT-001");
+    assertThat(updatedQuote.getAgentNameSnapshot()).isEqualTo("Juan Perez");
     assertThat(updatedQuote.getObservations()).isEqualTo("Observacion inicial");
     assertThat(updatedQuote.getVersion()).isEqualTo(3);
     assertThat(updatedQuote.getModifiedAt()).isEqualTo(SECOND_MODIFIED_AT);
@@ -55,7 +61,9 @@ class QuoteGeneralDataTest {
         "DANOS",
         "Cliente Demo",
         "USD",
-        "Observacion inicial"
+        "Observacion inicial",
+        "AGT-001",
+        "Juan Perez"
     );
   }
 }

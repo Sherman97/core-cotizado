@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.coverage.domain.QuoteCoverageSelectionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:35.569Z" hostname="MacBook-Pro-de-German.local" time="0.003">
+<testsuite name="com.cotizador.danos.coverage.domain.QuoteCoverageSelectionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.523Z" hostname="MacBook-Pro-de-German.local" time="0.004">
   <properties/>
   <testcase name="shouldCreateCoverageConfigurationWithParameters()" classname="com.cotizador.danos.coverage.domain.QuoteCoverageSelectionTest" time="0.001"/>
   <testcase name="shouldReplacePreviousCoverageConfigurationWhenUpdated()" classname="com.cotizador.danos.coverage.domain.QuoteCoverageSelectionTest" time="0.002"/>

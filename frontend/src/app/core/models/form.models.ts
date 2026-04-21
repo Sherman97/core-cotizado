@@ -2,6 +2,8 @@ export interface GeneralInfoFormData {
   productCode: string;
   customerName: string;
   currency: string;
+  agentCode?: string;
+  agentNameSnapshot?: string;
   observations?: string;
 }
 
@@ -41,4 +43,3 @@ export interface QuotationSummary {
   createdAt?: Date;
   totalPremium?: number;
 }
-

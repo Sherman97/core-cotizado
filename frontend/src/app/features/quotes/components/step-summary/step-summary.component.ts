@@ -9,90 +9,94 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
   template: `
     <div class="step-container">
       <div class="step-header">
-        <h2>Step 4: Review Summary</h2>
-        <p class="step-description">Verify all information before calculation</p>
+        <h2>Paso 4: Resumen de revisión</h2>
+        <p class="step-description">Verifica toda la información antes del cálculo</p>
       </div>
 
       <div class="summary-sections">
-        <!-- General Information Section -->
+        <!-- Sección de información general -->
         <div class="summary-section">
           <div class="section-header" (click)="toggleSection('general')">
-            <h3>General Information</h3>
+            <h3>Información general</h3>
             <button type="button" class="btn-expand">
               {{ expandedSections.general ? '▼' : '▶' }}
             </button>
           </div>
           <div *ngIf="expandedSections.general" class="section-content">
             <div class="summary-item">
-              <span class="label">Customer Name:</span>
+              <span class="label">Nombre del cliente:</span>
               <span class="value">{{ generalInfo?.customerName }}</span>
             </div>
             <div class="summary-item">
-              <span class="label">Currency:</span>
+              <span class="label">Moneda:</span>
               <span class="value">{{ generalInfo?.currency }}</span>
             </div>
             <div class="summary-item">
-              <span class="label">Observations:</span>
-              <span class="value">{{ generalInfo?.observations || 'None' }}</span>
+              <span class="label">Asesor:</span>
+              <span class="value">{{ generalInfo?.agentNameSnapshot || generalInfo?.agentCode || 'No seleccionado' }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Observaciones:</span>
+              <span class="value">{{ generalInfo?.observations || 'Ninguna' }}</span>
             </div>
             <button type="button" class="btn btn-sm btn-edit" (click)="onEditStep(1)">
-              Edit
+              Editar
             </button>
           </div>
         </div>
 
-        <!-- Locations Section -->
+        <!-- Sección de ubicaciones -->
         <div class="summary-section">
           <div class="section-header" (click)="toggleSection('locations')">
-            <h3>Locations ({{ locations.length }})</h3>
+            <h3>Ubicaciones ({{ locations.length }})</h3>
             <button type="button" class="btn-expand">
               {{ expandedSections.locations ? '▼' : '▶' }}
             </button>
           </div>
           <div *ngIf="expandedSections.locations" class="section-content">
             <div *ngFor="let loc of locations; let i = index" class="location-summary">
-              <h4>Location {{ i + 1 }}: {{ loc.locationName }}</h4>
+              <h4>Ubicación {{ i + 1 }}: {{ loc.locationName }}</h4>
               <div class="summary-grid">
                 <div class="summary-item">
-                  <span class="label">City:</span>
+                  <span class="label">Ciudad:</span>
                   <span class="value">{{ loc.city }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Department:</span>
+                  <span class="label">Departamento:</span>
                   <span class="value">{{ loc.department }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Postal Code:</span>
-                  <span class="value">{{ loc.postalCode || 'N/A' }}</span>
+                  <span class="label">Código postal:</span>
+                  <span class="value">{{ loc.postalCode || 'N/D' }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Address:</span>
-                  <span class="value">{{ loc.address || 'N/A' }}</span>
+                  <span class="label">Dirección:</span>
+                  <span class="value">{{ loc.address || 'N/D' }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Occupancy:</span>
+                  <span class="label">Ocupación:</span>
                   <span class="value badge">{{ loc.occupancyType }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Construction:</span>
+                  <span class="label">Construcción:</span>
                   <span class="value badge">{{ loc.constructionType }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Insured Value:</span>
+                  <span class="label">Valor asegurado:</span>
                   <span class="value price">{{ loc.insuredValue | currency }}</span>
                 </div>
               </div>
             </div>
             <button type="button" class="btn btn-sm btn-edit" (click)="onEditStep(2)">
-              Edit
+              Editar
             </button>
           </div>
         </div>
 
-        <!-- Coverages Section -->
+        <!-- Sección de coberturas -->
         <div class="summary-section">
           <div class="section-header" (click)="toggleSection('coverages')">
-            <h3>Coverages ({{ coverages.length }})</h3>
+            <h3>Coberturas ({{ coverages.length }})</h3>
             <button type="button" class="btn-expand">
               {{ expandedSections.coverages ? '▼' : '▶' }}
             </button>
@@ -101,23 +105,23 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
             <div *ngFor="let cov of coverages" class="coverage-summary">
               <div class="coverage-header">
                 <h4>{{ cov.coverageName }}</h4>
-                <span class="badge badge-success">Selected</span>
+                <span class="badge badge-success">Seleccionada</span>
               </div>
               <div class="summary-grid">
                 <div class="summary-item">
-                  <span class="label">Coverage Code:</span>
+                  <span class="label">Código de cobertura:</span>
                   <span class="value">{{ cov.coverageCode }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Insured Limit:</span>
+                  <span class="label">Límite asegurado:</span>
                   <span class="value price">{{ cov.insuredLimit | currency }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Deductible Type:</span>
+                  <span class="label">Tipo de deducible:</span>
                   <span class="value">{{ cov.deductibleType }}</span>
                 </div>
                 <div class="summary-item">
-                  <span class="label">Deductible Value:</span>
+                  <span class="label">Valor del deducible:</span>
                   <span class="value">
                     {{ cov.deductibleValue }}{{ cov.deductibleType === 'PERCENTAGE' ? '%' : '' }}
                   </span>
@@ -125,31 +129,31 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
               </div>
             </div>
             <button type="button" class="btn btn-sm btn-edit" (click)="onEditStep(3)">
-              Edit
+              Editar
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Validation Status -->
+      <!-- Estado de validación -->
       <div class="validation-status">
         <div class="status-item" [class.valid]="isGeneralInfoValid()">
           <span class="status-icon">{{ isGeneralInfoValid() ? '✓' : '✗' }}</span>
-          General Information
+          Información general
         </div>
         <div class="status-item" [class.valid]="isLocationsValid()">
           <span class="status-icon">{{ isLocationsValid() ? '✓' : '✗' }}</span>
-          Locations
+          Ubicaciones
         </div>
         <div class="status-item" [class.valid]="isCoveragesValid()">
           <span class="status-icon">{{ isCoveragesValid() ? '✓' : '✗' }}</span>
-          Coverages
+          Coberturas
         </div>
       </div>
 
       <div class="step-actions">
         <button type="button" class="btn btn-secondary" (click)="onPrevious()">
-          ← Previous
+          ← Anterior
         </button>
         <button
           type="button"
@@ -157,7 +161,7 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
           [disabled]="!isFormValid()"
           (click)="onCalculate()"
         >
-          🔢 Calculate Quote
+          🔢 Calcular cotización
         </button>
       </div>
     </div>

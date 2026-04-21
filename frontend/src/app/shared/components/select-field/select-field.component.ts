@@ -24,7 +24,7 @@ interface SelectOption {
         [value]="value || ''"
         (change)="onChange($event)"
       >
-        <option value="">{{ placeholder || 'Select...' }}</option>
+        <option value="">{{ placeholder || 'Selecciona...' }}</option>
         <option *ngFor="let opt of options" [value]="opt.value">
           {{ opt.label }}
         </option>
@@ -102,4 +102,3 @@ export class SelectFieldComponent implements ControlValueAccessor {
     this.isDisabled = isDisabled;
   }
 }
-

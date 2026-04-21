@@ -49,6 +49,31 @@ class QuoteLocationEditTest {
     assertThat(updatedLocation.getValidationStatus()).isEqualTo(LocationValidationStatus.COMPLETE);
   }
 
+  @Test
+  void shouldMarkLocationAsIncompleteWhenUpdatedWithBlankAddress() {
+    QuoteLocation existingLocation = QuoteLocation.create(
+        3L,
+        FOLIO,
+        completePatch()
+    );
+
+    QuoteLocation updatedLocation = existingLocation.update(
+        new QuoteLocationUpdatePatch(
+            null,
+            null,
+            null,
+            " ",
+            null,
+            null,
+            null,
+            null
+        )
+    );
+
+    assertThat(updatedLocation.getValidationStatus()).isEqualTo(LocationValidationStatus.INCOMPLETE);
+    assertThat(updatedLocation.getAlerts()).containsExactly("Location has incomplete required data");
+  }
+
   private QuoteLocationPatch completePatch() {
     return new QuoteLocationPatch(
         "Matriz Centro",

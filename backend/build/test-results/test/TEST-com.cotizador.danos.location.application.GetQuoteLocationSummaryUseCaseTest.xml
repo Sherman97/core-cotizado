@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.cotizador.danos.location.application.GetQuoteLocationSummaryUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.356Z" hostname="MacBook-Pro-de-German.local" time="0.018">
+  <properties/>
+  <testcase name="shouldBuildSummaryUsingStoredCalculationResult()" classname="com.cotizador.danos.location.application.GetQuoteLocationSummaryUseCaseTest" time="0.007"/>
+  <testcase name="shouldThrowWhenQuoteDoesNotExist()" classname="com.cotizador.danos.location.application.GetQuoteLocationSummaryUseCaseTest" time="0.005"/>
+  <testcase name="shouldFallbackToEmptyCalculationResultWhenNoneExists()" classname="com.cotizador.danos.location.application.GetQuoteLocationSummaryUseCaseTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

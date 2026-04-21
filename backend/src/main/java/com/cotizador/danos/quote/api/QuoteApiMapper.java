@@ -30,7 +30,9 @@ public class QuoteApiMapper {
         request.productCode(),
         request.customerName(),
         request.currency(),
-        request.observations()
+        request.observations(),
+        request.agentCode(),
+        null
     );
   }
 
@@ -40,6 +42,8 @@ public class QuoteApiMapper {
         quote.getProductCode(),
         quote.getCustomerName(),
         quote.getCurrency(),
+        quote.getAgentCode(),
+        quote.getAgentNameSnapshot(),
         quote.getObservations(),
         quote.getStatus().name(),
         quote.getVersion()

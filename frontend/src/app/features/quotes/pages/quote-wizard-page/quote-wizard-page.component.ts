@@ -29,7 +29,7 @@ import { ApiResponse, CalculationResponse, CoverageType, CoverageOptions } from 
     <div class="wizard-container">
       <!-- Wizard Header -->
       <div class="wizard-header">
-        <h1>Create Quotation</h1>
+        <h1>Crear cotización</h1>
         <p class="folio-info">Folio: <strong>{{ folio }}</strong></p>
       </div>
 
@@ -50,7 +50,7 @@ import { ApiResponse, CalculationResponse, CoverageType, CoverageOptions } from 
 
       <!-- Loading State -->
       <div *ngIf="loading" class="loading-state">
-        <p>Processing your quotation...</p>
+        <p>Procesando tu cotización...</p>
         <div class="spinner"></div>
       </div>
 
@@ -65,6 +65,7 @@ import { ApiResponse, CalculationResponse, CoverageType, CoverageOptions } from 
         <!-- Step 1: General Info -->
         <app-step-general-info
           *ngIf="currentStep === 1"
+          [initialGeneralInfo]="wizardState.generalInfo"
           (next)="onGeneralInfoNext($event)"
           (cancel)="onCancel()"
         ></app-step-general-info>
@@ -303,7 +304,7 @@ import { ApiResponse, CalculationResponse, CoverageType, CoverageOptions } from 
 export class QuoteWizardPageComponent implements OnInit, OnDestroy {
   folio: string = '';
   currentStep: number = 1;
-  steps = ['General Info', 'Locations', 'Coverages', 'Review'];
+  steps = ['Información general', 'Ubicaciones', 'Coberturas', 'Revisión'];
   wizardState: QuotationWizardState = {
     generalInfo: null,
     locations: [],
@@ -351,11 +352,13 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
     this.quoteApi.getGeneralInfo(this.folio).subscribe({
       next: (response) => {
         const data = response.data;
-        if (data.customerName || data.currency || data.observations) {
+        if (data.customerName || data.currency || data.observations || data.agentCode) {
           this.wizardService.setGeneralInfo({
             productCode: data.productCode || 'DANOS',
             customerName: data.customerName || '',
             currency: data.currency || 'COP',
+            agentCode: data.agentCode,
+            agentNameSnapshot: data.agentNameSnapshot,
             observations: data.observations
           });
         }
@@ -429,14 +432,14 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
     this.quoteApi.calculateQuote(this.folio).subscribe({
       next: (response: ApiResponse<CalculationResponse>) => {
         this.loading = false;
-        this.successMessage = 'Quote calculated successfully!';
+        this.successMessage = '¡Cotización calculada con éxito!';
         setTimeout(() => {
           this.router.navigate(['/quotes', this.folio, 'result']);
         }, 1000);
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMessage = 'Error calculating quote: ' + (err.error?.message || err.message);
+        this.errorMessage = 'Error al calcular la cotización: ' + (err.error?.message || err.message);
         console.error('Calculation error:', err);
       }
     });

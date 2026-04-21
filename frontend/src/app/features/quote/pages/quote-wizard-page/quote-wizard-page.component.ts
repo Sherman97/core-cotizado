@@ -36,7 +36,7 @@ import { QuoteWizardStore } from '../../store/quote-wizard.store';
         <div style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;">
           <div>
             <h2>Folio {{ quote.folio }}</h2>
-            <p>Estado: {{ quote.status }} | Paso: {{ quote.currentStep }}</p>
+            <p>Estado: {{ getStatusLabel(quote.status) }} | Paso: {{ getStepLabel(quote.currentStep) }}</p>
           </div>
           <div class="actions">
             <button class="btn btn-secondary" (click)="goToStatus()">Ver estado final</button>
@@ -70,7 +70,13 @@ export class QuoteWizardPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly quoteApi = inject(QuoteApiService);
 
-  readonly steps = ['GENERAL_DATA', 'LOCATION_LAYOUT', 'LOCATIONS', 'COVERAGES', 'RESULT'];
+  readonly steps = [
+    { value: 'GENERAL_DATA', label: 'Datos generales' },
+    { value: 'LOCATION_LAYOUT', label: 'Estructura de ubicaciones' },
+    { value: 'LOCATIONS', label: 'Ubicaciones' },
+    { value: 'COVERAGES', label: 'Coberturas' },
+    { value: 'RESULT', label: 'Resultado' }
+  ];
   readonly currentStep = computed(() => this.quoteStore.quote()?.currentStep ?? 'GENERAL_DATA');
   coverageCatalog: Array<{ code: string; name: string; description: string; selected?: boolean }> = [];
 
@@ -118,5 +124,37 @@ export class QuoteWizardPageComponent implements OnInit {
 
   private get folio(): string {
     return this.route.snapshot.paramMap.get('folio') ?? '';
+  }
+
+  getStatusLabel(status?: string): string {
+    switch (status) {
+      case 'DRAFT':
+        return 'Borrador';
+      case 'PENDING_CALCULATION':
+        return 'Pendiente de cálculo';
+      case 'CALCULATED':
+        return 'Calculada';
+      case 'SAVED':
+        return 'Guardada';
+      default:
+        return status ?? '-';
+    }
+  }
+
+  getStepLabel(step?: string): string {
+    switch (step) {
+      case 'GENERAL_DATA':
+        return 'Datos generales';
+      case 'LOCATION_LAYOUT':
+        return 'Estructura de ubicaciones';
+      case 'LOCATIONS':
+        return 'Ubicaciones';
+      case 'COVERAGES':
+        return 'Coberturas';
+      case 'RESULT':
+        return 'Resultado';
+      default:
+        return step ?? '-';
+    }
   }
 }

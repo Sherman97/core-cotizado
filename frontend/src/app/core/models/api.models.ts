@@ -32,9 +32,19 @@ export interface GeneralInfo {
   productCode: string;
   customerName: string;
   currency: string;
+  agentCode?: string;
+  agentNameSnapshot?: string;
   observations?: string;
   businessVersion?: number;
   modifiedAt?: string;
+}
+
+export interface Agent {
+  agentCode: string;
+  agentName: string;
+  channel: string;
+  branch: string;
+  active: boolean;
 }
 
 /**

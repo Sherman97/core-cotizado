@@ -137,21 +137,21 @@ export class CatalogService {
   private getMockCatalog(): Catalog {
     return {
       occupancyTypes: [
-        { code: 'OFFICE', name: 'Office', description: 'Office spaces and administrative areas' },
-        { code: 'COMMERCE', name: 'Commerce', description: 'Commercial retail spaces' },
-        { code: 'RESTAURANT', name: 'Restaurant', description: 'Food service establishments' },
-        { code: 'WAREHOUSE', name: 'Warehouse', description: 'Storage and warehouse facilities' },
-        { code: 'LIGHT_INDUSTRY', name: 'Light Industry', description: 'Manufacturing and light industrial' }
+        { code: 'OFFICE', name: 'Oficina', description: 'Espacios de oficina y áreas administrativas' },
+        { code: 'COMMERCE', name: 'Comercio', description: 'Espacios comerciales de venta al por menor' },
+        { code: 'RESTAURANT', name: 'Restaurante', description: 'Establecimientos de servicio de alimentos' },
+        { code: 'WAREHOUSE', name: 'Bodega', description: 'Instalaciones de almacenamiento y bodegaje' },
+        { code: 'LIGHT_INDUSTRY', name: 'Industria ligera', description: 'Manufactura e industria liviana' }
       ],
       constructionTypes: [
-        { code: 'CONCRETE', name: 'Concrete', description: 'Reinforced concrete construction' },
-        { code: 'MIXED', name: 'Mixed', description: 'Mixed materials construction' },
-        { code: 'WOOD', name: 'Wood', description: 'Wooden structure construction' }
+        { code: 'CONCRETE', name: 'Concreto', description: 'Construcción en concreto reforzado' },
+        { code: 'MIXED', name: 'Mixta', description: 'Construcción con materiales mixtos' },
+        { code: 'WOOD', name: 'Madera', description: 'Construcción en estructura de madera' }
       ],
       coverageTypes: [
-        { code: 'FIRE', name: 'Fire', description: 'Fire and explosion coverage', maxInsuredLimit: 5000000 },
-        { code: 'EARTHQUAKE', name: 'Earthquake', description: 'Seismic event coverage', maxInsuredLimit: 3000000 },
-        { code: 'FLOOD', name: 'Flood', description: 'Water damage and flooding coverage', maxInsuredLimit: 2000000 }
+        { code: 'FIRE', name: 'Incendio', description: 'Cobertura por incendio y explosión', maxInsuredLimit: 5000000 },
+        { code: 'EARTHQUAKE', name: 'Terremoto', description: 'Cobertura por eventos sísmicos', maxInsuredLimit: 3000000 },
+        { code: 'FLOOD', name: 'Inundación', description: 'Cobertura por daños por agua e inundación', maxInsuredLimit: 2000000 }
       ]
     };
   }

@@ -114,7 +114,7 @@ public final class QuoteLocation {
       String occupancyType,
       long insuredValue
   ) {
-<span class="pc bpc" id="L117" title="2 of 4 branches missed.">    boolean isComplete = hasValue(address) &amp;&amp; hasValue(postalCode);</span>
+<span class="pc bpc" id="L117" title="1 of 4 branches missed.">    boolean isComplete = hasValue(address) &amp;&amp; hasValue(postalCode);</span>
 
 <span class="fc" id="L119">    return new QuoteLocation(</span>
         id,
@@ -127,13 +127,13 @@ public final class QuoteLocation {
         constructionType,
         occupancyType,
         insuredValue,
-<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        isComplete ? LocationValidationStatus.COMPLETE : LocationValidationStatus.INCOMPLETE,</span>
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">        isComplete ? List.of() : List.of(INCOMPLETE_REQUIRED_DATA_ALERT)</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        isComplete ? LocationValidationStatus.COMPLETE : LocationValidationStatus.INCOMPLETE,</span>
+<span class="fc bfc" id="L131" title="All 2 branches covered.">        isComplete ? List.of() : List.of(INCOMPLETE_REQUIRED_DATA_ALERT)</span>
     );
   }
 
   private static boolean hasValue(String value) {
-<span class="pc bpc" id="L136" title="2 of 4 branches missed.">    return value != null &amp;&amp; !value.isBlank();</span>
+<span class="pc bpc" id="L136" title="1 of 4 branches missed.">    return value != null &amp;&amp; !value.isBlank();</span>
   }
 
   private String keepCurrentIfMissing(String newValue, String currentValue) {

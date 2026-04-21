@@ -12,12 +12,12 @@ import { HttpErrorResponse } from '@angular/common/http';
   template: `
     <div class="result-container">
       <div class="result-header">
-        <h1>Quotation Result</h1>
+        <h1>Resultado de la cotización</h1>
         <p class="folio-info">Folio: <strong>{{ folio }}</strong></p>
       </div>
 
       <div *ngIf="loading" class="loading-state">
-        <p>Loading quotation results...</p>
+        <p>Cargando resultados de la cotización...</p>
         <div class="spinner"></div>
       </div>
 
@@ -28,37 +28,37 @@ import { HttpErrorResponse } from '@angular/common/http';
       <div *ngIf="!loading && calculationResult" class="result-content">
         <!-- Premium Summary Card -->
         <div class="premium-card">
-          <h2>Total Premium</h2>
+          <h2>Prima total</h2>
           <div class="premium-amount">{{ calculationResult.totalPremium | currency }}</div>
-          <p class="premium-description">Final quoted premium for all locations and coverages</p>
+          <p class="premium-description">Prima final cotizada para todas las ubicaciones y coberturas</p>
           
           <div *ngIf="calculationResult.riskScore" class="risk-score">
-            <p>Risk Score: <strong>{{ calculationResult.riskScore }}/100</strong></p>
+            <p>Puntaje de riesgo: <strong>{{ calculationResult.riskScore }}/100</strong></p>
           </div>
         </div>
 
         <!-- Breakdown Factors -->
         <div *ngIf="calculationResult.breakdownFactors" class="factors-card">
-          <h3>Calculation Factors</h3>
+          <h3>Factores de cálculo</h3>
           <div class="factors-grid">
             <div *ngIf="calculationResult.breakdownFactors.occupancyFactor" class="factor-item">
-              <span class="factor-label">Occupancy Factor:</span>
+              <span class="factor-label">Factor de ocupación:</span>
               <span class="factor-value">{{ calculationResult.breakdownFactors.occupancyFactor | number: '1.3' }}</span>
             </div>
             <div *ngIf="calculationResult.breakdownFactors.zoneFactor" class="factor-item">
-              <span class="factor-label">Zone Factor:</span>
+              <span class="factor-label">Factor de zona:</span>
               <span class="factor-value">{{ calculationResult.breakdownFactors.zoneFactor | number: '1.3' }}</span>
             </div>
             <div *ngIf="calculationResult.breakdownFactors.constructionFactor" class="factor-item">
-              <span class="factor-label">Construction Factor:</span>
+              <span class="factor-label">Factor de construcción:</span>
               <span class="factor-value">{{ calculationResult.breakdownFactors.constructionFactor | number: '1.3' }}</span>
             </div>
             <div *ngIf="calculationResult.breakdownFactors.riskAdjustment" class="factor-item">
-              <span class="factor-label">Risk Adjustment:</span>
+              <span class="factor-label">Ajuste de riesgo:</span>
               <span class="factor-value">{{ calculationResult.breakdownFactors.riskAdjustment | number: '1.3' }}</span>
             </div>
             <div *ngIf="calculationResult.breakdownFactors.totalFactor" class="factor-item highlight">
-              <span class="factor-label">Total Factor Applied:</span>
+              <span class="factor-label">Factor total aplicado:</span>
               <span class="factor-value">{{ calculationResult.breakdownFactors.totalFactor | number: '1.3' }}</span>
             </div>
           </div>
@@ -66,16 +66,16 @@ import { HttpErrorResponse } from '@angular/common/http';
 
         <!-- Location Results -->
         <div class="locations-results-card">
-          <h3>Premium by Location</h3>
+          <h3>Prima por ubicación</h3>
           <div class="locations-table">
             <table>
               <thead>
                 <tr>
-                  <th>Location</th>
-                  <th>Base Premium</th>
-                  <th>Applied Factors</th>
-                  <th>Final Premium</th>
-                  <th>Status</th>
+                  <th>Ubicación</th>
+                  <th>Prima base</th>
+                  <th>Factores aplicados</th>
+                  <th>Prima final</th>
+                  <th>Estado</th>
                 </tr>
               </thead>
               <tbody>
@@ -83,7 +83,7 @@ import { HttpErrorResponse } from '@angular/common/http';
                   <td>
                     <strong>{{ location.locationName }}</strong>
                     <br />
-                    <small>Location {{ location.indice }}</small>
+                    <small>Ubicación {{ location.indice }}</small>
                   </td>
                   <td>{{ location.basePremium | currency }}</td>
                   <td>
@@ -94,7 +94,7 @@ import { HttpErrorResponse } from '@angular/common/http';
                       </span>
                     </div>
                     <div *ngIf="!location.calculable" class="excluded-badge">
-                      Not calculable
+                      No calculable
                     </div>
                   </td>
                   <td>
@@ -105,7 +105,7 @@ import { HttpErrorResponse } from '@angular/common/http';
                   </td>
                   <td>
                     <span *ngIf="location.calculable" class="status-badge calculable">✓ Calculable</span>
-                    <span *ngIf="!location.calculable" class="status-badge excluded">✗ Excluded</span>
+                    <span *ngIf="!location.calculable" class="status-badge excluded">✗ Excluida</span>
                   </td>
                 </tr>
               </tbody>
@@ -115,12 +115,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 
         <!-- Exclusion Warnings -->
         <div *ngIf="hasExclusions()" class="warnings-card">
-          <h3>⚠ Exclusions & Warnings</h3>
+          <h3>⚠ Exclusiones y advertencias</h3>
           <div *ngFor="let location of calculationResult.locationResults">
             <ng-container *ngIf="!location.calculable">
             <div class="warning-item">
               <strong>{{ location.locationName }}:</strong>
-              {{ location.excludionReason || 'Not calculable - verify all required fields' }}
+              {{ location.excludionReason || 'No calculable: verifica los campos obligatorios' }}
             </div>
             </ng-container>
           </div>
@@ -134,21 +134,21 @@ import { HttpErrorResponse } from '@angular/common/http';
         <!-- Actions -->
         <div class="result-actions">
           <button type="button" class="btn btn-secondary" (click)="onEditQuote()">
-            ← Edit Quotation
+            ← Editar cotización
           </button>
           <button type="button" class="btn btn-primary" (click)="onSaveQuote()">
-            💾 Save Quotation
+            💾 Guardar cotización
           </button>
           <button type="button" class="btn btn-success" (click)="onPrint()">
-            🖨️ Print / Export
+            🖨️ Imprimir / Exportar
           </button>
         </div>
       </div>
 
       <div *ngIf="!loading && !calculationResult" class="empty-result">
-        <p>No calculation result available. Please create a new quotation.</p>
+        <p>No hay resultado de cálculo disponible. Crea una nueva cotización.</p>
         <button type="button" class="btn btn-primary" (click)="onBackToList()">
-          ← Back to Quotations
+          ← Volver a cotizaciones
         </button>
       </div>
     </div>
@@ -530,7 +530,7 @@ export class QuoteResultPageComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
-        this.errorMessage = 'Error loading quotation: ' + (err.error?.message || err.message);
+        this.errorMessage = 'Error al cargar la cotización: ' + (err.error?.message || err.message);
         console.error('Error loading quote:', err);
       }
     });
@@ -563,7 +563,7 @@ export class QuoteResultPageComponent implements OnInit {
         this.router.navigate(['/']);
       },
       error: (err: HttpErrorResponse) => {
-        this.errorMessage = 'Error saving quotation: ' + (err.error?.message || err.message);
+        this.errorMessage = 'Error al guardar la cotización: ' + (err.error?.message || err.message);
         console.error('Error saving quote:', err);
       }
     });

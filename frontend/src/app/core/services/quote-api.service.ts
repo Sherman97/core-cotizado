@@ -34,6 +34,8 @@ interface BackendGeneralInfoResponse {
   productCode: string | null;
   customerName: string | null;
   currency: string | null;
+  agentCode: string | null;
+  agentNameSnapshot: string | null;
   observations: string | null;
 }
 
@@ -158,8 +160,15 @@ export class QuoteApiService {
   }
 
   saveGeneralInfo(folio: string, generalInfo: GeneralInfo): Observable<ApiResponse<GeneralInfo>> {
+    const payload = {
+      productCode: generalInfo.productCode,
+      customerName: generalInfo.customerName,
+      currency: generalInfo.currency,
+      agentCode: generalInfo.agentCode,
+      observations: generalInfo.observations
+    };
     return this.http
-      .put<ApiEnvelope<BackendGeneralInfoResponse>>(`${this.baseUrl}/quotes/${folio}/general-info`, generalInfo)
+      .put<ApiEnvelope<BackendGeneralInfoResponse>>(`${this.baseUrl}/quotes/${folio}/general-info`, payload)
       .pipe(map(({ data }) => ({ data: this.mapGeneralInfo(data) })));
   }
 
@@ -286,6 +295,8 @@ export class QuoteApiService {
       productCode: data.productCode ?? '',
       customerName: data.customerName ?? '',
       currency: data.currency ?? '',
+      agentCode: data.agentCode ?? undefined,
+      agentNameSnapshot: data.agentNameSnapshot ?? undefined,
       observations: data.observations ?? undefined
     };
   }

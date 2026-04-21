@@ -21,52 +21,52 @@ import { Subject, takeUntil } from 'rxjs';
   template: `
     <div class="step-container">
       <div class="step-header">
-        <h2>Step 2: Locations & Properties</h2>
-        <p class="step-description">Add and manage insured locations and their characteristics</p>
+        <h2>Paso 2: Ubicaciones y propiedades</h2>
+        <p class="step-description">Agrega y administra las ubicaciones aseguradas y sus características</p>
       </div>
 
       <div class="locations-list">
         <div *ngFor="let location of locations; let i = index" class="location-card">
           <div class="card-header">
-            <h4>Location {{ i + 1 }}: {{ location.locationName || 'Unnamed' }}</h4>
+            <h4>Ubicación {{ i + 1 }}: {{ location.locationName || 'Sin nombre' }}</h4>
             <button type="button" class="btn-remove" (click)="removeLocation(i)" *ngIf="locations.length > 1">
               ✕
             </button>
           </div>
           <div class="card-content">
             <p class="location-info">
-              {{ location.city }}, {{ location.department }} - {{ location.postalCode || 'No postal code' }}
+              {{ location.city }}, {{ location.department }} - {{ location.postalCode || 'Sin código postal' }}
             </p>
             <p class="location-value">
-              Insured Value: {{ location.insuredValue | currency }}
+              Valor asegurado: {{ location.insuredValue | currency }}
             </p>
           </div>
           <button type="button" class="btn btn-sm btn-edit" (click)="editLocation(i)">
-            Edit
+            Editar
           </button>
         </div>
       </div>
 
       <button type="button" class="btn btn-secondary btn-add-location" (click)="toggleAddLocation()">
-        + Add Location
+        + Agregar ubicación
       </button>
 
       <div *ngIf="showAddLocationForm" class="form-section">
-        <h3>{{ editingIndex !== null ? 'Edit' : 'New' }} Location</h3>
+        <h3>{{ editingIndex !== null ? 'Editar' : 'Nueva' }} ubicación</h3>
         <form [formGroup]="locationForm" (ngSubmit)="saveLocation()">
           <div class="form-row">
             <div class="form-col">
               <app-text-field
                 formControlName="locationName"
-                label="Location Name"
-                placeholder="e.g., Main Office, Branch 1"
+                label="Nombre de la ubicación"
+                placeholder="Ej.: Sede principal, Sucursal 1"
                 [required]="true"
               ></app-text-field>
             </div>
             <div class="form-col">
               <app-select-field
                 formControlName="department"
-                label="Department/State"
+                label="Departamento"
                 [options]="departmentOptions"
                 [required]="true"
               ></app-select-field>
@@ -77,7 +77,7 @@ import { Subject, takeUntil } from 'rxjs';
             <div class="form-col">
               <app-select-field
                 formControlName="city"
-                label="City"
+                label="Ciudad"
                 [options]="cityOptions"
                 [required]="true"
               ></app-select-field>
@@ -85,10 +85,10 @@ import { Subject, takeUntil } from 'rxjs';
             <div class="form-col">
               <app-select-field
                 formControlName="postalCode"
-                label="Postal Code"
+                label="Código postal"
                 [required]="true"
                 [options]="postalCodeOptions"
-                hint="Filtered by selected city"
+                hint="Filtrado según la ciudad seleccionada"
               ></app-select-field>
             </div>
           </div>
@@ -97,8 +97,8 @@ import { Subject, takeUntil } from 'rxjs';
             <div class="form-col full">
               <app-text-field
                 formControlName="address"
-                label="Address"
-                placeholder="Street address (optional)"
+                label="Dirección"
+                placeholder="Dirección (opcional)"
               ></app-text-field>
             </div>
           </div>
@@ -107,19 +107,19 @@ import { Subject, takeUntil } from 'rxjs';
             <div class="form-col">
               <app-select-field
                 formControlName="occupancyType"
-                label="Occupancy Type"
+                label="Tipo de ocupación"
                 [required]="true"
                 [options]="occupancyOptions"
-                hint="Risk classification based on property usage"
+                hint="Clasificación de riesgo según el uso del inmueble"
               ></app-select-field>
             </div>
             <div class="form-col">
               <app-select-field
                 formControlName="constructionType"
-                label="Construction Type"
+                label="Tipo de construcción"
                 [required]="true"
                 [options]="constructionOptions"
-                hint="Building material and structure type"
+                hint="Material y tipo de estructura de la edificación"
               ></app-select-field>
             </div>
           </div>
@@ -128,21 +128,21 @@ import { Subject, takeUntil } from 'rxjs';
             <div class="form-col full">
               <app-number-field
                 formControlName="insuredValue"
-                label="Insured Value"
-                placeholder="e.g., 1500000"
+                label="Valor asegurado"
+                placeholder="Ej.: 1500000"
                 [required]="true"
                 [min]="1000"
-                hint="Total value of property and contents to be insured"
+                hint="Valor total del inmueble y su contenido a asegurar"
               ></app-number-field>
             </div>
           </div>
 
           <div class="form-actions">
             <button type="button" class="btn btn-secondary" (click)="cancelEditLocation()">
-              Cancel
+              Cancelar
             </button>
             <button type="submit" class="btn btn-primary" [disabled]="locationForm.invalid">
-              {{ editingIndex !== null ? 'Update' : 'Add' }} Location
+              {{ editingIndex !== null ? 'Actualizar' : 'Agregar' }} ubicación
             </button>
           </div>
         </form>
@@ -150,7 +150,7 @@ import { Subject, takeUntil } from 'rxjs';
 
       <div class="step-actions">
         <button type="button" class="btn btn-secondary" (click)="onPrevious()">
-          ← Previous
+          ← Anterior
         </button>
         <button
           type="button"
@@ -158,7 +158,7 @@ import { Subject, takeUntil } from 'rxjs';
           [disabled]="locations.length === 0"
           (click)="onNext()"
         >
-          Next Step →
+          Siguiente paso →
         </button>
       </div>
     </div>

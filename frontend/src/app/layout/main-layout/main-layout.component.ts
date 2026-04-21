@@ -15,8 +15,8 @@ import { CommonModule } from '@angular/common';
           </div>
           <nav class="nav-menu">
             <ul>
-              <li><a href="/">Quotations</a></li>
-              <li><a href="/">Dashboard</a></li>
+              <li><a href="/">Cotizaciones</a></li>
+              <li><a href="/">Panel</a></li>
             </ul>
           </nav>
         </div>
@@ -29,7 +29,7 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <footer class="footer">
-        <p>&copy; 2024 Insurance Quote System. All rights reserved.</p>
+        <p>&copy; 2024 Sistema de cotización de seguros. Todos los derechos reservados.</p>
       </footer>
     </div>
   `,
@@ -129,4 +129,3 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class MainLayoutComponent {}
-

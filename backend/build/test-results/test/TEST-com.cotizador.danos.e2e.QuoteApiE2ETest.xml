@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.e2e.QuoteApiE2ETest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:51.543Z" hostname="MacBook-Pro-de-German.local" time="1.651">
+<testsuite name="com.cotizador.danos.e2e.QuoteApiE2ETest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.606Z" hostname="MacBook-Pro-de-German.local" time="1.154">
   <properties/>
-  <testcase name="shouldCreateFolioWithIdempotencyAndRetrieveGeneralInfo()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.865"/>
-  <testcase name="shouldCalculateAndExposeFinalStateWithAlertsForNonCalculableLocation()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.631"/>
-  <testcase name="shouldCompleteLocationsFlowThroughRestApi()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.153"/>
-  <system-out><![CDATA[14:48:36.286 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.cotizador.danos.e2e.QuoteApiE2ETest]: QuoteApiE2ETest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-14:48:36.818 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.cotizador.danos.DanosBackendApplication for test class com.cotizador.danos.e2e.QuoteApiE2ETest
-2026-04-21T14:48:38.509-05:00  INFO 30791 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : Starting QuoteApiE2ETest using Java 21.0.2 with PID 30791 (started by germanrojas in /Users/germanrojas/Desktop/core_seguros/backend)
-2026-04-21T14:48:38.512-05:00  INFO 30791 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : The following 1 profile is active: "test"
-2026-04-21T14:48:51.407-05:00  INFO 30791 --- [plataforma-danos-back] [    Test worker] c.cotizador.danos.e2e.QuoteApiE2ETest    : Started QuoteApiE2ETest in 14.075 seconds (process running for 23.574)
-]]></system-out>
+  <testcase name="shouldCreateFolioWithIdempotencyAndRetrieveGeneralInfo()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.219"/>
+  <testcase name="shouldCalculateAndExposeFinalStateWithAlertsForNonCalculableLocation()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.767"/>
+  <testcase name="shouldCompleteLocationsFlowThroughRestApi()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.164"/>
+  <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

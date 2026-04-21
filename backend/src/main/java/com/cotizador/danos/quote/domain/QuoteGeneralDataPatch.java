@@ -4,6 +4,8 @@ public record QuoteGeneralDataPatch(
     String productCode,
     String customerName,
     String currency,
-    String observations
+    String observations,
+    String agentCode,
+    String agentNameSnapshot
 ) {
 }

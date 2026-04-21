@@ -12,18 +12,18 @@ import { ApiResponse, CreateFolioResponse, QuoteListItem } from '../../../../cor
   template: `
     <div class="quotes-list-container">
       <div class="list-header">
-        <h2>Quotations</h2>
+        <h2>Cotizaciones</h2>
         <button class="btn btn-primary" (click)="createNewQuote()">
-          + Create New Quotation
+          + Crear nueva cotización
         </button>
       </div>
 
       <div *ngIf="loading" class="loading">
-        Loading quotations...
+        Cargando cotizaciones...
       </div>
 
       <div *ngIf="!loading && quotations.length === 0" class="empty-state">
-        <p>No quotations yet. Create your first quotation to get started.</p>
+        <p>Aún no hay cotizaciones. Crea la primera para comenzar.</p>
       </div>
 
       <div *ngIf="!loading && quotations.length > 0" class="table-container">
@@ -31,13 +31,13 @@ import { ApiResponse, CreateFolioResponse, QuoteListItem } from '../../../../cor
           <thead>
             <tr>
               <th>Folio</th>
-              <th>Customer</th>
-              <th>Insured Value</th>
-              <th>Locations</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Premium</th>
-              <th>Actions</th>
+              <th>Cliente</th>
+              <th>Valor asegurado</th>
+              <th>Ubicaciones</th>
+              <th>Estado</th>
+              <th>Creada</th>
+              <th>Prima</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -48,7 +48,7 @@ import { ApiResponse, CreateFolioResponse, QuoteListItem } from '../../../../cor
               <td>{{ quote.totalLocations }}</td>
               <td>
                 <span [class]="'status status-' + quote.status.toLowerCase()">
-                  {{ quote.status }}
+                  {{ getStatusLabel(quote.status) }}
                 </span>
               </td>
               <td>{{ quote.createdAt | date: 'short' }}</td>
@@ -56,10 +56,10 @@ import { ApiResponse, CreateFolioResponse, QuoteListItem } from '../../../../cor
               <td *ngIf="!quote.totalPremium">-</td>
               <td>
                 <button class="btn btn-sm btn-info" (click)="viewDetails(quote.folio)">
-                  View
+                  Ver
                 </button>
                 <button class="btn btn-sm btn-warning" (click)="editQuote(quote.folio)">
-                  Edit
+                  Editar
                 </button>
               </td>
             </tr>
@@ -266,5 +266,20 @@ export class QuotesListPageComponent implements OnInit {
    */
   editQuote(folio: string): void {
     this.router.navigate(['/quotes', folio, 'wizard']);
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'DRAFT':
+        return 'Borrador';
+      case 'PENDING_CALCULATION':
+        return 'Pendiente de cálculo';
+      case 'CALCULATED':
+        return 'Calculada';
+      case 'SAVED':
+        return 'Guardada';
+      default:
+        return status;
+    }
   }
 }

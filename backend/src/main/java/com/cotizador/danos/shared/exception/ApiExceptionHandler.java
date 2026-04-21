@@ -1,5 +1,6 @@
 package com.cotizador.danos.shared.exception;
 
+import com.cotizador.danos.agent.application.AgentNotFoundException;
 import com.cotizador.danos.location.domain.LocationNotFoundException;
 import com.cotizador.danos.quote.domain.QuoteNotFoundException;
 import com.cotizador.danos.shared.response.ApiErrorResponse;
@@ -29,6 +30,14 @@ public class ApiExceptionHandler {
   @ExceptionHandler(LocationNotFoundException.class)
   public ResponseEntity<ApiErrorResponse> handleLocationNotFound(
       LocationNotFoundException exception,
+      HttpServletRequest request
+  ) {
+    return errorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, List.of());
+  }
+
+  @ExceptionHandler(AgentNotFoundException.class)
+  public ResponseEntity<ApiErrorResponse> handleAgentNotFound(
+      AgentNotFoundException exception,
       HttpServletRequest request
   ) {
     return errorResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, List.of());

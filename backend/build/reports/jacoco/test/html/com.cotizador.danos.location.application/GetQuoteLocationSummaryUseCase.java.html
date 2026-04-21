@@ -38,7 +38,7 @@ public class GetQuoteLocationSummaryUseCase {
 
   public Result handle(String folio) {
 <span class="fc" id="L40">    quoteRepository.findByFolio(folio)</span>
-<span class="pc" id="L41">        .orElseThrow(() -&gt; new QuoteNotFoundException(folio));</span>
+<span class="fc" id="L41">        .orElseThrow(() -&gt; new QuoteNotFoundException(folio));</span>
 
 <span class="fc" id="L43">    List&lt;QuoteLocation&gt; locations = locationRepository.findByQuoteFolio(folio);</span>
 <span class="fc" id="L44">    QuoteCalculationResult calculationResult = quoteCalculationResultRepository.findByQuoteFolio(folio)</span>
@@ -48,7 +48,7 @@ public class GetQuoteLocationSummaryUseCase {
 <span class="fc" id="L48">    int incomplete = countByStatus(locations, LocationValidationStatus.INCOMPLETE);</span>
 <span class="fc" id="L49">    int invalid = countByStatus(locations, LocationValidationStatus.INVALID);</span>
 <span class="fc" id="L50">    int calculated = (int) calculationResult.getLocations().stream()</span>
-<span class="pc bnc" id="L51" title="All 2 branches missed.">        .filter(result -&gt; result.premium() &gt; 0.0)</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        .filter(result -&gt; result.premium() &gt; 0.0)</span>
 <span class="fc" id="L52">        .count();</span>
 
 <span class="fc" id="L54">    return new Result(</span>

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.cotizador.danos.agent.application.AgentCatalogQueryService;
 import com.cotizador.danos.quote.domain.Quote;
 import com.cotizador.danos.quote.domain.QuoteGeneralDataPatch;
 import com.cotizador.danos.quote.domain.QuoteNotFoundException;
@@ -28,6 +29,9 @@ class UpdateQuoteGeneralDataUseCaseTest {
   @Mock
   private QuoteRepository quoteRepository;
 
+  @Mock
+  private AgentCatalogQueryService agentCatalogQueryService;
+
   @Test
   void shouldUpdateGeneralDataPartiallyAndPersistQuote() {
     Quote existingQuote = Quote.createNew(FOLIO, CREATED_AT);
@@ -35,6 +39,8 @@ class UpdateQuoteGeneralDataUseCaseTest {
     UpdateQuoteGeneralDataUseCase useCase = newUseCase();
 
     when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(existingQuote));
+    when(agentCatalogQueryService.findActiveByCode("AGT-001"))
+        .thenReturn(Optional.of(new AgentCatalogQueryService.AgentItem("AGT-001", "Juan Perez", "BROKER", "Bogota", true)));
     when(quoteRepository.save(org.mockito.ArgumentMatchers.any(Quote.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -44,11 +50,27 @@ class UpdateQuoteGeneralDataUseCaseTest {
     assertThat(updatedQuote.getProductCode()).isEqualTo("DANOS");
     assertThat(updatedQuote.getCustomerName()).isEqualTo("Cliente Demo");
     assertThat(updatedQuote.getCurrency()).isEqualTo("USD");
+    assertThat(updatedQuote.getAgentCode()).isEqualTo("AGT-001");
+    assertThat(updatedQuote.getAgentNameSnapshot()).isEqualTo("Juan Perez");
     assertThat(updatedQuote.getObservations()).isEqualTo("Observacion inicial");
     assertThat(updatedQuote.getVersion()).isEqualTo(2);
     assertThat(updatedQuote.getModifiedAt()).isEqualTo(MODIFIED_AT);
     verify(quoteRepository).findByFolio(FOLIO);
     verify(quoteRepository).save(updatedQuote);
+  }
+
+  @Test
+  void shouldRejectInvalidAgentCodeWhenProvided() {
+    Quote existingQuote = Quote.createNew(FOLIO, CREATED_AT);
+    QuoteGeneralDataPatch patch = completePatch();
+    UpdateQuoteGeneralDataUseCase useCase = newUseCase();
+
+    when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(existingQuote));
+    when(agentCatalogQueryService.findActiveByCode("AGT-001")).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> useCase.handle(FOLIO, patch))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("AGT-001");
   }
 
   @Test
@@ -68,6 +90,7 @@ class UpdateQuoteGeneralDataUseCaseTest {
   private UpdateQuoteGeneralDataUseCase newUseCase() {
     return new UpdateQuoteGeneralDataUseCase(
         quoteRepository,
+        agentCatalogQueryService,
         Clock.fixed(MODIFIED_AT, ZoneOffset.UTC)
     );
   }
@@ -77,7 +100,9 @@ class UpdateQuoteGeneralDataUseCaseTest {
         "DANOS",
         "Cliente Demo",
         "USD",
-        "Observacion inicial"
+        "Observacion inicial",
+        "AGT-001",
+        null
     );
   }
 }

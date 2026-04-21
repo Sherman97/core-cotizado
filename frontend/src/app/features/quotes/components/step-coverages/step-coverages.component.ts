@@ -14,8 +14,8 @@ import { CoverageType } from '../../../../core/models/api.models';
   template: `
     <div class="step-container">
       <div class="step-header">
-        <h2>Step 3: Coverage Options</h2>
-        <p class="step-description">Select and configure coverage types and deductibles</p>
+        <h2>Paso 3: Opciones de cobertura</h2>
+        <p class="step-description">Selecciona y configura coberturas y deducibles</p>
       </div>
 
       <div class="coverages-grid">
@@ -36,7 +36,7 @@ import { CoverageType } from '../../../../core/models/api.models';
             
             <div *ngIf="isCoverageSelected(coverage.code)" class="coverage-details">
               <div class="form-group">
-                <label>Insured Limit</label>
+                <label>Límite asegurado</label>
                 <input
                   type="number"
                   class="form-control"
@@ -45,26 +45,26 @@ import { CoverageType } from '../../../../core/models/api.models';
                   (input)="updateCoverageLimit(coverage.code, $event)"
                 />
                 <small *ngIf="coverage.maxInsuredLimit">
-                  Maximum: {{ coverage.maxInsuredLimit | currency }}
+                  Máximo: {{ coverage.maxInsuredLimit | currency }}
                 </small>
               </div>
 
               <div class="form-group">
-                <label>Deductible Type</label>
+                <label>Tipo de deducible</label>
                 <select class="form-control" [value]="getDeductibleType(coverage.code)" (change)="updateDeductibleType(coverage.code, $event)">
-                  <option value="FIXED">Fixed Amount</option>
-                  <option value="PERCENTAGE">Percentage</option>
+                  <option value="FIXED">Valor fijo</option>
+                  <option value="PERCENTAGE">Porcentaje</option>
                 </select>
               </div>
 
               <div class="form-group">
-                <label>Deductible Value</label>
+                <label>Valor del deducible</label>
                 <input
                   type="number"
                   class="form-control"
                   [value]="getDeductibleValue(coverage.code)"
                   (input)="updateDeductibleValue(coverage.code, $event)"
-                  [placeholder]="getDeductibleType(coverage.code) === 'FIXED' ? 'Amount' : 'Percentage'"
+                  [placeholder]="getDeductibleType(coverage.code) === 'FIXED' ? 'Valor' : 'Porcentaje'"
                 />
               </div>
             </div>
@@ -73,20 +73,20 @@ import { CoverageType } from '../../../../core/models/api.models';
       </div>
 
       <div *ngIf="selectedCoverages.length === 0" class="no-coverage-warning">
-        <p>⚠ Please select at least one coverage to proceed</p>
+        <p>⚠ Selecciona al menos una cobertura para continuar</p>
       </div>
 
       <div class="selected-coverages-summary">
-        <h3>Selected Coverages</h3>
+        <h3>Coberturas seleccionadas</h3>
         <div *ngIf="selectedCoverages.length === 0" class="empty-summary">
-          No coverages selected
+          No hay coberturas seleccionadas
         </div>
         <div *ngIf="selectedCoverages.length > 0" class="coverage-list">
           <div *ngFor="let cov of selectedCoverages" class="coverage-item">
             <strong>{{ cov.coverageName }}</strong>
-            <span class="coverage-limit">Limit: {{ cov.insuredLimit | currency }}</span>
+            <span class="coverage-limit">Límite: {{ cov.insuredLimit | currency }}</span>
             <span class="deductible">
-              Deductible: {{ cov.deductibleValue }}{{ cov.deductibleType === 'PERCENTAGE' ? '%' : '' }}
+              Deducible: {{ cov.deductibleValue }}{{ cov.deductibleType === 'PERCENTAGE' ? '%' : '' }}
             </span>
           </div>
         </div>
@@ -94,7 +94,7 @@ import { CoverageType } from '../../../../core/models/api.models';
 
       <div class="step-actions">
         <button type="button" class="btn btn-secondary" (click)="onPrevious()">
-          ← Previous
+          ← Anterior
         </button>
         <button
           type="button"
@@ -102,7 +102,7 @@ import { CoverageType } from '../../../../core/models/api.models';
           [disabled]="selectedCoverages.length === 0"
           (click)="onNext()"
         >
-          Next Step →
+          Siguiente paso →
         </button>
       </div>
     </div>

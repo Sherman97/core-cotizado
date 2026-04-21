@@ -40,6 +40,47 @@
       ]
     },
     {
+      "name": "1.1 Listar agentes activos",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/agents?active=true",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "agents"
+          ],
+          "query": [
+            {
+              "key": "active",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "1.2 Obtener agente por codigo",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/v1/agents/AGT-001",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "v1",
+            "agents",
+            "AGT-001"
+          ]
+        }
+      }
+    },
+    {
       "name": "2. Guardar general-info",
       "request": {
         "method": "PUT",
@@ -51,7 +92,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"productCode\": \"DANOS\",\n  \"customerName\": \"Comercial Andina SAS\",\n  \"currency\": \"COP\",\n  \"observations\": \"Cotizacion demo desde Postman\"\n}"
+          "raw": "{\n  \"productCode\": \"DANOS\",\n  \"customerName\": \"Comercial Andina SAS\",\n  \"currency\": \"COP\",\n  \"agentCode\": \"AGT-001\",\n  \"observations\": \"Cotizacion demo desde Postman\"\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/v1/quotes/{{folio}}/general-info",

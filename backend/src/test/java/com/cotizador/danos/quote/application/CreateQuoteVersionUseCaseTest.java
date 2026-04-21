@@ -3,6 +3,7 @@ package com.cotizador.danos.quote.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -67,6 +68,25 @@ class CreateQuoteVersionUseCaseTest {
         .hasMessageContaining(FOLIO);
 
     verify(quoteRepository).findByFolio(FOLIO);
+  }
+
+  @Test
+  void shouldGenerateAnotherFolioWhenFirstOneAlreadyExists() {
+    Quote previousVersion = previousVersion();
+    CreateQuoteVersionUseCase useCase = newUseCase();
+
+    when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(previousVersion));
+    when(folioGenerator.generate()).thenReturn("FOLIO-DUPLICATED", NEW_VERSION_FOLIO);
+    when(quoteRepository.existsByFolio("FOLIO-DUPLICATED")).thenReturn(true);
+    when(quoteRepository.existsByFolio(NEW_VERSION_FOLIO)).thenReturn(false);
+    when(quoteRepository.save(any(Quote.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    Quote newVersion = useCase.handle(FOLIO);
+
+    assertThat(newVersion.getFolio()).isEqualTo(NEW_VERSION_FOLIO);
+    verify(folioGenerator, times(2)).generate();
+    verify(quoteRepository).existsByFolio("FOLIO-DUPLICATED");
+    verify(quoteRepository).existsByFolio(NEW_VERSION_FOLIO);
   }
 
   private Quote previousVersion() {

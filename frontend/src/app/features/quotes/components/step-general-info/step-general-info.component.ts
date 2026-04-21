@@ -1,9 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component';
 import { SelectFieldComponent } from '../../../../shared/components/select-field/select-field.component';
 import { GeneralInfoFormData } from '../../../../core/models/form.models';
+import { Agent } from '../../../../core/models/api.models';
+import { AgentApiService } from '../../../../core/services/agent-api.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-step-general-info',
@@ -12,8 +15,8 @@ import { GeneralInfoFormData } from '../../../../core/models/form.models';
   template: `
     <div class="step-container">
       <div class="step-header">
-        <h2>Step 1: General Information</h2>
-        <p class="step-description">Provide basic quotation and applicant details</p>
+        <h2>Paso 1: Información general</h2>
+        <p class="step-description">Ingresa los datos básicos de la cotización y del solicitante</p>
       </div>
 
       <form [formGroup]="form" class="form-section">
@@ -21,16 +24,16 @@ import { GeneralInfoFormData } from '../../../../core/models/form.models';
           <div class="form-col">
             <app-text-field
               formControlName="customerName"
-              label="Customer Name"
-              placeholder="Enter customer or business name"
+              label="Nombre del cliente"
+              placeholder="Ingresa el nombre del cliente o empresa"
               [required]="true"
-              hint="Full legal name of the applicant"
+              hint="Nombre legal completo del solicitante"
             ></app-text-field>
           </div>
           <div class="form-col">
             <app-select-field
               formControlName="currency"
-              label="Currency"
+              label="Moneda"
               [required]="true"
               [options]="currencyOptions"
             ></app-select-field>
@@ -38,19 +41,45 @@ import { GeneralInfoFormData } from '../../../../core/models/form.models';
         </div>
 
         <div class="form-row">
+          <div class="form-col">
+            <label for="agent-search" class="form-label">Buscar asesor</label>
+            <input
+              id="agent-search"
+              type="text"
+              class="agent-search-input"
+              placeholder="Escribe código o nombre"
+              (input)="onAgentSearchChange($event)"
+            />
+            <small class="search-hint">Filtra asesores activos del catálogo</small>
+          </div>
+          <div class="form-col">
+            <app-select-field
+              formControlName="agentCode"
+              label="Asesor"
+              placeholder="Selecciona un asesor"
+              [required]="false"
+              [options]="agentOptions"
+            ></app-select-field>
+            <small *ngIf="selectedAgentName" class="agent-selected-info">
+              Asesor seleccionado: {{ selectedAgentName }}
+            </small>
+          </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-col full">
             <app-text-field
               formControlName="observations"
-              label="Observations"
-              placeholder="Add any additional notes about this quotation"
-              hint="Optional: Any special requirements or comments"
+              label="Observaciones"
+              placeholder="Agrega notas adicionales sobre esta cotización"
+              hint="Opcional: requisitos especiales o comentarios"
             ></app-text-field>
           </div>
         </div>
 
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" (click)="onCancel()">
-            Cancel
+            Cancelar
           </button>
           <button
             type="button"
@@ -58,17 +87,17 @@ import { GeneralInfoFormData } from '../../../../core/models/form.models';
             [disabled]="form.invalid"
             (click)="onNext()"
           >
-            Next Step →
+            Siguiente paso →
           </button>
         </div>
       </form>
 
       <div *ngIf="form.invalid && form.touched" class="validation-errors">
         <div *ngIf="form.get('customerName')?.hasError('required')" class="error-message">
-          Customer name is required
+          El nombre del cliente es obligatorio
         </div>
         <div *ngIf="form.get('currency')?.hasError('required')" class="error-message">
-          Currency selection is required
+          La moneda es obligatoria
         </div>
       </div>
     </div>
@@ -119,6 +148,29 @@ import { GeneralInfoFormData } from '../../../../core/models/form.models';
 
     .form-col.full {
       grid-column: 1 / -1;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+
+    .agent-search-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .search-hint,
+    .agent-selected-info {
+      display: block;
+      margin-top: 0.35rem;
+      color: #6c757d;
+      font-size: 0.85rem;
     }
 
     .form-actions {
@@ -196,22 +248,45 @@ import { GeneralInfoFormData } from '../../../../core/models/form.models';
     }
   `]
 })
-export class StepGeneralInfoComponent implements OnInit {
+export class StepGeneralInfoComponent implements OnInit, OnChanges, OnDestroy {
+  @Input() initialGeneralInfo: GeneralInfoFormData | null = null;
   @Output() next = new EventEmitter<GeneralInfoFormData>();
   @Output() cancel = new EventEmitter<void>();
 
   form!: FormGroup;
+  agentOptions: Array<{ value: string; label: string }> = [];
+  selectedAgentName = '';
+  private allAgents: Agent[] = [];
+  private readonly destroy$ = new Subject<void>();
 
   currencyOptions = [
-    { value: 'COP', label: 'Colombian Peso (COP)' },
-    { value: 'USD', label: 'US Dollar (USD)' },
-    { value: 'MXN', label: 'Mexican Peso (MXN)' }
+    { value: 'COP', label: 'Peso colombiano (COP)' },
+    { value: 'USD', label: 'Dólar estadounidense (USD)' },
+    { value: 'MXN', label: 'Peso mexicano (MXN)' }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private agentApi: AgentApiService
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.loadAgents();
+    this.syncSelectedAgentName();
+    this.applyInitialGeneralInfo();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialGeneralInfo']) {
+      this.applyInitialGeneralInfo();
+      this.syncSelectedAgentName();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
@@ -222,8 +297,72 @@ export class StepGeneralInfoComponent implements OnInit {
       productCode: ['DANOS', Validators.required],
       customerName: ['', [Validators.required, Validators.minLength(3)]],
       currency: ['COP', Validators.required],
+      agentCode: [''],
       observations: ['']
     });
+
+    this.form.get('agentCode')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.syncSelectedAgentName());
+  }
+
+  private applyInitialGeneralInfo(): void {
+    if (!this.form || !this.initialGeneralInfo) {
+      return;
+    }
+
+    this.form.patchValue(
+      {
+        productCode: this.initialGeneralInfo.productCode ?? 'DANOS',
+        customerName: this.initialGeneralInfo.customerName ?? '',
+        currency: this.initialGeneralInfo.currency ?? 'COP',
+        agentCode: this.initialGeneralInfo.agentCode ?? '',
+        observations: this.initialGeneralInfo.observations ?? ''
+      },
+      { emitEvent: false }
+    );
+    this.syncSelectedAgentName();
+  }
+
+  private loadAgents(): void {
+    this.agentApi.listAgents(true)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.allAgents = response.data;
+          this.agentOptions = this.toAgentOptions(this.allAgents);
+          this.syncSelectedAgentName();
+        },
+        error: () => {
+          this.allAgents = [];
+          this.agentOptions = [];
+          this.selectedAgentName = '';
+        }
+      });
+  }
+
+  onAgentSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement | null)?.value?.trim().toLowerCase() ?? '';
+    if (!value) {
+      this.agentOptions = this.toAgentOptions(this.allAgents);
+      return;
+    }
+    const filtered = this.allAgents.filter((agent) =>
+      agent.agentCode.toLowerCase().includes(value) || agent.agentName.toLowerCase().includes(value)
+    );
+    this.agentOptions = this.toAgentOptions(filtered);
+  }
+
+  private toAgentOptions(agents: Agent[]): Array<{ value: string; label: string }> {
+    return agents.map((agent) => ({
+      value: agent.agentCode,
+      label: `${agent.agentCode} - ${agent.agentName}`
+    }));
+  }
+
+  private syncSelectedAgentName(): void {
+    const selectedCode = this.form?.get('agentCode')?.value;
+    this.selectedAgentName = this.allAgents.find((agent) => agent.agentCode === selectedCode)?.agentName ?? '';
   }
 
   /**
@@ -231,7 +370,12 @@ export class StepGeneralInfoComponent implements OnInit {
    */
   onNext(): void {
     if (this.form.valid) {
-      this.next.emit(this.form.value as GeneralInfoFormData);
+      const data = this.form.value as GeneralInfoFormData;
+      const selected = this.allAgents.find((agent) => agent.agentCode === data.agentCode);
+      this.next.emit({
+        ...data,
+        agentNameSnapshot: selected?.agentName
+      });
     }
   }
 

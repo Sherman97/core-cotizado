@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.coverage.application.ListActiveCoveragesUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:35.522Z" hostname="MacBook-Pro-de-German.local" time="0.045">
+<testsuite name="com.cotizador.danos.coverage.application.ListActiveCoveragesUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.454Z" hostname="MacBook-Pro-de-German.local" time="0.065">
   <properties/>
-  <testcase name="shouldReturnActiveCoveragesWithCodeAndName()" classname="com.cotizador.danos.coverage.application.ListActiveCoveragesUseCaseTest" time="0.041"/>
+  <testcase name="shouldReturnActiveCoveragesWithCodeAndName()" classname="com.cotizador.danos.coverage.application.ListActiveCoveragesUseCaseTest" time="0.061"/>
   <testcase name="shouldReturnEmptyListWhenThereAreNoActiveCoverages()" classname="com.cotizador.danos.coverage.application.ListActiveCoveragesUseCaseTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
