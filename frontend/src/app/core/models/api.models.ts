@@ -1,0 +1,181 @@
+/**
+ * API Response Envelope
+ */
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  timestamp?: string;
+}
+
+/**
+ * Quotation / Folio Models
+ */
+export interface CreateFolioResponse {
+  numeroFolio: string;
+  createdAt: string;
+}
+
+export interface GeneralInfo {
+  productCode: string;
+  customerName: string;
+  currency: string;
+  observations?: string;
+  businessVersion?: number;
+  modifiedAt?: string;
+}
+
+/**
+ * Location Layout Models
+ */
+export interface LocationLayout {
+  expectedLocationCount: number;
+  captureRiskZone: boolean;
+  captureGeoreference: boolean;
+  notes?: string;
+  businessVersion?: number;
+  modifiedAt?: string;
+}
+
+/**
+ * Location Models
+ */
+export interface Location {
+  locationName: string;
+  city: string;
+  department: string;
+  address?: string;
+  postalCode?: string;
+  constructionType: string;
+  occupancyType: string;
+  insuredValue: number;
+  indice?: number;
+}
+
+export interface LocationsPayload {
+  locations: Location[];
+}
+
+export interface LocationPatchPayload {
+  address?: string;
+  postalCode?: string;
+  locationName?: string;
+  city?: string;
+  department?: string;
+  constructionType?: string;
+  occupancyType?: string;
+  insuredValue?: number;
+}
+
+export interface LocationsSummary {
+  totalLocations: number;
+  completedLocations: number;
+  totalInsuredValue: number;
+  businessVersion?: number;
+  modifiedAt?: string;
+}
+
+export interface LocationsResult {
+  locations: Location[];
+  businessVersion?: number;
+  modifiedAt?: string;
+}
+
+/**
+ * Coverage Models
+ */
+export interface Coverage {
+  coverageCode: string;
+  coverageName: string;
+  insuredLimit: number;
+  deductibleType: 'FIXED' | 'PERCENTAGE';
+  deductibleValue: number;
+  selected: boolean;
+}
+
+export interface CoverageOptions {
+  coverages: Coverage[];
+  businessVersion?: number;
+  modifiedAt?: string;
+}
+
+/**
+ * Calculation Models
+ */
+export interface CalculationResponse {
+  folio: string;
+  totalPremium: number;
+  locationResults: LocationCalculationResult[];
+  breakdownFactors?: CalculationFactors;
+  warnings?: string[];
+  riskScore?: number;
+  calculatedAt?: string;
+}
+
+export interface LocationCalculationResult {
+  indice: number;
+  locationName: string;
+  basePremium: number;
+  appliedFactors: CalculationFactor[];
+  totalPremium: number;
+  calculable: boolean;
+  excludionReason?: string;
+}
+
+export interface CalculationFactors {
+  occupancyFactor?: number;
+  zoneFactor?: number;
+  constructionFactor?: number;
+  riskAdjustment?: number;
+  totalFactor?: number;
+}
+
+export interface CalculationFactor {
+  name: string;
+  value: number;
+  percentage?: number;
+}
+
+/**
+ * Quote State Models
+ */
+export interface QuoteState {
+  folio: string;
+  status: 'DRAFT' | 'PENDING_CALCULATION' | 'CALCULATED' | 'SAVED';
+  generalInfo?: GeneralInfo;
+  locations?: Location[];
+  coverages?: Coverage[];
+  calculationResult?: CalculationResponse;
+  businessVersion?: number;
+  createdAt?: string;
+  modifiedAt?: string;
+}
+
+/**
+ * Catalog Models
+ */
+export interface OccupancyType {
+  code: string;
+  name: string;
+  description?: string;
+}
+
+export interface ConstructionType {
+  code: string;
+  name: string;
+  description?: string;
+}
+
+export interface CoverageType {
+  code: string;
+  name: string;
+  description?: string;
+  maxInsuredLimit?: number;
+}
+
+export interface Catalog {
+  occupancyTypes: OccupancyType[];
+  constructionTypes: ConstructionType[];
+  coverageTypes: CoverageType[];
+}
+

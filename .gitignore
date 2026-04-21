@@ -1,0 +1,28 @@
+# OS / editor
+.DS_Store
+.idea/
+
+# Node / Angular artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+frontend/.cache/
+frontend/tmp/
+frontend/temp/
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# Local env files
+frontend/.env
+frontend/.env.*
+
+# Lock files (optional in this repo)
+frontend/package-lock.json
+
+# User requested: ignore frontend package.json changes
+frontend/package.json
