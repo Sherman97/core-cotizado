@@ -13,5 +13,7 @@ public interface QuoteRepository {
 
   Optional<Quote> findByRootFolioAndVersion(String rootFolio, int version);
 
+  List<Quote> findAllOrderByCreatedAtDesc();
+
   Quote save(Quote quote);
 }

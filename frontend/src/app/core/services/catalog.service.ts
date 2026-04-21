@@ -1,6 +1,34 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { Catalog, OccupancyType, ConstructionType, CoverageType } from '../models/api.models';
+import { environment } from '../../../environments/environment';
+
+export interface PostalCodeCatalogItem {
+  code: string;
+  cityCode: string;
+}
+
+export interface GeographyCityCatalogItem {
+  code: string;
+  name: string;
+  postalCodes: string[];
+}
+
+export interface GeographyDepartmentCatalogItem {
+  code: string;
+  name: string;
+  cities: GeographyCityCatalogItem[];
+}
+
+interface GeographyCatalogResponse {
+  departments: GeographyDepartmentCatalogItem[];
+}
+
+interface ApiEnvelope<T> {
+  data: T;
+}
 
 /**
  * Mock catalog service for development.
@@ -10,10 +38,12 @@ import { Catalog, OccupancyType, ConstructionType, CoverageType } from '../model
   providedIn: 'root'
 })
 export class CatalogService {
+  private readonly baseUrl = `${environment.apiBaseUrl}/v1`;
   private catalogSubject = new BehaviorSubject<Catalog>(this.getMockCatalog());
   public catalog$ = this.catalogSubject.asObservable();
+  private geographyCatalog$?: Observable<GeographyDepartmentCatalogItem[]>;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   /**
    * Get catalogs (in production, this would call backend)
@@ -59,6 +89,49 @@ export class CatalogService {
   }
 
   /**
+   * Valid postal codes (seeded in backend migration V5).
+   */
+  getPostalCodes(): Observable<PostalCodeCatalogItem[]> {
+    return this.getGeographyCatalog().pipe(
+      map((departments) => departments.flatMap((department) =>
+        department.cities.flatMap((city) => city.postalCodes.map((code) => ({ code, cityCode: city.code })))
+      ))
+    );
+  }
+
+  getDepartments(): Observable<GeographyDepartmentCatalogItem[]> {
+    return this.getGeographyCatalog();
+  }
+
+  getCitiesByDepartment(departmentCode: string): Observable<GeographyCityCatalogItem[]> {
+    return this.getGeographyCatalog().pipe(
+      map((departments) => departments.find((department) => department.code === departmentCode)?.cities ?? [])
+    );
+  }
+
+  getPostalCodesByCity(cityCode: string): Observable<PostalCodeCatalogItem[]> {
+    return this.getGeographyCatalog().pipe(
+      map((departments) => departments
+        .flatMap((department) => department.cities)
+        .filter((city) => city.code === cityCode)
+        .flatMap((city) => city.postalCodes.map((code) => ({ code, cityCode })))
+      )
+    );
+  }
+
+  private getGeographyCatalog(): Observable<GeographyDepartmentCatalogItem[]> {
+    if (!this.geographyCatalog$) {
+      this.geographyCatalog$ = this.http
+        .get<ApiEnvelope<GeographyCatalogResponse>>(`${this.baseUrl}/catalogs/geography`)
+        .pipe(
+          map((response) => response.data.departments ?? []),
+          shareReplay(1)
+        );
+    }
+    return this.geographyCatalog$;
+  }
+
+  /**
    * Mock catalog data - Replace with backend API call
    */
   private getMockCatalog(): Catalog {
@@ -83,4 +156,3 @@ export class CatalogService {
     };
   }
 }
-

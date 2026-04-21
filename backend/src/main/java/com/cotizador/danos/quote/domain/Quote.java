@@ -104,6 +104,10 @@ public final class Quote {
     return copyWithStatus(QuoteStatus.CALCULATED);
   }
 
+  public Quote markAsSaved() {
+    return copyWithStatus(QuoteStatus.SAVED);
+  }
+
   public Quote incrementBusinessVersion(Instant modifiedAt) {
     return copyWith(
         productCode,

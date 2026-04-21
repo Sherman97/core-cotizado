@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.domain.QuoteTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:49:35.616Z" hostname="MacBook-Pro-de-German.local" time="0.001">
+<testsuite name="com.cotizador.danos.quote.domain.QuoteTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:54.685Z" hostname="MacBook-Pro-de-German.local" time="0.0">
   <properties/>
-  <testcase name="shouldCreateDraftQuoteWithVersionOneAndCreationDate()" classname="com.cotizador.danos.quote.domain.QuoteTest" time="0.001"/>
+  <testcase name="shouldCreateDraftQuoteWithVersionOneAndCreationDate()" classname="com.cotizador.danos.quote.domain.QuoteTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

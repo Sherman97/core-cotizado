@@ -1,8 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextFieldComponent } from '../../../../../shared/components/text-field/text-field.component';
-import { SelectFieldComponent } from '../../../../../shared/components/select-field/select-field.component';
+import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component';
+import { SelectFieldComponent } from '../../../../shared/components/select-field/select-field.component';
+import { GeneralInfoFormData } from '../../../../core/models/form.models';
 
 @Component({
   selector: 'app-step-general-info',
@@ -196,7 +197,7 @@ import { SelectFieldComponent } from '../../../../../shared/components/select-fi
   `]
 })
 export class StepGeneralInfoComponent implements OnInit {
-  @Output() next = new EventEmitter<any>();
+  @Output() next = new EventEmitter<GeneralInfoFormData>();
   @Output() cancel = new EventEmitter<void>();
 
   form!: FormGroup;
@@ -230,7 +231,7 @@ export class StepGeneralInfoComponent implements OnInit {
    */
   onNext(): void {
     if (this.form.valid) {
-      this.next.emit(this.form.value);
+      this.next.emit(this.form.value as GeneralInfoFormData);
     }
   }
 
@@ -241,4 +242,3 @@ export class StepGeneralInfoComponent implements OnInit {
     this.cancel.emit();
   }
 }
-

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.CreateQuoteVersionUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:49:35.401Z" hostname="MacBook-Pro-de-German.local" time="0.008">
+<testsuite name="com.cotizador.danos.quote.application.CreateQuoteVersionUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:54.472Z" hostname="MacBook-Pro-de-German.local" time="0.007">
   <properties/>
-  <testcase name="shouldCreateAndPersistNewVersionLinkedToPreviousQuote()" classname="com.cotizador.danos.quote.application.CreateQuoteVersionUseCaseTest" time="0.004"/>
+  <testcase name="shouldCreateAndPersistNewVersionLinkedToPreviousQuote()" classname="com.cotizador.danos.quote.application.CreateQuoteVersionUseCaseTest" time="0.003"/>
   <testcase name="shouldThrowControlledErrorWhenPreviousQuoteDoesNotExist()" classname="com.cotizador.danos.quote.application.CreateQuoteVersionUseCaseTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

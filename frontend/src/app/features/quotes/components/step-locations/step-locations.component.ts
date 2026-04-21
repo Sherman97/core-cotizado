@@ -1,12 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextFieldComponent } from '../../../../../shared/components/text-field/text-field.component';
-import { SelectFieldComponent } from '../../../../../shared/components/select-field/select-field.component';
-import { NumberFieldComponent } from '../../../../../shared/components/number-field/number-field.component';
-import { CatalogService } from '../../../../../core/services/catalog.service';
-import { OccupancyType, ConstructionType } from '../../../../../core/models/api.models';
-import { LocationFormData } from '../../../../../core/models/form.models';
+import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component';
+import { SelectFieldComponent } from '../../../../shared/components/select-field/select-field.component';
+import { NumberFieldComponent } from '../../../../shared/components/number-field/number-field.component';
+import {
+  CatalogService,
+  GeographyCityCatalogItem,
+  GeographyDepartmentCatalogItem,
+  PostalCodeCatalogItem
+} from '../../../../core/services/catalog.service';
+import { OccupancyType, ConstructionType } from '../../../../core/models/api.models';
+import { LocationFormData } from '../../../../core/models/form.models';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-step-locations',
@@ -58,30 +64,32 @@ import { LocationFormData } from '../../../../../core/models/form.models';
               ></app-text-field>
             </div>
             <div class="form-col">
-              <app-text-field
-                formControlName="city"
-                label="City"
-                placeholder="e.g., Bogota"
+              <app-select-field
+                formControlName="department"
+                label="Department/State"
+                [options]="departmentOptions"
                 [required]="true"
-              ></app-text-field>
+              ></app-select-field>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-col">
-              <app-text-field
-                formControlName="department"
-                label="Department/State"
-                placeholder="e.g., Cundinamarca"
+              <app-select-field
+                formControlName="city"
+                label="City"
+                [options]="cityOptions"
                 [required]="true"
-              ></app-text-field>
+              ></app-select-field>
             </div>
             <div class="form-col">
-              <app-text-field
+              <app-select-field
                 formControlName="postalCode"
                 label="Postal Code"
-                placeholder="e.g., 110111"
-              ></app-text-field>
+                [required]="true"
+                [options]="postalCodeOptions"
+                hint="Filtered by selected city"
+              ></app-select-field>
             </div>
           </div>
 
@@ -388,7 +396,7 @@ import { LocationFormData } from '../../../../../core/models/form.models';
     }
   `]
 })
-export class StepLocationsComponent implements OnInit {
+export class StepLocationsComponent implements OnInit, OnDestroy {
   @Output() next = new EventEmitter<LocationFormData[]>();
   @Output() previous = new EventEmitter<void>();
   @Input() initialLocations: LocationFormData[] = [];
@@ -398,8 +406,13 @@ export class StepLocationsComponent implements OnInit {
   editingIndex: number | null = null;
   locationForm!: FormGroup;
 
-  occupancyOptions: any[] = [];
-  constructionOptions: any[] = [];
+  occupancyOptions: Array<{ value: string; label: string }> = [];
+  constructionOptions: Array<{ value: string; label: string }> = [];
+  departmentOptions: Array<{ value: string; label: string }> = [];
+  cityOptions: Array<{ value: string; label: string }> = [];
+  postalCodeOptions: Array<{ value: string; label: string }> = [];
+  private departmentsCatalog: GeographyDepartmentCatalogItem[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -410,24 +423,79 @@ export class StepLocationsComponent implements OnInit {
     this.locations = [...this.initialLocations];
     this.initializeLocationForm();
     this.loadCatalogs();
+    this.setupDependentSelectors();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /**
    * Load catalogs from service
    */
   private loadCatalogs(): void {
-    this.catalogService.getOccupancyTypes().subscribe(types => {
-      this.occupancyOptions = types.map(t => ({
+    this.catalogService.getOccupancyTypes().pipe(takeUntil(this.destroy$)).subscribe((types: OccupancyType[]) => {
+      this.occupancyOptions = types.map((t: OccupancyType) => ({
         value: t.code,
         label: t.name
       }));
     });
 
-    this.catalogService.getConstructionTypes().subscribe(types => {
-      this.constructionOptions = types.map(t => ({
+    this.catalogService.getConstructionTypes().pipe(takeUntil(this.destroy$)).subscribe((types: ConstructionType[]) => {
+      this.constructionOptions = types.map((t: ConstructionType) => ({
         value: t.code,
         label: t.name
       }));
+    });
+
+    this.catalogService.getDepartments().pipe(takeUntil(this.destroy$)).subscribe((departments: GeographyDepartmentCatalogItem[]) => {
+      this.departmentsCatalog = departments;
+      this.departmentOptions = departments.map((item) => ({
+        value: item.code,
+        label: item.name
+      }));
+    });
+  }
+
+  private setupDependentSelectors(): void {
+    this.locationForm.get('department')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((departmentCode: string) => {
+        this.applyDepartmentSelection(departmentCode, true);
+      });
+
+    this.locationForm.get('city')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((cityCode: string) => {
+        this.applyCitySelection(cityCode, true);
+      });
+  }
+
+  private applyDepartmentSelection(departmentCode: string, resetChildren: boolean): void {
+    const department = this.departmentsCatalog.find((item) => item.code === departmentCode);
+    const cities = department?.cities ?? [];
+    this.cityOptions = cities.map((city: GeographyCityCatalogItem) => ({
+      value: city.code,
+      label: city.name
+    }));
+
+    if (resetChildren) {
+      this.locationForm.patchValue({ city: '', postalCode: '' }, { emitEvent: false });
+      this.postalCodeOptions = [];
+    }
+  }
+
+  private applyCitySelection(cityCode: string, resetPostalCode: boolean): void {
+    this.catalogService.getPostalCodesByCity(cityCode).pipe(takeUntil(this.destroy$)).subscribe((codes: PostalCodeCatalogItem[]) => {
+      this.postalCodeOptions = codes.map((item) => ({
+        value: item.code,
+        label: item.code
+      }));
+
+      if (resetPostalCode) {
+        this.locationForm.patchValue({ postalCode: '' }, { emitEvent: false });
+      }
     });
   }
 
@@ -437,10 +505,10 @@ export class StepLocationsComponent implements OnInit {
   private initializeLocationForm(): void {
     this.locationForm = this.fb.group({
       locationName: ['', [Validators.required, Validators.minLength(2)]],
-      city: ['', [Validators.required, Validators.minLength(2)]],
-      department: ['', [Validators.required, Validators.minLength(2)]],
+      city: ['', Validators.required],
+      department: ['', Validators.required],
       address: [''],
-      postalCode: [''],
+      postalCode: ['', Validators.required],
       occupancyType: ['', Validators.required],
       constructionType: ['', Validators.required],
       insuredValue: [null, [Validators.required, Validators.min(1000)]]
@@ -464,13 +532,22 @@ export class StepLocationsComponent implements OnInit {
   editLocation(index: number): void {
     this.editingIndex = index;
     this.showAddLocationForm = true;
-    this.locationForm.patchValue(this.locations[index]);
+    const location = this.locations[index];
+    this.applyDepartmentSelection(location.department, false);
+    this.applyCitySelection(location.city, false);
+    this.locationForm.patchValue(location);
   }
 
   /**
    * Save location (add or update)
    */
   saveLocation(): void {
+    const selectedPostalCode = this.locationForm.get('postalCode')?.value;
+    if (selectedPostalCode && !this.isPostalCodeAllowed(selectedPostalCode)) {
+      this.locationForm.get('postalCode')?.setErrors({ invalidPostalCode: true });
+      return;
+    }
+
     if (this.locationForm.valid) {
       const locationData = this.locationForm.value;
 
@@ -484,6 +561,11 @@ export class StepLocationsComponent implements OnInit {
     }
   }
 
+  private isPostalCodeAllowed(postalCode: string): boolean {
+    const selectedCity = this.locationForm.get('city')?.value;
+    return this.postalCodeOptions.some((opt) => opt.value === postalCode) && !!selectedCity;
+  }
+
   /**
    * Cancel edit location
    */
@@ -491,6 +573,8 @@ export class StepLocationsComponent implements OnInit {
     this.showAddLocationForm = false;
     this.editingIndex = null;
     this.locationForm.reset();
+    this.cityOptions = [];
+    this.postalCodeOptions = [];
   }
 
   /**
@@ -514,4 +598,3 @@ export class StepLocationsComponent implements OnInit {
     this.next.emit(this.locations);
   }
 }
-

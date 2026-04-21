@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../../../../core/models/form.models';
+import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../../../core/models/form.models';
 
 @Component({
   selector: 'app-step-summary',
@@ -44,7 +44,7 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
         <!-- Locations Section -->
         <div class="summary-section">
           <div class="section-header" (click)="toggleSection('locations')">
-            <h3>Locations ({{ locations?.length || 0 }})</h3>
+            <h3>Locations ({{ locations.length }})</h3>
             <button type="button" class="btn-expand">
               {{ expandedSections.locations ? '▼' : '▶' }}
             </button>
@@ -92,7 +92,7 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
         <!-- Coverages Section -->
         <div class="summary-section">
           <div class="section-header" (click)="toggleSection('coverages')">
-            <h3>Coverages ({{ coverages?.length || 0 }})</h3>
+            <h3>Coverages ({{ coverages.length }})</h3>
             <button type="button" class="btn-expand">
               {{ expandedSections.coverages ? '▼' : '▶' }}
             </button>
@@ -501,4 +501,3 @@ export class StepSummaryComponent {
     }
   }
 }
-

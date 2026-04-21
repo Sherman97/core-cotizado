@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.CreateQuoteUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:49:35.326Z" hostname="MacBook-Pro-de-German.local" time="0.073">
+<testsuite name="com.cotizador.danos.quote.application.CreateQuoteUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:54.402Z" hostname="MacBook-Pro-de-German.local" time="0.068">
   <properties/>
-  <testcase name="shouldRegenerateFolioWhenGeneratedValueAlreadyExists()" classname="com.cotizador.danos.quote.application.CreateQuoteUseCaseTest" time="0.069"/>
+  <testcase name="shouldRegenerateFolioWhenGeneratedValueAlreadyExists()" classname="com.cotizador.danos.quote.application.CreateQuoteUseCaseTest" time="0.065"/>
   <testcase name="shouldCreateAndPersistDraftQuoteWithUniqueFolio()" classname="com.cotizador.danos.quote.application.CreateQuoteUseCaseTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

@@ -1,17 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TextFieldComponent } from '../../../../../shared/components/text-field/text-field.component';
-import { SelectFieldComponent } from '../../../../../shared/components/select-field/select-field.component';
-import { NumberFieldComponent } from '../../../../../shared/components/number-field/number-field.component';
-import { CatalogService } from '../../../../../core/services/catalog.service';
-import { CoverageFormData } from '../../../../../core/models/form.models';
-import { CoverageType } from '../../../../../core/models/api.models';
+import { FormsModule } from '@angular/forms';
+import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component';
+import { SelectFieldComponent } from '../../../../shared/components/select-field/select-field.component';
+import { NumberFieldComponent } from '../../../../shared/components/number-field/number-field.component';
+import { CoverageFormData } from '../../../../core/models/form.models';
+import { CoverageType } from '../../../../core/models/api.models';
 
 @Component({
   selector: 'app-step-coverages',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TextFieldComponent, SelectFieldComponent, NumberFieldComponent],
+  imports: [CommonModule, FormsModule, TextFieldComponent, SelectFieldComponent, NumberFieldComponent],
   template: `
     <div class="step-container">
       <div class="step-header">
@@ -41,9 +40,9 @@ import { CoverageType } from '../../../../../core/models/api.models';
                 <input
                   type="number"
                   class="form-control"
-                  [(ngModel)]="getCoverageLimit(coverage.code)"
-                  [max]="coverage.maxInsuredLimit"
-                  (change)="updateCoverageLimit(coverage.code, $event)"
+                  [value]="getCoverageLimit(coverage.code)"
+                  [max]="coverage.maxInsuredLimit ?? null"
+                  (input)="updateCoverageLimit(coverage.code, $event)"
                 />
                 <small *ngIf="coverage.maxInsuredLimit">
                   Maximum: {{ coverage.maxInsuredLimit | currency }}
@@ -52,7 +51,7 @@ import { CoverageType } from '../../../../../core/models/api.models';
 
               <div class="form-group">
                 <label>Deductible Type</label>
-                <select class="form-control" [(ngModel)]="getDeductibleType(coverage.code)" (change)="updateDeductibleType(coverage.code, $event)">
+                <select class="form-control" [value]="getDeductibleType(coverage.code)" (change)="updateDeductibleType(coverage.code, $event)">
                   <option value="FIXED">Fixed Amount</option>
                   <option value="PERCENTAGE">Percentage</option>
                 </select>
@@ -63,8 +62,8 @@ import { CoverageType } from '../../../../../core/models/api.models';
                 <input
                   type="number"
                   class="form-control"
-                  [(ngModel)]="getDeductibleValue(coverage.code)"
-                  (change)="updateDeductibleValue(coverage.code, $event)"
+                  [value]="getDeductibleValue(coverage.code)"
+                  (input)="updateDeductibleValue(coverage.code, $event)"
                   [placeholder]="getDeductibleType(coverage.code) === 'FIXED' ? 'Amount' : 'Percentage'"
                 />
               </div>
@@ -343,24 +342,14 @@ export class StepCoveragesComponent implements OnInit {
   @Output() next = new EventEmitter<CoverageFormData[]>();
   @Output() previous = new EventEmitter<void>();
   @Input() initialCoverages: CoverageFormData[] = [];
+  @Input() availableCoverages: CoverageType[] = [];
 
-  availableCoverages: CoverageType[] = [];
   selectedCoverages: CoverageFormData[] = [];
 
-  constructor(private catalogService: CatalogService) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.selectedCoverages = [...this.initialCoverages];
-    this.loadCoverages();
-  }
-
-  /**
-   * Load available coverages from catalog
-   */
-  private loadCoverages(): void {
-    this.catalogService.getCoverageTypes().subscribe(types => {
-      this.availableCoverages = types;
-    });
   }
 
   /**
@@ -459,4 +448,3 @@ export class StepCoveragesComponent implements OnInit {
     this.next.emit(this.selectedCoverages);
   }
 }
-

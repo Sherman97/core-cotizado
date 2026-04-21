@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { QuoteApiService } from '../../../core/services/quote-api.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { QuoteApiService } from '../../../../core/services/quote-api.service';
+import { ApiResponse, CreateFolioResponse, QuoteListItem } from '../../../../core/models/api.models';
 
 @Component({
   selector: 'app-quotes-list-page',
@@ -210,7 +212,7 @@ import { QuoteApiService } from '../../../core/services/quote-api.service';
   `]
 })
 export class QuotesListPageComponent implements OnInit {
-  quotations: any[] = [];
+  quotations: QuoteListItem[] = [];
   loading: boolean = true;
 
   constructor(
@@ -222,35 +224,19 @@ export class QuotesListPageComponent implements OnInit {
     this.loadQuotations();
   }
 
-  /**
-   * Load quotations list (mock for now - backend API needed)
-   */
   loadQuotations(): void {
     this.loading = true;
-    // Mock data - Replace with actual API call
-    setTimeout(() => {
-      this.quotations = [
-        {
-          folio: 'FOL-2024-001',
-          customerName: 'Comercial Andina SAS',
-          totalInsuredValue: 2400000,
-          totalLocations: 2,
-          status: 'CALCULATED',
-          createdAt: new Date('2024-01-15'),
-          totalPremium: 45000
-        },
-        {
-          folio: 'FOL-2024-002',
-          customerName: 'Retail Store Inc',
-          totalInsuredValue: 1500000,
-          totalLocations: 1,
-          status: 'DRAFT',
-          createdAt: new Date('2024-01-18'),
-          totalPremium: null
-        }
-      ];
-      this.loading = false;
-    }, 500);
+    this.quoteApi.listQuotes().subscribe({
+      next: (response: ApiResponse<QuoteListItem[]>) => {
+        this.quotations = response.data;
+        this.loading = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        this.quotations = [];
+        console.error('Error loading quotations:', err);
+      }
+    });
   }
 
   /**
@@ -258,11 +244,11 @@ export class QuotesListPageComponent implements OnInit {
    */
   createNewQuote(): void {
     this.quoteApi.createFolio().subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<CreateFolioResponse>) => {
         const folio = response.data.numeroFolio;
         this.router.navigate(['/quotes', folio, 'wizard']);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Error creating folio:', err);
       }
     });
@@ -282,4 +268,3 @@ export class QuotesListPageComponent implements OnInit {
     this.router.navigate(['/quotes', folio, 'wizard']);
   }
 }
-

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { QuoteApiService } from '../../../core/services/quote-api.service';
-import { CalculationResponse, LocationCalculationResult, CalculationFactor } from '../../../core/models/api.models';
+import { QuoteApiService } from '../../../../core/services/quote-api.service';
+import { ApiResponse, CalculationResponse, LocationCalculationResult } from '../../../../core/models/api.models';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-quote-result-page',
@@ -115,11 +116,13 @@ import { CalculationResponse, LocationCalculationResult, CalculationFactor } fro
         <!-- Exclusion Warnings -->
         <div *ngIf="hasExclusions()" class="warnings-card">
           <h3>⚠ Exclusions & Warnings</h3>
-          <div *ngFor="let location of calculationResult.locationResults" *ngIf="!location.calculable">
+          <div *ngFor="let location of calculationResult.locationResults">
+            <ng-container *ngIf="!location.calculable">
             <div class="warning-item">
               <strong>{{ location.locationName }}:</strong>
               {{ location.excludionReason || 'Not calculable - verify all required fields' }}
             </div>
+            </ng-container>
           </div>
           <div *ngIf="calculationResult.warnings">
             <div *ngFor="let warning of calculationResult.warnings" class="warning-item">
@@ -520,14 +523,12 @@ export class QuoteResultPageComponent implements OnInit {
    * Load quote state and calculation result
    */
   private loadQuoteState(): void {
-    this.quoteApi.getQuoteState(this.folio).subscribe({
-      next: (response) => {
-        if (response.data && response.data.calculationResult) {
-          this.calculationResult = response.data.calculationResult;
-        }
+    this.quoteApi.getCalculationResult(this.folio).subscribe({
+      next: (response: ApiResponse<CalculationResponse>) => {
+        this.calculationResult = response.data;
         this.loading = false;
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
         this.errorMessage = 'Error loading quotation: ' + (err.error?.message || err.message);
         console.error('Error loading quote:', err);
@@ -541,8 +542,8 @@ export class QuoteResultPageComponent implements OnInit {
   hasExclusions(): boolean {
     if (!this.calculationResult) return false;
     return (
-      this.calculationResult.locationResults.some(loc => !loc.calculable) ||
-      (this.calculationResult.warnings && this.calculationResult.warnings.length > 0)
+      this.calculationResult.locationResults.some((loc: LocationCalculationResult) => !loc.calculable) ||
+      (this.calculationResult.warnings?.length ?? 0) > 0
     );
   }
 
@@ -557,8 +558,15 @@ export class QuoteResultPageComponent implements OnInit {
    * Save quotation
    */
   onSaveQuote(): void {
-    // TODO: Implement save functionality
-    alert('Quote saved successfully!');
+    this.quoteApi.saveQuote(this.folio).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage = 'Error saving quotation: ' + (err.error?.message || err.message);
+        console.error('Error saving quote:', err);
+      }
+    });
   }
 
   /**
@@ -575,4 +583,3 @@ export class QuoteResultPageComponent implements OnInit {
     this.router.navigate(['/']);
   }
 }
-

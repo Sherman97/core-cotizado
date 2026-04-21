@@ -12,4 +12,6 @@ public interface SpringDataQuoteJpaRepository extends JpaRepository<QuoteJpaEnti
   List<QuoteJpaEntity> findByRootFolioOrderByBusinessVersionAsc(String rootFolio);
 
   Optional<QuoteJpaEntity> findByRootFolioAndBusinessVersion(String rootFolio, int businessVersion);
+
+  List<QuoteJpaEntity> findAllByOrderByCreatedAtDesc();
 }

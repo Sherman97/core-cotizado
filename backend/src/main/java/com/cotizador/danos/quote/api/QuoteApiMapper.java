@@ -5,7 +5,9 @@ import com.cotizador.danos.quote.api.dto.GeneralInfoRequest;
 import com.cotizador.danos.quote.api.dto.GeneralInfoResponse;
 import com.cotizador.danos.quote.api.dto.LocationLayoutRequest;
 import com.cotizador.danos.quote.api.dto.LocationLayoutResponse;
+import com.cotizador.danos.quote.api.dto.QuoteListItemResponse;
 import com.cotizador.danos.quote.api.dto.QuoteStateResponse;
+import com.cotizador.danos.quote.application.ListQuotesUseCase;
 import com.cotizador.danos.quote.domain.Quote;
 import com.cotizador.danos.quote.domain.QuoteFinalStatusView;
 import com.cotizador.danos.quote.domain.QuoteGeneralDataPatch;
@@ -76,6 +78,18 @@ public class QuoteApiMapper {
         view.taxAmount(),
         view.totalPremium(),
         view.alerts()
+    );
+  }
+
+  public QuoteListItemResponse toQuoteListItemResponse(ListQuotesUseCase.QuoteListItem item) {
+    return new QuoteListItemResponse(
+        item.folio(),
+        item.customerName(),
+        item.totalInsuredValue(),
+        item.totalLocations(),
+        item.status(),
+        item.createdAt(),
+        item.totalPremium()
     );
   }
 }

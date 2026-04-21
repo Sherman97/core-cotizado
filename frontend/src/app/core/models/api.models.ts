@@ -2,8 +2,8 @@
  * API Response Envelope
  */
 export interface ApiResponse<T> {
-  success: boolean;
   data: T;
+  success?: boolean;
   message?: string;
   timestamp?: string;
 }
@@ -13,7 +13,19 @@ export interface ApiResponse<T> {
  */
 export interface CreateFolioResponse {
   numeroFolio: string;
-  createdAt: string;
+  createdAt?: string;
+  estadoCotizacion?: string;
+  version?: number;
+}
+
+export interface QuoteListItem {
+  folio: string;
+  customerName?: string;
+  totalInsuredValue: number;
+  totalLocations: number;
+  status: string;
+  createdAt?: string;
+  totalPremium?: number | null;
 }
 
 export interface GeneralInfo {
@@ -95,6 +107,7 @@ export interface Coverage {
 
 export interface CoverageOptions {
   coverages: Coverage[];
+  availableCoverages?: CoverageType[];
   businessVersion?: number;
   modifiedAt?: string;
 }
@@ -142,10 +155,11 @@ export interface CalculationFactor {
 export interface QuoteState {
   folio: string;
   status: 'DRAFT' | 'PENDING_CALCULATION' | 'CALCULATED' | 'SAVED';
-  generalInfo?: GeneralInfo;
-  locations?: Location[];
-  coverages?: Coverage[];
-  calculationResult?: CalculationResponse;
+  netPremium?: number;
+  expenseAmount?: number;
+  taxAmount?: number;
+  totalPremium?: number;
+  warnings?: string[];
   businessVersion?: number;
   createdAt?: string;
   modifiedAt?: string;
@@ -171,6 +185,7 @@ export interface CoverageType {
   name: string;
   description?: string;
   maxInsuredLimit?: number;
+  active?: boolean;
 }
 
 export interface Catalog {
@@ -178,4 +193,3 @@ export interface Catalog {
   constructionTypes: ConstructionType[];
   coverageTypes: CoverageType[];
 }
-

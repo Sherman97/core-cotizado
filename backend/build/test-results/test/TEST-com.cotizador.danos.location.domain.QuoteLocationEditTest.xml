@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.location.domain.QuoteLocationEditTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:49:35.317Z" hostname="MacBook-Pro-de-German.local" time="0.002">
+<testsuite name="com.cotizador.danos.location.domain.QuoteLocationEditTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:54.393Z" hostname="MacBook-Pro-de-German.local" time="0.003">
   <properties/>
-  <testcase name="shouldUpdateOnlyProvidedFieldsAndPreserveExistingAssociation()" classname="com.cotizador.danos.location.domain.QuoteLocationEditTest" time="0.0"/>
+  <testcase name="shouldUpdateOnlyProvidedFieldsAndPreserveExistingAssociation()" classname="com.cotizador.danos.location.domain.QuoteLocationEditTest" time="0.001"/>
   <testcase name="shouldCompletePreviouslyIncompleteLocationWhenMissingDataIsProvided()" classname="com.cotizador.danos.location.domain.QuoteLocationEditTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

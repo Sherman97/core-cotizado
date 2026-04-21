@@ -3,16 +3,17 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
-import { StepGeneralInfoComponent } from '../components/step-general-info/step-general-info.component';
-import { StepLocationsComponent } from '../components/step-locations/step-locations.component';
-import { StepCoveragesComponent } from '../components/step-coverages/step-coverages.component';
-import { StepSummaryComponent } from '../components/step-summary/step-summary.component';
+import { StepGeneralInfoComponent } from '../../components/step-general-info/step-general-info.component';
+import { StepLocationsComponent } from '../../components/step-locations/step-locations.component';
+import { StepCoveragesComponent } from '../../components/step-coverages/step-coverages.component';
+import { StepSummaryComponent } from '../../components/step-summary/step-summary.component';
 
-import { QuotationWizardService } from '../../../core/services/quotation-wizard.service';
-import { QuoteApiService } from '../../../core/services/quote-api.service';
-import { QuotationWizardState, GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../../core/models/form.models';
-import { Location as LocationModel } from '../../../core/models/api.models';
+import { QuotationWizardService } from '../../../../core/services/quotation-wizard.service';
+import { QuoteApiService } from '../../../../core/services/quote-api.service';
+import { QuotationWizardState, GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../../../core/models/form.models';
+import { ApiResponse, CalculationResponse, CoverageType, CoverageOptions } from '../../../../core/models/api.models';
 
 @Component({
   selector: 'app-quote-wizard-page',
@@ -79,6 +80,7 @@ import { Location as LocationModel } from '../../../core/models/api.models';
         <!-- Step 3: Coverages -->
         <app-step-coverages
           *ngIf="currentStep === 3"
+          [availableCoverages]="availableCoverages"
           [initialCoverages]="wizardState.coverages"
           (next)="onCoveragesNext($event)"
           (previous)="previousStep()"
@@ -312,6 +314,7 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
   loading: boolean = false;
   errorMessage: string = '';
   successMessage: string = '';
+  availableCoverages: CoverageType[] = [];
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -324,6 +327,7 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.folio = this.route.snapshot.paramMap.get('folio') || '';
     this.loadQuotationState();
+    this.loadDataFromBackend();
   }
 
   ngOnDestroy(): void {
@@ -337,10 +341,39 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
   private loadQuotationState(): void {
     this.wizardService.wizardState$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(state => {
+      .subscribe((state: QuotationWizardState) => {
         this.wizardState = state;
         this.currentStep = state.currentStep;
       });
+  }
+
+  private loadDataFromBackend(): void {
+    this.quoteApi.getGeneralInfo(this.folio).subscribe({
+      next: (response) => {
+        const data = response.data;
+        if (data.customerName || data.currency || data.observations) {
+          this.wizardService.setGeneralInfo({
+            productCode: data.productCode || 'DANOS',
+            customerName: data.customerName || '',
+            currency: data.currency || 'COP',
+            observations: data.observations
+          });
+        }
+      }
+    });
+
+    this.quoteApi.getLocations(this.folio).subscribe({
+      next: (response) => {
+        this.wizardService.setLocations(response.data.locations);
+      }
+    });
+
+    this.quoteApi.getCoverageOptions(this.folio).subscribe({
+      next: (response: ApiResponse<CoverageOptions>) => {
+        this.availableCoverages = response.data.availableCoverages ?? [];
+        this.wizardService.setCoverages(response.data.coverages.filter((item) => item.selected));
+      }
+    });
   }
 
   /**
@@ -394,14 +427,14 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
   onCalculate(): void {
     this.loading = true;
     this.quoteApi.calculateQuote(this.folio).subscribe({
-      next: (response) => {
+      next: (response: ApiResponse<CalculationResponse>) => {
         this.loading = false;
         this.successMessage = 'Quote calculated successfully!';
         setTimeout(() => {
           this.router.navigate(['/quotes', this.folio, 'result']);
         }, 1000);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.loading = false;
         this.errorMessage = 'Error calculating quote: ' + (err.error?.message || err.message);
         console.error('Calculation error:', err);
@@ -414,7 +447,7 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
    */
   private saveGeneralInfoToBackend(data: GeneralInfoFormData): void {
     this.quoteApi.saveGeneralInfo(this.folio, data).subscribe({
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Error saving general info:', err);
       }
     });
@@ -424,15 +457,25 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
    * Save locations to backend
    */
   private saveLocationsToBackend(locations: LocationFormData[]): void {
+    this.quoteApi.saveLocationLayout(this.folio, {
+      expectedLocationCount: locations.length,
+      captureRiskZone: false,
+      captureGeoreference: false
+    }).subscribe({
+      error: (err: HttpErrorResponse) => {
+        console.error('Error saving location layout:', err);
+      }
+    });
+
     const payload = {
-      locations: locations.map((loc, idx) => ({
+      locations: locations.map((loc: LocationFormData, idx: number) => ({
         ...loc,
         indice: idx + 1
       }))
     };
 
     this.quoteApi.saveLocations(this.folio, payload).subscribe({
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Error saving locations:', err);
       }
     });
@@ -443,14 +486,14 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
    */
   private saveCoveragesToBackend(coverages: CoverageFormData[]): void {
     const payload = {
-      coverages: coverages.map(cov => ({
+      coverages: coverages.map((cov: CoverageFormData) => ({
         ...cov,
         selected: true
       }))
     };
 
     this.quoteApi.saveCoverageOptions(this.folio, payload).subscribe({
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         console.error('Error saving coverages:', err);
       }
     });
@@ -470,4 +513,3 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
   }
 }
-

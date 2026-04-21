@@ -45,6 +45,13 @@ public class QuoteRepositoryAdapter implements QuoteRepository {
   }
 
   @Override
+  public List<Quote> findAllOrderByCreatedAtDesc() {
+    return jpaRepository.findAllByOrderByCreatedAtDesc().stream()
+        .map(mapper::toDomain)
+        .toList();
+  }
+
+  @Override
   public Quote save(Quote quote) {
     QuoteJpaEntity entity = jpaRepository.findById(quote.getFolio()).orElseGet(QuoteJpaEntity::new);
     mapper.copyToEntity(quote, entity, resolveRootFolio(quote));

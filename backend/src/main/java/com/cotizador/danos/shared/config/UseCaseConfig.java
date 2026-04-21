@@ -20,7 +20,9 @@ import com.cotizador.danos.quote.application.CreateQuoteUseCase;
 import com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCase;
 import com.cotizador.danos.quote.application.GetQuoteByFolioUseCase;
 import com.cotizador.danos.quote.application.GetQuoteFinalStatusUseCase;
+import com.cotizador.danos.quote.application.ListQuotesUseCase;
 import com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCase;
+import com.cotizador.danos.quote.application.SaveQuoteUseCase;
 import com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCase;
 import com.cotizador.danos.quote.domain.FolioIdempotencyRepository;
 import com.cotizador.danos.quote.domain.FolioGenerator;
@@ -186,5 +188,23 @@ public class UseCaseConfig {
       QuoteCalculationResultRepository quoteCalculationResultRepository
   ) {
     return new GetQuoteFinalStatusUseCase(quoteRepository, quoteCalculationResultRepository);
+  }
+
+  @Bean
+  SaveQuoteUseCase saveQuoteUseCase(QuoteRepository quoteRepository) {
+    return new SaveQuoteUseCase(quoteRepository);
+  }
+
+  @Bean
+  ListQuotesUseCase listQuotesUseCase(
+      QuoteRepository quoteRepository,
+      LocationRepository locationRepository,
+      QuoteCalculationResultRepository quoteCalculationResultRepository
+  ) {
+    return new ListQuotesUseCase(
+        quoteRepository,
+        locationRepository,
+        quoteCalculationResultRepository
+    );
   }
 }

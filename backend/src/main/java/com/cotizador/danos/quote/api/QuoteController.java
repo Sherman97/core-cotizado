@@ -5,11 +5,13 @@ import com.cotizador.danos.quote.api.dto.LocationLayoutRequest;
 import com.cotizador.danos.quote.application.GetQuoteByFolioUseCase;
 import com.cotizador.danos.quote.application.GetQuoteFinalStatusUseCase;
 import com.cotizador.danos.quote.application.SaveQuoteLocationLayoutUseCase;
+import com.cotizador.danos.quote.application.SaveQuoteUseCase;
 import com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCase;
 import com.cotizador.danos.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ public class QuoteController {
   private final UpdateQuoteGeneralDataUseCase updateQuoteGeneralDataUseCase;
   private final SaveQuoteLocationLayoutUseCase saveQuoteLocationLayoutUseCase;
   private final GetQuoteFinalStatusUseCase getQuoteFinalStatusUseCase;
+  private final SaveQuoteUseCase saveQuoteUseCase;
   private final QuoteApiMapper mapper;
 
   public QuoteController(
@@ -30,12 +33,14 @@ public class QuoteController {
       UpdateQuoteGeneralDataUseCase updateQuoteGeneralDataUseCase,
       SaveQuoteLocationLayoutUseCase saveQuoteLocationLayoutUseCase,
       GetQuoteFinalStatusUseCase getQuoteFinalStatusUseCase,
+      SaveQuoteUseCase saveQuoteUseCase,
       QuoteApiMapper mapper
   ) {
     this.getQuoteByFolioUseCase = getQuoteByFolioUseCase;
     this.updateQuoteGeneralDataUseCase = updateQuoteGeneralDataUseCase;
     this.saveQuoteLocationLayoutUseCase = saveQuoteLocationLayoutUseCase;
     this.getQuoteFinalStatusUseCase = getQuoteFinalStatusUseCase;
+    this.saveQuoteUseCase = saveQuoteUseCase;
     this.mapper = mapper;
   }
 
@@ -69,5 +74,10 @@ public class QuoteController {
   @GetMapping("/state")
   public ApiResponse<?> getState(@PathVariable String folio) {
     return ApiResponse.of(mapper.toStateResponse(getQuoteFinalStatusUseCase.handle(folio)));
+  }
+
+  @PostMapping("/save")
+  public ApiResponse<?> saveQuote(@PathVariable String folio) {
+    return ApiResponse.of(mapper.toGeneralInfoResponse(saveQuoteUseCase.handle(folio)));
   }
 }

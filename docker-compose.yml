@@ -1,16 +1,15 @@
-version: "3.9"
-
 services:
   mariadb:
     image: mariadb:11
     container_name: cotizador-mariadb
+    restart: unless-stopped
     environment:
       MARIADB_DATABASE: cotizador_danos
       MARIADB_USER: cotizador
       MARIADB_PASSWORD: cotizador123
       MARIADB_ROOT_PASSWORD: root123
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
@@ -18,15 +17,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 20s
 
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
+    image: cotizador-backend:local
     container_name: cotizador-backend
+    restart: unless-stopped
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mariadb://mariadb:3306/cotizador_danos
-      SPRING_DATASOURCE_USERNAME: cotizador
-      SPRING_DATASOURCE_PASSWORD: cotizador123
+      SPRING_PROFILES_ACTIVE: mariadb
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:mariadb://mariadb:3306/cotizador_danos}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-cotizador}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-cotizador123}
+      SERVER_PORT: 8080
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://localhost:4200,http://127.0.0.1:4200}
     ports:
       - "8080:8080"
     depends_on:
@@ -36,7 +42,10 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
+    image: cotizador-frontend:local
     container_name: cotizador-frontend
+    restart: unless-stopped
     ports:
       - "4200:4200"
     depends_on:

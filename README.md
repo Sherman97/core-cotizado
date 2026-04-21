@@ -1,204 +1,139 @@
-# Cotizador de Seguros de Danos - Backend
+# Cotizador de Seguros de Danos
 
-Backend Spring Boot para cotizacion MVP de seguros de danos.
+Este proyecto tiene dos partes:
 
-Estado documentado en este archivo: implementacion real actual del backend, incluyendo idempotencia en creacion de folio, versionado de negocio, calculo MVP trazable, pruebas E2E REST y capa read-only para tablas maestras de rating.
+- `backend`: API en Spring Boot
+- `frontend`: app Angular para capturar y consultar cotizaciones
 
-## 1. Alcance implementado
+La idea general es simple: creas un folio, llenas datos, agregas ubicaciones, eliges coberturas, calculas, y ves el resultado.
 
-Incluye:
+## Que ya hace hoy
 
-- API REST bajo `/v1`
-- creacion de folios
-- captura de `general-info`
-- captura de layout y ubicaciones
-- configuracion de coberturas
-- calculo MVP por ubicacion
-- persistencia de resultado y trazabilidad
-- consulta de estado final
-- idempotencia en `POST /v1/folios`
-- versionado de negocio en ediciones funcionales
-- integracion read-only de catalogos/factores de rating (sin reemplazar aun el motor de calculo)
+- Crear folios de cotizacion
+- Guardar datos generales
+- Guardar ubicaciones (una o varias)
+- Configurar coberturas
+- Calcular prima
+- Ver estado final
+- Consultar resultados por ubicacion
+- Usar catalogos desde BD (incluyendo geografia en cascada)
 
-No incluye:
+## Como levantarlo rapido
 
-- frontend
-- autenticacion/autorizacion
-- motor actuarial real
-- integraciones externas productivas
-
-## 2. Requisitos
-
-- Java 21
-- Docker y Docker Compose (recomendado para MariaDB local)
-- Bash
-
-## 3. Perfiles y variables de entorno
-
-| Variable | Default | Uso |
-|---|---|---|
-| `SPRING_PROFILES_ACTIVE` | `mariadb` | Perfil de ejecucion |
-| `SERVER_PORT` | `8080` | Puerto API |
-| `SPRING_DATASOURCE_URL` | `jdbc:mariadb://localhost:3306/cotizador_danos` | Conexion MariaDB |
-| `SPRING_DATASOURCE_USERNAME` | `cotizador` | Usuario DB |
-| `SPRING_DATASOURCE_PASSWORD` | `cotizador123` | Password DB |
-
-Perfiles:
-
-- `mariadb`: runtime local normal, JPA + Flyway habilitados
-- `local`: arranque sin datasource
-- `test`: pruebas con H2 en memoria
-
-## 4. Ejecucion local
-
-### Runtime con MariaDB (recomendado)
+Desde la raiz del repo:
 
 ```bash
-docker compose up -d mariadb
-./backend/scripts/run-mariadb.sh
+docker compose up -d
 ```
 
-### Arranque sin base de datos
+Esto levanta:
+
+- MariaDB
+- Backend (`http://localhost:8080`)
+- Frontend (`http://localhost:4200`)
+
+Si prefieres correr frontend local:
 
 ```bash
-./backend/scripts/run-local.sh
+cd frontend
+npm install
+ng serve
 ```
 
-## 5. Contrato idempotente de creacion de folio
+## Flujo funcional (sin tecnicismos)
 
-Endpoint:
+1. Crear cotizacion
+2. Completar informacion general
+3. Agregar ubicaciones
+4. Elegir coberturas
+5. Calcular
+6. Revisar resultado y alertas
 
-- `POST /v1/folios`
+## Datos base que ya vienen en la BD
 
-Header:
+Estos datos se crean por migraciones (seeds), para que el sistema funcione desde el primer arranque.
 
-- `Idempotency-Key` (opcional)
+### Geografia (catalogo en cascada)
 
-Comportamiento:
+Se crearon 3 departamentos, cada uno con 3 ciudades, y cada ciudad con 2 codigos postales.
 
-- clave nueva: crea folio y responde `201`
-- misma clave ya registrada: replay del mismo folio y responde `200`
-- sin header: creacion normal y responde `201`
+- **Cundinamarca**
+  - Bogota: `110111`, `110121`
+  - Soacha: `250051`, `250052`
+  - Chia: `250001`, `250002`
+- **Antioquia**
+  - Medellin: `050001`, `050021`
+  - Envigado: `055420`, `055421`
+  - Rionegro: `054040`, `054041`
+- **Atlantico**
+  - Barranquilla: `080001`, `080020`
+  - Soledad: `083001`, `083002`
+  - Puerto Colombia: `081001`, `081002`
 
-Persistencia:
+En el front, esto se ve como:
 
-- tabla `folio_idempotency_keys` (migracion `V3__add_folio_idempotency.sql`)
+- primero eliges **departamento**
+- luego se filtran las **ciudades**
+- luego se filtran los **codigos postales**
 
-## 6. Endpoints soportados
+### Coberturas base
 
-- `POST /v1/folios`
-- `GET /v1/quotes/{folio}/general-info`
-- `PUT /v1/quotes/{folio}/general-info`
-- `GET /v1/quotes/{folio}/locations/layout`
-- `PUT /v1/quotes/{folio}/locations/layout`
-- `GET /v1/quotes/{folio}/locations`
-- `PUT /v1/quotes/{folio}/locations`
-- `PATCH /v1/quotes/{folio}/locations/{indice}`
-- `GET /v1/quotes/{folio}/locations/summary`
-- `GET /v1/quotes/{folio}/locations/results`
-- `GET /v1/quotes/{folio}/coverage-options`
-- `PUT /v1/quotes/{folio}/coverage-options`
-- `POST /v1/quotes/{folio}/calculate`
-- `GET /v1/quotes/{folio}/state`
+- `FIRE` (Incendio)
+- `EARTHQUAKE` (Terremoto)
+- `FLOOD` (Inundacion)
 
-## 7. Flujos funcionales criticos
+### Ocupaciones base
 
-### 7.1 Versionado de negocio
+- `OFFICE`
+- `COMMERCE`
+- `WAREHOUSE`
+- `RESTAURANT`
+- `LIGHT_INDUSTRY`
 
-Se incrementa `businessVersion` y se actualiza `modifiedAt` en:
+### Tipos constructivos base
 
-- `general-info`
-- `locations/layout`
-- `locations` (replace y patch)
-- `coverage-options`
+- `CONCRETE`
+- `MIXED`
+- `WOOD`
 
-### 7.2 Regla de calculabilidad por ubicacion
+## Endpoints principales
 
-Una ubicacion no se calcula si:
+Base URL: `http://localhost:8080/v1`
 
-- no tiene codigo postal valido
-- no tiene `giro.claveIncendio`
-- no tiene garantias tarifables
+- `POST /folios`
+- `GET/PUT /quotes/{folio}/general-info`
+- `GET/PUT /quotes/{folio}/locations/layout`
+- `GET/PUT/PATCH /quotes/{folio}/locations...`
+- `GET/PUT /quotes/{folio}/coverage-options`
+- `POST /quotes/{folio}/calculate`
+- `GET /quotes/{folio}/state`
+- `GET /quotes/{folio}/locations/results`
+- `GET /catalogs/geography`
 
-Mapeo conservador vigente:
+## Nota importante sobre validaciones de ubicacion
 
-- `giro.claveIncendio` se representa con `occupancyType`
-- garantias tarifables se representan con coberturas `selected=true`
+Para que una ubicacion pase bien hacia calculo:
 
-Comportamiento:
+- debe tener direccion
+- debe tener codigo postal valido
+- debe tener ocupacion
+- debe existir al menos una cobertura seleccionada
 
-- la ubicacion no calculable se excluye
-- se agrega alerta de exclusion
-- las ubicaciones validas restantes si se calculan
+Si no, el sistema puede guardarla, pero luego la excluye del calculo y deja alertas.
 
-## 8. Estado de calculo y rating
+## Estructura rapida del repo
 
-- El motor de calculo activo sigue siendo MVP (`StubPremiumCalculator`).
-- La formula sigue siendo simplificada (no actuarial real).
-- Ya existe integracion read-only de tablas maestras de rating en modulo `catalog`:
-  - entities JPA
-  - Spring Data repositories
-  - adapters de dominio
-  - servicios de consulta
-- Esa capa aun no reemplaza el flujo de calculo productivo.
-
-## 9. Tablas maestras integradas (read-only)
-
-Soportadas en codigo:
-
-- `postal_code_zone_map`
-- `zone_factors`
-- `occupancy_catalog`
-- `occupancy_factors`
-- `construction_factors`
-- `coverage_rate_tables`
-- `coverage_factor_tables`
-- `calculation_parameters`
-
-Codigos canonicos tecnicos:
-
-- `productCode`: `DANOS`
-- `occupancyType`: `OFFICE`, `COMMERCE`, `RESTAURANT`, `WAREHOUSE`, `LIGHT_INDUSTRY`
-- `constructionType`: `CONCRETE`, `MIXED`, `WOOD`
-- `coverageCode`: `FIRE`, `EARTHQUAKE`, `FLOOD`
-
-## 10. Pruebas y cobertura
-
-Suite completa:
-
-```bash
-cd backend
-./gradlew test
+```text
+core_seguros/
+  backend/
+  frontend/
+  docker-compose.yml
 ```
 
-Cobertura:
+## Si algo no responde
 
-```bash
-./gradlew jacocoTestReport jacocoTestCoverageVerification
-```
+- Revisa contenedores: `docker ps`
+- Revisa logs backend: `docker compose logs -f backend`
+- Revisa logs frontend: `docker compose logs -f frontend`
 
-Estado validado:
-
-- `./gradlew test` en verde
-- `./gradlew jacocoTestCoverageVerification` en verde
-
-Pruebas E2E REST:
-
-- `QuoteApiE2ETest`
-- stack: `@SpringBootTest` + `MockMvc`
-- perfil `test` con H2 en memoria
-
-## 11. Notas de base de datos
-
-- Runtime local: MariaDB (`mariadb` profile), Flyway habilitado.
-- Test: H2 en memoria (`test` profile), Flyway deshabilitado en pruebas y esquema generado para tests.
-
-## 12. Limitaciones y supuestos del MVP
-
-- formula de prima simplificada, no actuarial
-- sin authn/authz
-- sin integraciones externas productivas
-- mapeos conservadores explicitos:
-  - `occupancyType` como representacion temporal de `giro.claveIncendio`
-  - `selected=true` como representacion temporal de garantia tarifable
-- capa de rating en BD integrada solo para consulta read-only en esta etapa
+Si quieres una guia paso a paso para pruebas funcionales (tipo checklist), la puedo agregar tambien.

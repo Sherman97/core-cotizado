@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T18:49:35.411Z" hostname="MacBook-Pro-de-German.local" time="0.141">
+<testsuite name="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T19:48:54.481Z" hostname="MacBook-Pro-de-German.local" time="0.145">
   <properties/>
-  <testcase name="shouldCreateAndRegisterIdempotencyKeyWhenKeyIsNew()" classname="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" time="0.134"/>
-  <testcase name="shouldReplayExistingQuoteWhenIdempotencyKeyAlreadyExists()" classname="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" time="0.003"/>
-  <testcase name="shouldCreateQuoteWithoutIdempotencyWhenHeaderIsMissing()" classname="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" time="0.003"/>
+  <testcase name="shouldCreateAndRegisterIdempotencyKeyWhenKeyIsNew()" classname="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" time="0.14"/>
+  <testcase name="shouldReplayExistingQuoteWhenIdempotencyKeyAlreadyExists()" classname="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" time="0.002"/>
+  <testcase name="shouldCreateQuoteWithoutIdempotencyWhenHeaderIsMissing()" classname="com.cotizador.danos.quote.application.CreateQuoteWithIdempotencyUseCaseTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
