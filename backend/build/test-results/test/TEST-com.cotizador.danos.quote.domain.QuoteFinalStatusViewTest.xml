@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.domain.QuoteFinalStatusViewTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.843Z" hostname="MacBook-Pro-de-German.local" time="0.001">
+<testsuite name="com.cotizador.danos.quote.domain.QuoteFinalStatusViewTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:46.684Z" hostname="MacBook-Pro-de-German.local" time="0.001">
   <properties/>
   <testcase name="shouldCreateFinalStatusViewWithPremiumSummaryAndRelevantAlerts()" classname="com.cotizador.danos.quote.domain.QuoteFinalStatusViewTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>

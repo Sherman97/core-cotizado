@@ -15,41 +15,64 @@ public class LocationApiMapper {
 
   public QuoteLocationPatch toPatch(LocationUpsertItemRequest request) {
     return new QuoteLocationPatch(
+        request.locationIndex(),
         request.locationName(),
         request.city(),
+        request.colony(),
+        request.municipality(),
         request.department(),
         request.address(),
         request.postalCode(),
         request.constructionType(),
+        request.constructionLevel(),
+        request.constructionYear(),
         request.occupancyType(),
-        request.insuredValue()
+        request.fireKey(),
+        request.catastrophicZone(),
+        request.insuredValue(),
+        request.guarantees()
     );
   }
 
   public QuoteLocationUpdatePatch toUpdatePatch(UpdateLocationRequest request) {
     return new QuoteLocationUpdatePatch(
+        request.locationIndex(),
         request.locationName(),
         request.city(),
+        request.colony(),
+        request.municipality(),
         request.department(),
         request.address(),
         request.postalCode(),
         request.constructionType(),
+        request.constructionLevel(),
+        request.constructionYear(),
         request.occupancyType(),
-        request.insuredValue()
+        request.fireKey(),
+        request.catastrophicZone(),
+        request.insuredValue(),
+        request.guarantees()
     );
   }
 
   public LocationResponse toResponse(QuoteLocation location) {
     return new LocationResponse(
-        location.getId(),
+        location.getLocationIndex() != null ? location.getLocationIndex() : 0,
         location.getLocationName(),
         location.getCity(),
+        location.getColony(),
+        location.getMunicipality(),
         location.getDepartment(),
         location.getAddress(),
         location.getPostalCode(),
         location.getConstructionType(),
+        location.getConstructionLevel(),
+        location.getConstructionYear(),
         location.getOccupancyType(),
+        location.getFireKey(),
+        location.getCatastrophicZone(),
         location.getInsuredValue(),
+        location.getGuarantees(),
         location.getValidationStatus().name(),
         location.getAlerts()
     );

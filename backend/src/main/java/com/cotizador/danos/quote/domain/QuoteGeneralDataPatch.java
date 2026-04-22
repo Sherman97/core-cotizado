@@ -6,6 +6,8 @@ public record QuoteGeneralDataPatch(
     String currency,
     String observations,
     String agentCode,
-    String agentNameSnapshot
+    String agentNameSnapshot,
+    String riskClassification,
+    String businessType
 ) {
 }

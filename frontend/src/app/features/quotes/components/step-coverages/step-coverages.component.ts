@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component';
@@ -338,7 +338,7 @@ import { CoverageType } from '../../../../core/models/api.models';
     }
   `]
 })
-export class StepCoveragesComponent implements OnInit {
+export class StepCoveragesComponent implements OnInit, OnChanges {
   @Output() next = new EventEmitter<CoverageFormData[]>();
   @Output() previous = new EventEmitter<void>();
   @Input() initialCoverages: CoverageFormData[] = [];
@@ -350,6 +350,12 @@ export class StepCoveragesComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedCoverages = [...this.initialCoverages];
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialCoverages']) {
+      this.selectedCoverages = [...(this.initialCoverages ?? [])];
+    }
   }
 
   /**

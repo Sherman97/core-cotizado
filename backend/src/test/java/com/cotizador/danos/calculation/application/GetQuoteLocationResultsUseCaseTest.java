@@ -100,16 +100,7 @@ class GetQuoteLocationResultsUseCaseTest {
     return QuoteLocation.create(
         1L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Matriz Centro",
-            "Bogota",
-            "Cundinamarca",
-            "Calle 100 #10-20",
-            "110111",
-            "CONCRETE",
-            "OFFICE",
-            1500000
-        )
+        new QuoteLocationPatch(0, "Matriz Centro", "Bogota", null, null, "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", 0, 0, "OFFICE", null, null, 1500000, java.util.List.of())
     );
   }
 
@@ -117,16 +108,7 @@ class GetQuoteLocationResultsUseCaseTest {
     return QuoteLocation.create(
         2L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Sucursal Norte",
-            "Bogota",
-            "Cundinamarca",
-            null,
-            null,
-            "CONCRETE",
-            "OFFICE",
-            900000
-        )
+        new QuoteLocationPatch(0, "Sucursal Norte", "Bogota", null, null, "Cundinamarca", null, null, "CONCRETE", 0, 0, "OFFICE", null, null, 900000, java.util.List.of())
     );
   }
 

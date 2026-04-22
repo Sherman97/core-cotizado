@@ -64,6 +64,15 @@ export class CatalogService {
     });
   }
 
+  getFireKeysByOccupancy(occupancyCode: string): Observable<string[]> {
+    return this.getOccupancyTypes().pipe(
+      map((types) => {
+        const fireKey = types.find((type) => type.code === occupancyCode)?.fireKey;
+        return fireKey ? [fireKey] : [];
+      })
+    );
+  }
+
   /**
    * Get construction types
    */
@@ -137,11 +146,11 @@ export class CatalogService {
   private getMockCatalog(): Catalog {
     return {
       occupancyTypes: [
-        { code: 'OFFICE', name: 'Oficina', description: 'Espacios de oficina y áreas administrativas' },
-        { code: 'COMMERCE', name: 'Comercio', description: 'Espacios comerciales de venta al por menor' },
-        { code: 'RESTAURANT', name: 'Restaurante', description: 'Establecimientos de servicio de alimentos' },
-        { code: 'WAREHOUSE', name: 'Bodega', description: 'Instalaciones de almacenamiento y bodegaje' },
-        { code: 'LIGHT_INDUSTRY', name: 'Industria ligera', description: 'Manufactura e industria liviana' }
+        { code: 'OFFICE', name: 'Oficina', description: 'Espacios de oficina y áreas administrativas', fireKey: 'GIR-OFF-01' },
+        { code: 'COMMERCE', name: 'Comercio', description: 'Espacios comerciales de venta al por menor', fireKey: 'GIR-RET-01' },
+        { code: 'RESTAURANT', name: 'Restaurante', description: 'Establecimientos de servicio de alimentos', fireKey: 'GIR-RES-01' },
+        { code: 'WAREHOUSE', name: 'Bodega', description: 'Instalaciones de almacenamiento y bodegaje', fireKey: 'GIR-WAR-01' },
+        { code: 'LIGHT_INDUSTRY', name: 'Industria ligera', description: 'Manufactura e industria liviana', fireKey: 'GIR-IND-01' }
       ],
       constructionTypes: [
         { code: 'CONCRETE', name: 'Concreto', description: 'Construcción en concreto reforzado' },

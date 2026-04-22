@@ -44,20 +44,24 @@ public class UpdateQuoteGeneralDataUseCase {
 <span class="nc" id="L44">          patch.currency(),</span>
 <span class="nc" id="L45">          patch.observations(),</span>
           null,
-          null
+          null,
+<span class="nc" id="L48">          patch.riskClassification(),</span>
+<span class="nc" id="L49">          patch.businessType()</span>
       );
     }
 
-<span class="fc" id="L51">    var agent = agentCatalogQueryService.findActiveByCode(patch.agentCode())</span>
-<span class="fc" id="L52">        .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Agent code not found or inactive: &quot; + patch.agentCode()));</span>
+<span class="fc" id="L53">    var agent = agentCatalogQueryService.findActiveByCode(patch.agentCode())</span>
+<span class="fc" id="L54">        .orElseThrow(() -&gt; new IllegalArgumentException(&quot;Agent code not found or inactive: &quot; + patch.agentCode()));</span>
 
-<span class="fc" id="L54">    return new QuoteGeneralDataPatch(</span>
-<span class="fc" id="L55">        patch.productCode(),</span>
-<span class="fc" id="L56">        patch.customerName(),</span>
-<span class="fc" id="L57">        patch.currency(),</span>
-<span class="fc" id="L58">        patch.observations(),</span>
-<span class="fc" id="L59">        agent.code(),</span>
-<span class="fc" id="L60">        agent.name()</span>
+<span class="fc" id="L56">    return new QuoteGeneralDataPatch(</span>
+<span class="fc" id="L57">        patch.productCode(),</span>
+<span class="fc" id="L58">        patch.customerName(),</span>
+<span class="fc" id="L59">        patch.currency(),</span>
+<span class="fc" id="L60">        patch.observations(),</span>
+<span class="fc" id="L61">        agent.code(),</span>
+<span class="fc" id="L62">        agent.name(),</span>
+<span class="fc" id="L63">        patch.riskClassification(),</span>
+<span class="fc" id="L64">        patch.businessType()</span>
     );
   }
 }

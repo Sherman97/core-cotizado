@@ -327,6 +327,7 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.folio = this.route.snapshot.paramMap.get('folio') || '';
+    this.wizardService.reset();
     this.loadQuotationState();
     this.loadDataFromBackend();
   }
@@ -352,13 +353,22 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
     this.quoteApi.getGeneralInfo(this.folio).subscribe({
       next: (response) => {
         const data = response.data;
-        if (data.customerName || data.currency || data.observations || data.agentCode) {
+        if (
+          data.customerName ||
+          data.currency ||
+          data.observations ||
+          data.agentCode ||
+          data.riskClassification ||
+          data.businessType
+        ) {
           this.wizardService.setGeneralInfo({
             productCode: data.productCode || 'DANOS',
             customerName: data.customerName || '',
             currency: data.currency || 'COP',
             agentCode: data.agentCode,
             agentNameSnapshot: data.agentNameSnapshot,
+            riskClassification: data.riskClassification,
+            businessType: data.businessType,
             observations: data.observations
           });
         }
@@ -473,7 +483,7 @@ export class QuoteWizardPageComponent implements OnInit, OnDestroy {
     const payload = {
       locations: locations.map((loc: LocationFormData, idx: number) => ({
         ...loc,
-        indice: idx + 1
+        locationIndex: idx + 1
       }))
     };
 

@@ -67,6 +67,25 @@ import { Subject, takeUntil } from 'rxjs';
         </div>
 
         <div class="form-row">
+          <div class="form-col">
+            <app-select-field
+              formControlName="riskClassification"
+              label="Clasificación de riesgo"
+              [required]="true"
+              [options]="riskClassificationOptions"
+            ></app-select-field>
+          </div>
+          <div class="form-col">
+            <app-select-field
+              formControlName="businessType"
+              label="Tipo de negocio"
+              [required]="true"
+              [options]="businessTypeOptions"
+            ></app-select-field>
+          </div>
+        </div>
+
+        <div class="form-row">
           <div class="form-col full">
             <app-text-field
               formControlName="observations"
@@ -98,6 +117,12 @@ import { Subject, takeUntil } from 'rxjs';
         </div>
         <div *ngIf="form.get('currency')?.hasError('required')" class="error-message">
           La moneda es obligatoria
+        </div>
+        <div *ngIf="form.get('riskClassification')?.hasError('required')" class="error-message">
+          La clasificación de riesgo es obligatoria
+        </div>
+        <div *ngIf="form.get('businessType')?.hasError('required')" class="error-message">
+          El tipo de negocio es obligatorio
         </div>
       </div>
     </div>
@@ -264,6 +289,16 @@ export class StepGeneralInfoComponent implements OnInit, OnChanges, OnDestroy {
     { value: 'USD', label: 'Dólar estadounidense (USD)' },
     { value: 'MXN', label: 'Peso mexicano (MXN)' }
   ];
+  riskClassificationOptions = [
+    { value: 'LOW', label: 'Bajo' },
+    { value: 'MEDIUM', label: 'Medio' },
+    { value: 'HIGH', label: 'Alto' }
+  ];
+  businessTypeOptions = [
+    { value: 'COMMERCE', label: 'Comercio' },
+    { value: 'SERVICES', label: 'Servicios' },
+    { value: 'INDUSTRIAL', label: 'Industrial' }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -298,6 +333,8 @@ export class StepGeneralInfoComponent implements OnInit, OnChanges, OnDestroy {
       customerName: ['', [Validators.required, Validators.minLength(3)]],
       currency: ['COP', Validators.required],
       agentCode: [''],
+      riskClassification: ['', Validators.required],
+      businessType: ['', Validators.required],
       observations: ['']
     });
 
@@ -317,6 +354,8 @@ export class StepGeneralInfoComponent implements OnInit, OnChanges, OnDestroy {
         customerName: this.initialGeneralInfo.customerName ?? '',
         currency: this.initialGeneralInfo.currency ?? 'COP',
         agentCode: this.initialGeneralInfo.agentCode ?? '',
+        riskClassification: this.initialGeneralInfo.riskClassification ?? '',
+        businessType: this.initialGeneralInfo.businessType ?? '',
         observations: this.initialGeneralInfo.observations ?? ''
       },
       { emitEvent: false }

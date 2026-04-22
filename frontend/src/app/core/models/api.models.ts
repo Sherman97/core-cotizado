@@ -34,6 +34,8 @@ export interface GeneralInfo {
   currency: string;
   agentCode?: string;
   agentNameSnapshot?: string;
+  riskClassification?: string;
+  businessType?: string;
   observations?: string;
   businessVersion?: number;
   modifiedAt?: string;
@@ -65,13 +67,20 @@ export interface LocationLayout {
 export interface Location {
   locationName: string;
   city: string;
+  colony?: string;
+  municipality?: string;
   department: string;
   address?: string;
   postalCode?: string;
   constructionType: string;
+  constructionLevel?: number;
+  constructionYear?: number;
   occupancyType: string;
+  fireKey?: string;
+  catastrophicZone?: boolean;
   insuredValue: number;
   indice?: number;
+  guarantees?: string[];
 }
 
 export interface LocationsPayload {
@@ -80,12 +89,19 @@ export interface LocationsPayload {
 
 export interface LocationPatchPayload {
   address?: string;
+  colony?: string;
+  municipality?: string;
   postalCode?: string;
   locationName?: string;
   city?: string;
   department?: string;
   constructionType?: string;
+  constructionLevel?: number;
+  constructionYear?: number;
   occupancyType?: string;
+  fireKey?: string;
+  catastrophicZone?: boolean;
+  guarantees?: string[];
   insuredValue?: number;
 }
 
@@ -182,6 +198,7 @@ export interface OccupancyType {
   code: string;
   name: string;
   description?: string;
+  fireKey?: string;
 }
 
 export interface ConstructionType {

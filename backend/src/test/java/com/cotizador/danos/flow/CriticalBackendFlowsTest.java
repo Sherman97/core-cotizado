@@ -73,8 +73,8 @@ class CriticalBackendFlowsTest {
     );
 
     replaceLocationsUseCase.handle(folio, List.of(
-        new QuoteLocationPatch("Matriz Centro", "Bogota", "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", "OFFICE", 1_500_000),
-        new QuoteLocationPatch("Sucursal Norte", "Bogota", "Cundinamarca", null, null, "CONCRETE", "OFFICE", 900_000)
+        new QuoteLocationPatch(1, "Matriz Centro", "Bogota", null, null, "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", 2, 2018, "OFFICE", "F1", null, 1_500_000, java.util.List.of()),
+        new QuoteLocationPatch(2, "Sucursal Norte", "Bogota", null, null, "Cundinamarca", null, null, "CONCRETE", 2, 2016, "OFFICE", "F1", null, 900_000, java.util.List.of())
     ));
 
     List<QuoteLocation> currentLocations = listQuoteLocationsUseCase.handle(folio);
@@ -86,7 +86,7 @@ class CriticalBackendFlowsTest {
     QuoteLocation updatedLocation = updateQuoteLocationUseCase.handle(
         folio,
         incompleteLocation.getId(),
-        new QuoteLocationUpdatePatch(null, null, null, "Calle 80 #15-10", "110221", null, null, null)
+        new QuoteLocationUpdatePatch(null, null, null, null, null, null, "Calle 80 #15-10", "110221", null, null, null, null, null, null, null, null)
     );
 
     assertThat(updatedLocation.getValidationStatus()).isEqualTo(LocationValidationStatus.COMPLETE);
@@ -107,8 +107,8 @@ class CriticalBackendFlowsTest {
     String folio = createBaseQuote(quoteRepository);
 
     new ReplaceQuoteLocationsUseCase(quoteRepository, locationRepository, FIXED_CLOCK).handle(folio, List.of(
-        new QuoteLocationPatch("Matriz Centro", "Bogota", "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", "OFFICE", 1_500_000),
-        new QuoteLocationPatch("Sucursal Norte", "Bogota", "Cundinamarca", null, null, "CONCRETE", "OFFICE", 900_000)
+        new QuoteLocationPatch(1, "Matriz Centro", "Bogota", null, null, "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", 2, 2018, "OFFICE", "F1", null, 1_500_000, java.util.List.of()),
+        new QuoteLocationPatch(2, "Sucursal Norte", "Bogota", null, null, "Cundinamarca", null, null, "CONCRETE", 2, 2016, "OFFICE", "F1", null, 900_000, java.util.List.of())
     ));
     new ConfigureQuoteCoveragesUseCase(quoteRepository, quoteCoverageRepository, FIXED_CLOCK).handle(
         folio,

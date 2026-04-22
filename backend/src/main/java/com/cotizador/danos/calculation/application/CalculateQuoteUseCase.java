@@ -110,7 +110,7 @@ public class CalculateQuoteUseCase {
     List<LocationCalculationResult> locationResults = new ArrayList<>();
     List<String> alerts = new ArrayList<>();
     List<CalculationTraceDetail> traceDetails = new ArrayList<>();
-    addPreCalculationAlerts(locations, coverages, alerts);
+    addPreCalculationAlerts(quote, locations, coverages, alerts);
 
     for (QuoteLocation location : locations) {
       if (location.getValidationStatus() == LocationValidationStatus.COMPLETE) {
@@ -165,8 +165,14 @@ public class CalculateQuoteUseCase {
     if (!isPostalCodeValid(location.getPostalCode())) {
       reasons.add(INVALID_POSTAL_CODE_REASON);
     }
-    if (!StringUtils.hasText(location.getOccupancyType())) {
+    if (!StringUtils.hasText(location.getOccupancyType()) || !StringUtils.hasText(location.getFireKey())) {
       reasons.add(MISSING_OCCUPANCY_FIRE_KEY_REASON);
+    }
+    if (location.getConstructionLevel() == null || location.getConstructionLevel() <= 0) {
+      reasons.add("missing valid construction level");
+    }
+    if (location.getConstructionYear() == null || location.getConstructionYear() < 1900) {
+      reasons.add("missing valid construction year");
     }
     if (!hasTariffableGuarantees(coverages)) {
       reasons.add(MISSING_TARIFFABLE_GUARANTEES_REASON);
@@ -186,10 +192,14 @@ public class CalculateQuoteUseCase {
   }
 
   private void addPreCalculationAlerts(
+      Quote quote,
       List<QuoteLocation> locations,
       List<QuoteCoverageSelection> coverages,
       List<String> alerts
   ) {
+    if (!StringUtils.hasText(quote.getRiskClassification()) || !StringUtils.hasText(quote.getBusinessType())) {
+      alerts.add("Missing quote mandatory data (Risk Classification / Business Type)");
+    }
     if (locations.isEmpty()) {
       alerts.add(NO_LOCATIONS_CONFIGURED_ALERT);
     }

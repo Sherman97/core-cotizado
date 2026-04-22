@@ -39,6 +39,12 @@ public class QuoteJpaEntity {
   @Column(name = "agent_name_snapshot", length = 255)
   private String agentNameSnapshot;
 
+  @Column(name = "risk_classification", length = 64)
+  private String riskClassification;
+
+  @Column(name = "business_type", length = 64)
+  private String businessType;
+
   @Column(name = "observations", length = 1000)
   private String observations;
 
@@ -141,6 +147,22 @@ public class QuoteJpaEntity {
 
   public void setAgentNameSnapshot(String agentNameSnapshot) {
     this.agentNameSnapshot = agentNameSnapshot;
+  }
+
+  public String getRiskClassification() {
+    return riskClassification;
+  }
+
+  public void setRiskClassification(String riskClassification) {
+    this.riskClassification = riskClassification;
+  }
+
+  public String getBusinessType() {
+    return businessType;
+  }
+
+  public void setBusinessType(String businessType) {
+    this.businessType = businessType;
   }
 
   public Integer getLayoutExpectedLocationCount() {

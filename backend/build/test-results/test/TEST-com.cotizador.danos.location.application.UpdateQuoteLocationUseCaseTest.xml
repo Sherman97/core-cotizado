@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.401Z" hostname="MacBook-Pro-de-German.local" time="0.022">
+<testsuite name="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:46.085Z" hostname="MacBook-Pro-de-German.local" time="0.016">
   <properties/>
-  <testcase name="shouldUpdateOnlyProvidedFields()" classname="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" time="0.008"/>
-  <testcase name="shouldThrowControlledErrorWhenLocationDoesNotExist()" classname="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" time="0.005"/>
-  <testcase name="shouldUpdateLocationAndRecalculateValidationStatus()" classname="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" time="0.007"/>
+  <testcase name="shouldUpdateOnlyProvidedFields()" classname="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" time="0.005"/>
+  <testcase name="shouldThrowControlledErrorWhenLocationDoesNotExist()" classname="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" time="0.004"/>
+  <testcase name="shouldUpdateLocationAndRecalculateValidationStatus()" classname="com.cotizador.danos.location.application.UpdateQuoteLocationUseCaseTest" time="0.005"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

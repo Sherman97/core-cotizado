@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.cotizador.danos.agent.application.AgentCatalogQueryServiceTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:41.224Z" hostname="MacBook-Pro-de-German.local" time="1.123">
+  <properties/>
+  <testcase name="findAgents_withoutCode_usesActiveFilter()" classname="com.cotizador.danos.agent.application.AgentCatalogQueryServiceTest" time="1.078"/>
+  <testcase name="findActiveByCode_handlesNullOrBlankCode()" classname="com.cotizador.danos.agent.application.AgentCatalogQueryServiceTest" time="0.006"/>
+  <testcase name="findAgents_withCode_activeFiltersCorrectly()" classname="com.cotizador.danos.agent.application.AgentCatalogQueryServiceTest" time="0.005"/>
+  <testcase name="findActiveByCode_returnsWhenFound()" classname="com.cotizador.danos.agent.application.AgentCatalogQueryServiceTest" time="0.018"/>
+  <testcase name="getByCode_throwsExceptionWhenNotFound()" classname="com.cotizador.danos.agent.application.AgentCatalogQueryServiceTest" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

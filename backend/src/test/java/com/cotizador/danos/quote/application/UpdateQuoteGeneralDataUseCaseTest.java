@@ -103,6 +103,6 @@ class UpdateQuoteGeneralDataUseCaseTest {
         "Observacion inicial",
         "AGT-001",
         null
-    );
+    , null, null);
   }
 }

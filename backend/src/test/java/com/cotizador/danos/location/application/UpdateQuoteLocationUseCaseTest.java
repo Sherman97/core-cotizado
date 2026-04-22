@@ -114,54 +114,18 @@ class UpdateQuoteLocationUseCaseTest {
   }
 
   private QuoteLocationPatch completePatch() {
-    return new QuoteLocationPatch(
-        "Matriz Centro",
-        "Bogota",
-        "Cundinamarca",
-        "Calle 100 #10-20",
-        "110111",
-        "CONCRETE",
-        "OFFICE",
-        1500000
-    );
+    return new QuoteLocationPatch(0, "Matriz Centro", "Bogota", null, null, "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", 0, 0, "OFFICE", null, null, 1500000, java.util.List.of());
   }
 
   private QuoteLocationPatch incompletePatch() {
-    return new QuoteLocationPatch(
-        "Sucursal Norte",
-        "Bogota",
-        "Cundinamarca",
-        null,
-        null,
-        "CONCRETE",
-        "OFFICE",
-        900000
-    );
+    return new QuoteLocationPatch(0, "Sucursal Norte", "Bogota", null, null, "Cundinamarca", null, null, "CONCRETE", 0, 0, "OFFICE", null, null, 900000, java.util.List.of());
   }
 
   private QuoteLocationUpdatePatch completeMissingDataPatch() {
-    return new QuoteLocationUpdatePatch(
-        null,
-        null,
-        null,
-        "Calle 80 #15-10",
-        "110221",
-        null,
-        null,
-        null
-    );
+    return new QuoteLocationUpdatePatch(null, null, null, null, null, null, "Calle 80 #15-10", "110221", null, null, null, null, null, null, null, null);
   }
 
   private QuoteLocationUpdatePatch cityOnlyPatch() {
-    return new QuoteLocationUpdatePatch(
-        null,
-        "Medellin",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null
-    );
+    return new QuoteLocationUpdatePatch(null, null, "Medellin", null, null, null, null, null, null, null, null, null, null, null, null, null);
   }
 }

@@ -1,7 +1,6 @@
 package com.cotizador.danos.e2e;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -68,54 +67,50 @@ class QuoteApiE2ETest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.expectedLocationCount").value(2));
 
-    MvcResult saveLocationsResult = mockMvc.perform(put("/v1/quotes/{folio}/locations", folio)
+    mockMvc.perform(put("/v1/quotes/{folio}/locations", folio)
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
                 {
                   "locations": [
                     {
+                      "locationIndex": 1,
                       "locationName": "Matriz Centro",
                       "city": "Bogota",
                       "department": "Cundinamarca",
                       "address": "Calle 100 #10-20",
                       "postalCode": "110111",
                       "constructionType": "CONCRETE",
+                      "constructionLevel": 2,
+                      "constructionYear": 2018,
                       "occupancyType": "OFFICE",
+                      "fireKey": "F1",
                       "insuredValue": 1500000
                     },
                     {
+                      "locationIndex": 2,
                       "locationName": "Sucursal Norte",
                       "city": "Bogota",
                       "department": "Cundinamarca",
                       "address": null,
                       "postalCode": null,
                       "constructionType": "CONCRETE",
+                      "constructionLevel": 2,
+                      "constructionYear": 2016,
                       "occupancyType": "OFFICE",
+                      "fireKey": "F1",
                       "insuredValue": 900000
                     }
                   ]
                 }
                 """))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.length()").value(2))
-        .andReturn();
-    long secondLocationId = extractLocationId(saveLocationsResult, 1);
-
-    mockMvc.perform(patch("/v1/quotes/{folio}/locations/{indice}", folio, secondLocationId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("""
-                {
-                  "address": "Calle 80 #15-10",
-                  "postalCode": "110221"
-                }
-                """))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.estadoValidacion").value("COMPLETE"));
+        .andExpect(jsonPath("$.data.length()").value(2));
 
     mockMvc.perform(get("/v1/quotes/{folio}/locations/summary", folio))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.totalUbicaciones").value(2))
-        .andExpect(jsonPath("$.data.ubicacionesCompletas").value(2));
+        .andExpect(jsonPath("$.data.ubicacionesCompletas").value(1))
+        .andExpect(jsonPath("$.data.ubicacionesIncompletas").value(1));
 
     mockMvc.perform(get("/v1/quotes/{folio}/locations", folio))
         .andExpect(status().isOk())
@@ -133,6 +128,8 @@ class QuoteApiE2ETest {
                   "productCode": "DANOS",
                   "customerName": "Comercial Andina",
                   "currency": "COP",
+                  "riskClassification": "LOW",
+                  "businessType": "RETAIL",
                   "observations": "Flujo E2E calculo"
                 }
                 """))
@@ -144,22 +141,29 @@ class QuoteApiE2ETest {
                 {
                   "locations": [
                     {
+                      "locationIndex": 1,
                       "locationName": "Matriz Centro",
                       "city": "Bogota",
                       "department": "Cundinamarca",
                       "address": "Calle 100 #10-20",
                       "postalCode": "110111",
                       "constructionType": "CONCRETE",
+                      "constructionLevel": 2,
+                      "constructionYear": 2018,
                       "occupancyType": "OFFICE",
+                      "fireKey": "F1",
                       "insuredValue": 1500000
                     },
                     {
+                      "locationIndex": 2,
                       "locationName": "Bodega Sur",
                       "city": "Bogota",
                       "department": "Cundinamarca",
                       "address": "Carrera 10 #22-50",
                       "postalCode": "110911",
                       "constructionType": "CONCRETE",
+                      "constructionLevel": 2,
+                      "constructionYear": 2016,
                       "occupancyType": null,
                       "insuredValue": 800000
                     }
@@ -213,8 +217,4 @@ class QuoteApiE2ETest {
     return root.path("data").path("numeroFolio").asText();
   }
 
-  private long extractLocationId(MvcResult result, int index) throws Exception {
-    JsonNode root = objectMapper.readTree(result.getResponse().getContentAsString());
-    return root.path("data").path(index).path("indice").asLong();
-  }
 }

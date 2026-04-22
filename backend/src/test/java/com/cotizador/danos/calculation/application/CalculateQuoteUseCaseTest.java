@@ -51,6 +51,7 @@ class CalculateQuoteUseCaseTest {
   @Test
   void shouldCalculateOnlyValidLocationsAndUpdateQuoteStatus() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation validLocation = validLocation();
     QuoteLocation incompleteLocation = incompleteLocation();
     List<QuoteCoverageSelection> coverages = configuredCoverages();
@@ -82,6 +83,7 @@ class CalculateQuoteUseCaseTest {
   @Test
   void shouldExcludeInvalidLocationsAndRegisterExclusionReason() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation validLocation = validLocation();
     QuoteLocation invalidLocation = invalidLocation();
     List<QuoteCoverageSelection> coverages = configuredCoverages();
@@ -111,6 +113,7 @@ class CalculateQuoteUseCaseTest {
   @Test
   void shouldGeneratePreValidationAlertAndSkipCalculationWhenNoCoveragesConfigured() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation validLocation = validLocation();
     CalculateQuoteUseCase useCase = new CalculateQuoteUseCase(
         quoteRepository,
@@ -137,6 +140,7 @@ class CalculateQuoteUseCaseTest {
   @Test
   void shouldExcludeLocationWhenGiroClaveIncendioIsMissing() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation locationWithoutGiro = locationWithoutGiroClaveIncendio();
     List<QuoteCoverageSelection> coverages = configuredCoverages();
     CalculateQuoteUseCase useCase = new CalculateQuoteUseCase(
@@ -161,6 +165,7 @@ class CalculateQuoteUseCaseTest {
   @Test
   void shouldExcludeLocationWhenPostalCodeIsInvalid() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation locationWithInvalidPostalCode = locationWithInvalidPostalCode();
     List<QuoteCoverageSelection> coverages = configuredCoverages();
     CalculateQuoteUseCase useCase = new CalculateQuoteUseCase(
@@ -180,6 +185,54 @@ class CalculateQuoteUseCaseTest {
     assertThat(result.getNetPremium()).isZero();
     assertThat(result.getAlerts()).contains("Location Bodega Oriente excluded: invalid postal code");
     verify(premiumCalculator, never()).calculate(any(), any());
+  }
+
+  @Test
+  void shouldExcludeLocationWhenConstructionDataIsMissing() {
+    Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
+    QuoteLocation location = QuoteLocation.create(
+        6L,
+        FOLIO,
+        new QuoteLocationPatch(0, "Bodega Nueva", "Bogota", "Centro", "Bogota", "Cundinamarca", "Calle 10", "110911", "CONCRETE", 0, 1800, "OFFICE", "F1", false, 750000, java.util.List.of("G1"))
+    );
+    List<QuoteCoverageSelection> coverages = configuredCoverages();
+    CalculateQuoteUseCase useCase = new CalculateQuoteUseCase(
+        quoteRepository,
+        locationRepository,
+        quoteCoverageRepository,
+        premiumCalculator
+    );
+
+    when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(quote));
+    when(locationRepository.findByQuoteFolio(FOLIO)).thenReturn(List.of(location));
+    when(quoteCoverageRepository.findByQuoteFolio(FOLIO)).thenReturn(coverages);
+    when(quoteRepository.save(any(Quote.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    QuoteCalculationResult result = useCase.handle(FOLIO);
+
+    assertThat(result.getNetPremium()).isZero();
+    assertThat(result.getAlerts()).contains("Location Bodega Nueva excluded: missing valid construction level, missing valid construction year");
+  }
+
+  @Test
+  void shouldAddPrecalculationAlertsWhenQuoteDataAndLocationsAreMissing() {
+    Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    List<QuoteCoverageSelection> coverages = configuredCoverages();
+    CalculateQuoteUseCase useCase = new CalculateQuoteUseCase(quoteRepository, locationRepository, quoteCoverageRepository, premiumCalculator);
+
+    when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(quote));
+    when(locationRepository.findByQuoteFolio(FOLIO)).thenReturn(List.of());
+    when(quoteCoverageRepository.findByQuoteFolio(FOLIO)).thenReturn(coverages);
+    when(quoteRepository.save(any(Quote.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    QuoteCalculationResult result = useCase.handle(FOLIO);
+
+    assertThat(result.getNetPremium()).isZero();
+    assertThat(result.getAlerts()).contains(
+        "Missing quote mandatory data (Risk Classification / Business Type)",
+        "No locations configured for calculation"
+    );
   }
 
   @Test
@@ -204,16 +257,7 @@ class CalculateQuoteUseCaseTest {
     return QuoteLocation.create(
         1L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Matriz Centro",
-            "Bogota",
-            "Cundinamarca",
-            "Calle 100 #10-20",
-            "110111",
-            "CONCRETE",
-            "OFFICE",
-            1500000
-        )
+        new QuoteLocationPatch(1, "Matriz Centro", "Bogota", null, null, "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", 2, 2018, "OFFICE", "F1", null, 1500000, java.util.List.of())
     );
   }
 
@@ -221,16 +265,7 @@ class CalculateQuoteUseCaseTest {
     return QuoteLocation.create(
         2L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Sucursal Norte",
-            "Bogota",
-            "Cundinamarca",
-            null,
-            null,
-            "CONCRETE",
-            "OFFICE",
-            900000
-        )
+        new QuoteLocationPatch(2, "Sucursal Norte", "Bogota", null, null, "Cundinamarca", null, null, "CONCRETE", 2, 2015, "OFFICE", "F1", null, 900000, java.util.List.of())
     );
   }
 
@@ -247,16 +282,7 @@ class CalculateQuoteUseCaseTest {
     return QuoteLocation.create(
         4L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Bodega Sur",
-            "Bogota",
-            "Cundinamarca",
-            "Calle 10 #2-30",
-            "110911",
-            "CONCRETE",
-            null,
-            750000
-        )
+        new QuoteLocationPatch(3, "Bodega Sur", "Bogota", null, null, "Cundinamarca", "Calle 10 #2-30", "110911", "CONCRETE", 2, 2016, null, null, null, 750000, java.util.List.of())
     );
   }
 
@@ -264,16 +290,7 @@ class CalculateQuoteUseCaseTest {
     return QuoteLocation.create(
         5L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Bodega Oriente",
-            "Bogota",
-            "Cundinamarca",
-            "Carrera 15 #45-20",
-            "ABC12",
-            "CONCRETE",
-            "OFFICE",
-            600000
-        )
+        new QuoteLocationPatch(4, "Bodega Oriente", "Bogota", null, null, "Cundinamarca", "Carrera 15 #45-20", "ABC12", "CONCRETE", 2, 2016, "OFFICE", "F1", null, 600000, java.util.List.of())
     );
   }
 

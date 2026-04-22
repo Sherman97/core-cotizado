@@ -41,11 +41,32 @@ public class QuoteLocationJpaEntity {
   @Column(name = "postal_code", length = 32)
   private String postalCode;
 
+  @Column(name = "location_index")
+  private Integer locationIndex;
+
+  @Column(name = "colony", length = 120)
+  private String colony;
+
+  @Column(name = "municipality", length = 120)
+  private String municipality;
+
   @Column(name = "construction_type", length = 64)
   private String constructionType;
 
+  @Column(name = "construction_level")
+  private Integer constructionLevel;
+
+  @Column(name = "construction_year")
+  private Integer constructionYear;
+
   @Column(name = "occupancy_type", length = 64)
   private String occupancyType;
+
+  @Column(name = "fire_key", length = 64)
+  private String fireKey;
+
+  @Column(name = "catastrophic_zone")
+  private Boolean catastrophicZone;
 
   @Column(name = "insured_value", nullable = false)
   private long insuredValue;
@@ -53,6 +74,11 @@ public class QuoteLocationJpaEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "validation_status", nullable = false, length = 32)
   private LocationValidationStatus validationStatus;
+
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "quote_location_guarantees", joinColumns = @JoinColumn(name = "location_id"))
+  @Column(name = "guarantee", nullable = false, length = 255)
+  private List<String> guarantees = new ArrayList<>();
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "quote_location_alerts", joinColumns = @JoinColumn(name = "location_id"))
@@ -116,6 +142,30 @@ public class QuoteLocationJpaEntity {
     this.postalCode = postalCode;
   }
 
+  public Integer getLocationIndex() {
+    return locationIndex;
+  }
+
+  public void setLocationIndex(Integer locationIndex) {
+    this.locationIndex = locationIndex;
+  }
+
+  public String getColony() {
+    return colony;
+  }
+
+  public void setColony(String colony) {
+    this.colony = colony;
+  }
+
+  public String getMunicipality() {
+    return municipality;
+  }
+
+  public void setMunicipality(String municipality) {
+    this.municipality = municipality;
+  }
+
   public String getConstructionType() {
     return constructionType;
   }
@@ -124,12 +174,44 @@ public class QuoteLocationJpaEntity {
     this.constructionType = constructionType;
   }
 
+  public Integer getConstructionLevel() {
+    return constructionLevel;
+  }
+
+  public void setConstructionLevel(Integer constructionLevel) {
+    this.constructionLevel = constructionLevel;
+  }
+
+  public Integer getConstructionYear() {
+    return constructionYear;
+  }
+
+  public void setConstructionYear(Integer constructionYear) {
+    this.constructionYear = constructionYear;
+  }
+
   public String getOccupancyType() {
     return occupancyType;
   }
 
   public void setOccupancyType(String occupancyType) {
     this.occupancyType = occupancyType;
+  }
+
+  public String getFireKey() {
+    return fireKey;
+  }
+
+  public void setFireKey(String fireKey) {
+    this.fireKey = fireKey;
+  }
+
+  public Boolean getCatastrophicZone() {
+    return catastrophicZone;
+  }
+
+  public void setCatastrophicZone(Boolean catastrophicZone) {
+    this.catastrophicZone = catastrophicZone;
   }
 
   public long getInsuredValue() {
@@ -154,5 +236,13 @@ public class QuoteLocationJpaEntity {
 
   public void setAlerts(List<String> alerts) {
     this.alerts = alerts;
+  }
+
+  public List<String> getGuarantees() {
+    return guarantees;
+  }
+
+  public void setGuarantees(List<String> guarantees) {
+    this.guarantees = guarantees;
   }
 }

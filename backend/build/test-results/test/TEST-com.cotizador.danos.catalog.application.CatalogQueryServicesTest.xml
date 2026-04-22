@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.044Z" hostname="MacBook-Pro-de-German.local" time="0.389">
+<testsuite name="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:42.932Z" hostname="MacBook-Pro-de-German.local" time="0.442">
   <properties/>
-  <testcase name="shouldQueryCoverageRatesAndFactorsByProductAndCoverages()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.367"/>
-  <testcase name="shouldQueryConstructionFactorByConstructionType()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.006"/>
+  <testcase name="shouldQueryCoverageRatesAndFactorsByProductAndCoverages()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.419"/>
+  <testcase name="shouldQueryConstructionFactorByConstructionType()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.004"/>
   <testcase name="shouldQueryOccupancyFactorByOccupancyCode()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.004"/>
-  <testcase name="shouldQueryZoneFactorByPostalCode()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.004"/>
-  <testcase name="shouldQueryCalculationParametersByCodeAndList()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.005"/>
+  <testcase name="shouldQueryZoneFactorByPostalCode()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.005"/>
+  <testcase name="shouldQueryCalculationParametersByCodeAndList()" classname="com.cotizador.danos.catalog.application.CatalogQueryServicesTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

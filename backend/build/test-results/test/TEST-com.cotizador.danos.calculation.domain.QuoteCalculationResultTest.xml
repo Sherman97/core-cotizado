@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.calculation.domain.QuoteCalculationResultTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.032Z" hostname="MacBook-Pro-de-German.local" time="0.003">
+<testsuite name="com.cotizador.danos.calculation.domain.QuoteCalculationResultTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:42.923Z" hostname="MacBook-Pro-de-German.local" time="0.003">
   <properties/>
   <testcase name="shouldConsolidateNetAndCommercialPremiumFromValidLocations()" classname="com.cotizador.danos.calculation.domain.QuoteCalculationResultTest" time="0.001"/>
   <testcase name="shouldKeepAlertsForIncompleteLocationsAndReturnPartialResult()" classname="com.cotizador.danos.calculation.domain.QuoteCalculationResultTest" time="0.001"/>

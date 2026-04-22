@@ -51,6 +51,7 @@ class CalculateQuoteTraceabilityTest {
   @Test
   void shouldPersistAppliedFactorDetailsWhenCalculationFinishes() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation validLocation = validLocation();
     List<QuoteCoverageSelection> coverages = configuredCoverages();
     CalculationTraceDetail traceDetail = traceDetailFor(validLocation);
@@ -77,6 +78,7 @@ class CalculateQuoteTraceabilityTest {
   @Test
   void shouldPersistTraceOnlyForCalculatedLocations() {
     Quote quote = Quote.createNew(FOLIO, CREATED_AT);
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation validLocation = validLocation();
     QuoteLocation incompleteLocation = incompleteLocation();
     QuoteLocation invalidLocation = invalidLocation();
@@ -108,16 +110,7 @@ class CalculateQuoteTraceabilityTest {
     return QuoteLocation.create(
         1L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Matriz Centro",
-            "Bogota",
-            "Cundinamarca",
-            "Calle 100 #10-20",
-            "110111",
-            "CONCRETE",
-            "OFFICE",
-            1500000
-        )
+        new QuoteLocationPatch(1, "Matriz Centro", "Bogota", null, null, "Cundinamarca", "Calle 100 #10-20", "110111", "CONCRETE", 2, 2018, "OFFICE", "F1", null, 1500000, java.util.List.of())
     );
   }
 
@@ -125,16 +118,7 @@ class CalculateQuoteTraceabilityTest {
     return QuoteLocation.create(
         2L,
         FOLIO,
-        new QuoteLocationPatch(
-            "Sucursal Norte",
-            "Bogota",
-            "Cundinamarca",
-            null,
-            null,
-            "CONCRETE",
-            "OFFICE",
-            900000
-        )
+        new QuoteLocationPatch(2, "Sucursal Norte", "Bogota", null, null, "Cundinamarca", null, null, "CONCRETE", 2, 2016, "OFFICE", "F1", null, 900000, java.util.List.of())
     );
   }
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.location.api.LocationControllerValidationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.080Z" hostname="MacBook-Pro-de-German.local" time="0.244">
+<testsuite name="com.cotizador.danos.location.api.LocationControllerValidationTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:45.797Z" hostname="MacBook-Pro-de-German.local" time="0.225">
   <properties/>
-  <testcase name="shouldReturnBadRequestWhenLocationNameIsBlank()" classname="com.cotizador.danos.location.api.LocationControllerValidationTest" time="0.244"/>
-  <system-out><![CDATA[2026-04-21T16:43:54.960-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] c.d.l.a.LocationControllerValidationTest : Starting LocationControllerValidationTest using Java 21.0.2 with PID 95738 (started by germanrojas in /Users/germanrojas/Desktop/core_seguros/backend)
-2026-04-21T16:43:54.961-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] c.d.l.a.LocationControllerValidationTest : No active profile set, falling back to 1 default profile: "mariadb"
-2026-04-21T16:43:56.035-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
-2026-04-21T16:43:56.036-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
-2026-04-21T16:43:56.041-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
-2026-04-21T16:43:56.066-05:00  INFO 95738 --- [plataforma-danos-back] [    Test worker] c.d.l.a.LocationControllerValidationTest : Started LocationControllerValidationTest in 1.216 seconds (process running for 19.771)
+  <testcase name="shouldReturnBadRequestWhenLocationNameIsBlank()" classname="com.cotizador.danos.location.api.LocationControllerValidationTest" time="0.225"/>
+  <system-out><![CDATA[2026-04-21T19:40:44.947-05:00  INFO 70806 --- [plataforma-danos-back] [    Test worker] c.d.l.a.LocationControllerValidationTest : Starting LocationControllerValidationTest using Java 21.0.2 with PID 70806 (started by germanrojas in /Users/germanrojas/Desktop/core_seguros/backend)
+2026-04-21T19:40:44.948-05:00  INFO 70806 --- [plataforma-danos-back] [    Test worker] c.d.l.a.LocationControllerValidationTest : No active profile set, falling back to 1 default profile: "mariadb"
+2026-04-21T19:40:45.766-05:00  INFO 70806 --- [plataforma-danos-back] [    Test worker] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-04-21T19:40:45.767-05:00  INFO 70806 --- [plataforma-danos-back] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-04-21T19:40:45.769-05:00  INFO 70806 --- [plataforma-danos-back] [    Test worker] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-04-21T19:40:45.786-05:00  INFO 70806 --- [plataforma-danos-back] [    Test worker] c.d.l.a.LocationControllerValidationTest : Started LocationControllerValidationTest in 0.927 seconds (process running for 21.854)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

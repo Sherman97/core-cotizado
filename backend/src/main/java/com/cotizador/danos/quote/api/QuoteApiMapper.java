@@ -32,7 +32,9 @@ public class QuoteApiMapper {
         request.currency(),
         request.observations(),
         request.agentCode(),
-        null
+        null,
+        request.riskClassification(),
+        request.businessType()
     );
   }
 

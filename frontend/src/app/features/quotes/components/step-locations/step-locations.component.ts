@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TextFieldComponent } from '../../../../shared/components/text-field/text-field.component';
@@ -120,6 +120,39 @@ import { Subject, takeUntil } from 'rxjs';
                 [required]="true"
                 [options]="constructionOptions"
                 hint="Material y tipo de estructura de la edificación"
+              ></app-select-field>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <app-select-field
+                formControlName="constructionLevel"
+                label="Nivel de construcción"
+                [required]="true"
+                [options]="constructionLevelOptions"
+                hint="Debe ser mayor a 0 para el cálculo"
+              ></app-select-field>
+            </div>
+            <div class="form-col">
+              <app-select-field
+                formControlName="constructionYear"
+                label="Año de construcción"
+                [required]="true"
+                [options]="constructionYearOptions"
+                hint="Debe ser igual o mayor a 1900"
+              ></app-select-field>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-col full">
+              <app-select-field
+                formControlName="fireKey"
+                label="Clave de bomberos (fireKey)"
+                [required]="true"
+                [options]="fireKeyOptions"
+                hint="Dato requerido para que la ubicación sea calculable"
               ></app-select-field>
             </div>
           </div>
@@ -396,7 +429,7 @@ import { Subject, takeUntil } from 'rxjs';
     }
   `]
 })
-export class StepLocationsComponent implements OnInit, OnDestroy {
+export class StepLocationsComponent implements OnInit, OnChanges, OnDestroy {
   @Output() next = new EventEmitter<LocationFormData[]>();
   @Output() previous = new EventEmitter<void>();
   @Input() initialLocations: LocationFormData[] = [];
@@ -411,6 +444,9 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
   departmentOptions: Array<{ value: string; label: string }> = [];
   cityOptions: Array<{ value: string; label: string }> = [];
   postalCodeOptions: Array<{ value: string; label: string }> = [];
+  constructionLevelOptions: Array<{ value: number; label: string }> = [];
+  constructionYearOptions: Array<{ value: number; label: string }> = [];
+  fireKeyOptions: Array<{ value: string; label: string }> = [];
   private departmentsCatalog: GeographyDepartmentCatalogItem[] = [];
   private destroy$ = new Subject<void>();
 
@@ -422,8 +458,15 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.locations = [...this.initialLocations];
     this.initializeLocationForm();
+    this.initializeStaticOptions();
     this.loadCatalogs();
     this.setupDependentSelectors();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialLocations']) {
+      this.locations = [...(this.initialLocations ?? [])];
+    }
   }
 
   ngOnDestroy(): void {
@@ -470,6 +513,12 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
       .subscribe((cityCode: string) => {
         this.applyCitySelection(cityCode, true);
       });
+
+    this.locationForm.get('occupancyType')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((occupancyCode: string) => {
+        this.applyOccupancySelection(occupancyCode, true);
+      });
   }
 
   private applyDepartmentSelection(departmentCode: string, resetChildren: boolean): void {
@@ -499,6 +548,38 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
     });
   }
 
+  private applyOccupancySelection(occupancyCode: string, resetFireKey: boolean): void {
+    if (!occupancyCode) {
+      this.fireKeyOptions = [];
+      this.locationForm.get('fireKey')?.disable({ emitEvent: false });
+      this.locationForm.patchValue({ fireKey: '' }, { emitEvent: false });
+      return;
+    }
+
+    this.catalogService.getFireKeysByOccupancy(occupancyCode)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((fireKeys: string[]) => {
+        this.fireKeyOptions = fireKeys.map((value) => ({ value, label: value }));
+        this.locationForm.get('fireKey')?.enable({ emitEvent: false });
+        if (resetFireKey) {
+          this.locationForm.patchValue({ fireKey: fireKeys[0] ?? '' }, { emitEvent: false });
+        }
+      });
+  }
+
+  private initializeStaticOptions(): void {
+    this.constructionLevelOptions = Array.from({ length: 20 }, (_, idx) => ({
+      value: idx + 1,
+      label: `${idx + 1}`
+    }));
+
+    const currentYear = new Date().getFullYear();
+    this.constructionYearOptions = Array.from({ length: currentYear - 1900 + 1 }, (_, idx) => {
+      const year = currentYear - idx;
+      return { value: year, label: `${year}` };
+    });
+  }
+
   /**
    * Initialize location form
    */
@@ -511,6 +592,10 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
       postalCode: ['', Validators.required],
       occupancyType: ['', Validators.required],
       constructionType: ['', Validators.required],
+      constructionLevel: [1, [Validators.required, Validators.min(1)]],
+      constructionYear: [new Date().getFullYear(), [Validators.required, Validators.min(1900)]],
+      fireKey: [{ value: '', disabled: true }, [Validators.required, Validators.maxLength(64)]],
+      guarantees: [[]],
       insuredValue: [null, [Validators.required, Validators.min(1000)]]
     });
   }
@@ -535,6 +620,7 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
     const location = this.locations[index];
     this.applyDepartmentSelection(location.department, false);
     this.applyCitySelection(location.city, false);
+    this.applyOccupancySelection(location.occupancyType, false);
     this.locationForm.patchValue(location);
   }
 
@@ -549,7 +635,14 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
     }
 
     if (this.locationForm.valid) {
-      const locationData = this.locationForm.value;
+      const rawData = this.locationForm.getRawValue();
+      const locationData: LocationFormData = {
+        ...rawData,
+        constructionLevel: Number(rawData.constructionLevel),
+        constructionYear: Number(rawData.constructionYear),
+        fireKey: rawData.fireKey ?? '',
+        guarantees: rawData.guarantees ?? []
+      };
 
       if (this.editingIndex !== null) {
         this.locations[this.editingIndex] = locationData;
@@ -575,6 +668,8 @@ export class StepLocationsComponent implements OnInit, OnDestroy {
     this.locationForm.reset();
     this.cityOptions = [];
     this.postalCodeOptions = [];
+    this.fireKeyOptions = [];
+    this.locationForm.get('fireKey')?.disable({ emitEvent: false });
   }
 
   /**

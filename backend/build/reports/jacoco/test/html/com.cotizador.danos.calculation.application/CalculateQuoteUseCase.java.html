@@ -110,7 +110,7 @@ public class CalculateQuoteUseCase {
 <span class="fc" id="L110">    List&lt;LocationCalculationResult&gt; locationResults = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L111">    List&lt;String&gt; alerts = new ArrayList&lt;&gt;();</span>
 <span class="fc" id="L112">    List&lt;CalculationTraceDetail&gt; traceDetails = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L113">    addPreCalculationAlerts(locations, coverages, alerts);</span>
+<span class="fc" id="L113">    addPreCalculationAlerts(quote, locations, coverages, alerts);</span>
 
 <span class="fc bfc" id="L115" title="All 2 branches covered.">    for (QuoteLocation location : locations) {</span>
 <span class="fc bfc" id="L116" title="All 2 branches covered.">      if (location.getValidationStatus() == LocationValidationStatus.COMPLETE) {</span>
@@ -165,37 +165,47 @@ public class CalculateQuoteUseCase {
 <span class="fc bfc" id="L165" title="All 2 branches covered.">    if (!isPostalCodeValid(location.getPostalCode())) {</span>
 <span class="fc" id="L166">      reasons.add(INVALID_POSTAL_CODE_REASON);</span>
     }
-<span class="fc bfc" id="L168" title="All 2 branches covered.">    if (!StringUtils.hasText(location.getOccupancyType())) {</span>
+<span class="pc bpc" id="L168" title="1 of 4 branches missed.">    if (!StringUtils.hasText(location.getOccupancyType()) || !StringUtils.hasText(location.getFireKey())) {</span>
 <span class="fc" id="L169">      reasons.add(MISSING_OCCUPANCY_FIRE_KEY_REASON);</span>
     }
-<span class="fc bfc" id="L171" title="All 2 branches covered.">    if (!hasTariffableGuarantees(coverages)) {</span>
-<span class="fc" id="L172">      reasons.add(MISSING_TARIFFABLE_GUARANTEES_REASON);</span>
+<span class="pc bpc" id="L171" title="1 of 4 branches missed.">    if (location.getConstructionLevel() == null || location.getConstructionLevel() &lt;= 0) {</span>
+<span class="fc" id="L172">      reasons.add(&quot;missing valid construction level&quot;);</span>
     }
-<span class="fc" id="L174">    return reasons;</span>
+<span class="pc bpc" id="L174" title="1 of 4 branches missed.">    if (location.getConstructionYear() == null || location.getConstructionYear() &lt; 1900) {</span>
+<span class="fc" id="L175">      reasons.add(&quot;missing valid construction year&quot;);</span>
+    }
+<span class="fc bfc" id="L177" title="All 2 branches covered.">    if (!hasTariffableGuarantees(coverages)) {</span>
+<span class="fc" id="L178">      reasons.add(MISSING_TARIFFABLE_GUARANTEES_REASON);</span>
+    }
+<span class="fc" id="L180">    return reasons;</span>
   }
 
   private boolean hasTariffableGuarantees(List&lt;QuoteCoverageSelection&gt; coverages) {
-<span class="fc" id="L178">    return coverages.stream().anyMatch(QuoteCoverageSelection::isSelected);</span>
+<span class="fc" id="L184">    return coverages.stream().anyMatch(QuoteCoverageSelection::isSelected);</span>
   }
 
   private boolean isPostalCodeValid(String postalCode) {
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">    if (!StringUtils.hasText(postalCode)) {</span>
-<span class="nc" id="L183">      return false;</span>
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">    if (!StringUtils.hasText(postalCode)) {</span>
+<span class="nc" id="L189">      return false;</span>
     }
-<span class="fc" id="L185">    return POSTAL_CODE_PATTERN.matcher(postalCode).matches();</span>
+<span class="fc" id="L191">    return POSTAL_CODE_PATTERN.matcher(postalCode).matches();</span>
   }
 
   private void addPreCalculationAlerts(
+      Quote quote,
       List&lt;QuoteLocation&gt; locations,
       List&lt;QuoteCoverageSelection&gt; coverages,
       List&lt;String&gt; alerts
   ) {
-<span class="pc bpc" id="L193" title="1 of 2 branches missed.">    if (locations.isEmpty()) {</span>
-<span class="nc" id="L194">      alerts.add(NO_LOCATIONS_CONFIGURED_ALERT);</span>
+<span class="pc bpc" id="L200" title="1 of 4 branches missed.">    if (!StringUtils.hasText(quote.getRiskClassification()) || !StringUtils.hasText(quote.getBusinessType())) {</span>
+<span class="fc" id="L201">      alerts.add(&quot;Missing quote mandatory data (Risk Classification / Business Type)&quot;);</span>
     }
-<span class="fc bfc" id="L196" title="All 2 branches covered.">    if (!hasTariffableGuarantees(coverages)) {</span>
-<span class="fc" id="L197">      alerts.add(NO_COVERAGES_CONFIGURED_ALERT);</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">    if (locations.isEmpty()) {</span>
+<span class="fc" id="L204">      alerts.add(NO_LOCATIONS_CONFIGURED_ALERT);</span>
     }
-<span class="fc" id="L199">  }</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">    if (!hasTariffableGuarantees(coverages)) {</span>
+<span class="fc" id="L207">      alerts.add(NO_COVERAGES_CONFIGURED_ALERT);</span>
+    }
+<span class="fc" id="L209">  }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

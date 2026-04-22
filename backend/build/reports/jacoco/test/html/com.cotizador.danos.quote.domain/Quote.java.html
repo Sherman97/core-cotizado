@@ -13,6 +13,8 @@ public final class Quote {
   private final String currency;
   private final String agentCode;
   private final String agentNameSnapshot;
+  private final String riskClassification;
+  private final String businessType;
   private final String observations;
   private final QuoteLocationLayout locationLayout;
   private final QuoteStatus status;
@@ -28,31 +30,37 @@ public final class Quote {
       String currency,
       String agentCode,
       String agentNameSnapshot,
+      String riskClassification,
+      String businessType,
       String observations,
       QuoteLocationLayout locationLayout,
       QuoteStatus status,
       int version,
       Instant createdAt,
       Instant modifiedAt
-<span class="fc" id="L37">  ) {</span>
-<span class="fc" id="L38">    this.folio = folio;</span>
-<span class="fc" id="L39">    this.parentQuoteFolio = parentQuoteFolio;</span>
-<span class="fc" id="L40">    this.productCode = productCode;</span>
-<span class="fc" id="L41">    this.customerName = customerName;</span>
-<span class="fc" id="L42">    this.currency = currency;</span>
-<span class="fc" id="L43">    this.agentCode = agentCode;</span>
-<span class="fc" id="L44">    this.agentNameSnapshot = agentNameSnapshot;</span>
-<span class="fc" id="L45">    this.observations = observations;</span>
-<span class="fc" id="L46">    this.locationLayout = locationLayout;</span>
-<span class="fc" id="L47">    this.status = status;</span>
-<span class="fc" id="L48">    this.version = version;</span>
-<span class="fc" id="L49">    this.createdAt = createdAt;</span>
-<span class="fc" id="L50">    this.modifiedAt = modifiedAt;</span>
-<span class="fc" id="L51">  }</span>
+<span class="fc" id="L41">  ) {</span>
+<span class="fc" id="L42">    this.folio = folio;</span>
+<span class="fc" id="L43">    this.parentQuoteFolio = parentQuoteFolio;</span>
+<span class="fc" id="L44">    this.productCode = productCode;</span>
+<span class="fc" id="L45">    this.customerName = customerName;</span>
+<span class="fc" id="L46">    this.currency = currency;</span>
+<span class="fc" id="L47">    this.agentCode = agentCode;</span>
+<span class="fc" id="L48">    this.agentNameSnapshot = agentNameSnapshot;</span>
+<span class="fc" id="L49">    this.riskClassification = riskClassification;</span>
+<span class="fc" id="L50">    this.businessType = businessType;</span>
+<span class="fc" id="L51">    this.observations = observations;</span>
+<span class="fc" id="L52">    this.locationLayout = locationLayout;</span>
+<span class="fc" id="L53">    this.status = status;</span>
+<span class="fc" id="L54">    this.version = version;</span>
+<span class="fc" id="L55">    this.createdAt = createdAt;</span>
+<span class="fc" id="L56">    this.modifiedAt = modifiedAt;</span>
+<span class="fc" id="L57">  }</span>
 
   public static Quote createNew(String folio, Instant createdAt) {
-<span class="fc" id="L54">    return new Quote(</span>
+<span class="fc" id="L60">    return new Quote(</span>
         folio,
+        null,
+        null,
         null,
         null,
         null,
@@ -69,7 +77,7 @@ public final class Quote {
   }
 
   public Quote createNewVersion(String newFolio, Instant createdAt) {
-<span class="fc" id="L72">    return new Quote(</span>
+<span class="fc" id="L80">    return new Quote(</span>
         newFolio,
         folio,
         productCode,
@@ -77,6 +85,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         QuoteStatus.DRAFT,
@@ -87,13 +97,15 @@ public final class Quote {
   }
 
   public Quote updateGeneralData(QuoteGeneralDataPatch patch, Instant modifiedAt) {
-<span class="fc" id="L90">    return copyWith(</span>
-<span class="fc" id="L91">        keepCurrentIfMissing(patch.productCode(), productCode),</span>
-<span class="fc" id="L92">        keepCurrentIfMissing(patch.customerName(), customerName),</span>
-<span class="fc" id="L93">        keepCurrentIfMissing(patch.currency(), currency),</span>
-<span class="fc" id="L94">        keepCurrentIfMissing(patch.agentCode(), agentCode),</span>
-<span class="fc" id="L95">        keepCurrentIfMissing(patch.agentNameSnapshot(), agentNameSnapshot),</span>
-<span class="fc" id="L96">        keepCurrentIfMissing(patch.observations(), observations),</span>
+<span class="fc" id="L100">    return copyWith(</span>
+<span class="fc" id="L101">        keepCurrentIfMissing(patch.productCode(), productCode),</span>
+<span class="fc" id="L102">        keepCurrentIfMissing(patch.customerName(), customerName),</span>
+<span class="fc" id="L103">        keepCurrentIfMissing(patch.currency(), currency),</span>
+<span class="fc" id="L104">        keepCurrentIfMissing(patch.agentCode(), agentCode),</span>
+<span class="fc" id="L105">        keepCurrentIfMissing(patch.agentNameSnapshot(), agentNameSnapshot),</span>
+<span class="fc" id="L106">        keepCurrentIfMissing(patch.riskClassification(), riskClassification),</span>
+<span class="fc" id="L107">        keepCurrentIfMissing(patch.businessType(), businessType),</span>
+<span class="fc" id="L108">        keepCurrentIfMissing(patch.observations(), observations),</span>
         locationLayout,
         modifiedAt,
         version + 1
@@ -101,12 +113,14 @@ public final class Quote {
   }
 
   public Quote updateLocationLayout(QuoteLocationLayout locationLayout, Instant modifiedAt) {
-<span class="fc" id="L104">    return copyWith(</span>
+<span class="fc" id="L116">    return copyWith(</span>
         productCode,
         customerName,
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         modifiedAt,
@@ -115,20 +129,22 @@ public final class Quote {
   }
 
   public Quote markAsCalculated() {
-<span class="fc" id="L118">    return copyWithStatus(QuoteStatus.CALCULATED);</span>
+<span class="fc" id="L132">    return copyWithStatus(QuoteStatus.CALCULATED);</span>
   }
 
   public Quote markAsSaved() {
-<span class="nc" id="L122">    return copyWithStatus(QuoteStatus.SAVED);</span>
+<span class="nc" id="L136">    return copyWithStatus(QuoteStatus.SAVED);</span>
   }
 
   public Quote incrementBusinessVersion(Instant modifiedAt) {
-<span class="fc" id="L126">    return copyWith(</span>
+<span class="fc" id="L140">    return copyWith(</span>
         productCode,
         customerName,
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         modifiedAt,
@@ -137,7 +153,7 @@ public final class Quote {
   }
 
   private Quote copyWithStatus(QuoteStatus status) {
-<span class="fc" id="L140">    return new Quote(</span>
+<span class="fc" id="L156">    return new Quote(</span>
         folio,
         parentQuoteFolio,
         productCode,
@@ -145,6 +161,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         status,
@@ -155,7 +173,7 @@ public final class Quote {
   }
 
   private String keepCurrentIfMissing(String newValue, String currentValue) {
-<span class="fc bfc" id="L158" title="All 2 branches covered.">    return newValue != null ? newValue : currentValue;</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">    return newValue != null ? newValue : currentValue;</span>
   }
 
   private Quote copyWith(
@@ -164,12 +182,14 @@ public final class Quote {
       String currency,
       String agentCode,
       String agentNameSnapshot,
+      String riskClassification,
+      String businessType,
       String observations,
       QuoteLocationLayout locationLayout,
       Instant modifiedAt,
       int version
   ) {
-<span class="fc" id="L172">    return new Quote(</span>
+<span class="fc" id="L192">    return new Quote(</span>
         folio,
         parentQuoteFolio,
         productCode,
@@ -177,6 +197,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         status,
@@ -187,55 +209,63 @@ public final class Quote {
   }
 
   public String getFolio() {
-<span class="fc" id="L190">    return folio;</span>
+<span class="fc" id="L212">    return folio;</span>
   }
 
   public String getParentQuoteFolio() {
-<span class="fc" id="L194">    return parentQuoteFolio;</span>
+<span class="fc" id="L216">    return parentQuoteFolio;</span>
   }
 
   public String getProductCode() {
-<span class="fc" id="L198">    return productCode;</span>
+<span class="fc" id="L220">    return productCode;</span>
   }
 
   public String getCustomerName() {
-<span class="fc" id="L202">    return customerName;</span>
+<span class="fc" id="L224">    return customerName;</span>
   }
 
   public String getCurrency() {
-<span class="fc" id="L206">    return currency;</span>
+<span class="fc" id="L228">    return currency;</span>
   }
 
   public String getObservations() {
-<span class="fc" id="L210">    return observations;</span>
+<span class="fc" id="L232">    return observations;</span>
   }
 
   public String getAgentCode() {
-<span class="fc" id="L214">    return agentCode;</span>
+<span class="fc" id="L236">    return agentCode;</span>
   }
 
   public String getAgentNameSnapshot() {
-<span class="fc" id="L218">    return agentNameSnapshot;</span>
+<span class="fc" id="L240">    return agentNameSnapshot;</span>
+  }
+
+  public String getRiskClassification() {
+<span class="fc" id="L244">    return riskClassification;</span>
+  }
+
+  public String getBusinessType() {
+<span class="fc" id="L248">    return businessType;</span>
   }
 
   public QuoteLocationLayout getLocationLayout() {
-<span class="fc" id="L222">    return locationLayout;</span>
+<span class="fc" id="L252">    return locationLayout;</span>
   }
 
   public QuoteStatus getStatus() {
-<span class="fc" id="L226">    return status;</span>
+<span class="fc" id="L256">    return status;</span>
   }
 
   public int getVersion() {
-<span class="fc" id="L230">    return version;</span>
+<span class="fc" id="L260">    return version;</span>
   }
 
   public Instant getCreatedAt() {
-<span class="fc" id="L234">    return createdAt;</span>
+<span class="fc" id="L264">    return createdAt;</span>
   }
 
   public Instant getModifiedAt() {
-<span class="fc" id="L238">    return modifiedAt;</span>
+<span class="fc" id="L268">    return modifiedAt;</span>
   }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

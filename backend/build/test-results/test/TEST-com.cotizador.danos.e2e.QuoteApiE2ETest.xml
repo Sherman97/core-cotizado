@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.e2e.QuoteApiE2ETest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.606Z" hostname="MacBook-Pro-de-German.local" time="1.154">
+<testsuite name="com.cotizador.danos.e2e.QuoteApiE2ETest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:43.548Z" hostname="MacBook-Pro-de-German.local" time="1.231">
   <properties/>
-  <testcase name="shouldCreateFolioWithIdempotencyAndRetrieveGeneralInfo()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.219"/>
-  <testcase name="shouldCalculateAndExposeFinalStateWithAlertsForNonCalculableLocation()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.767"/>
-  <testcase name="shouldCompleteLocationsFlowThroughRestApi()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.164"/>
+  <testcase name="shouldCreateFolioWithIdempotencyAndRetrieveGeneralInfo()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.25"/>
+  <testcase name="shouldCalculateAndExposeFinalStateWithAlertsForNonCalculableLocation()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.875"/>
+  <testcase name="shouldCompleteLocationsFlowThroughRestApi()" classname="com.cotizador.danos.e2e.QuoteApiE2ETest" time="0.103"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

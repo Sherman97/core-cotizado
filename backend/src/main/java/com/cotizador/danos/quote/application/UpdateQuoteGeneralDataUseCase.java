@@ -44,7 +44,9 @@ public class UpdateQuoteGeneralDataUseCase {
           patch.currency(),
           patch.observations(),
           null,
-          null
+          null,
+          patch.riskClassification(),
+          patch.businessType()
       );
     }
 
@@ -57,7 +59,9 @@ public class UpdateQuoteGeneralDataUseCase {
         patch.currency(),
         patch.observations(),
         agent.code(),
-        agent.name()
+        agent.name(),
+        patch.riskClassification(),
+        patch.businessType()
     );
   }
 }

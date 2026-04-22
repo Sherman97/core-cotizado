@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.752Z" hostname="MacBook-Pro-de-German.local" time="0.088">
+<testsuite name="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:46.477Z" hostname="MacBook-Pro-de-German.local" time="0.203">
   <properties/>
-  <testcase name="shouldUpdateGeneralDataPartiallyAndPersistQuote()" classname="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" time="0.078"/>
-  <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" time="0.004"/>
-  <testcase name="shouldRejectInvalidAgentCodeWhenProvided()" classname="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" time="0.004"/>
+  <testcase name="shouldUpdateGeneralDataPartiallyAndPersistQuote()" classname="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" time="0.189"/>
+  <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" time="0.005"/>
+  <testcase name="shouldRejectInvalidAgentCodeWhenProvided()" classname="com.cotizador.danos.quote.application.UpdateQuoteGeneralDataUseCaseTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

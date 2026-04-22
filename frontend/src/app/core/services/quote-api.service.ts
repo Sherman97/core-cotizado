@@ -36,6 +36,8 @@ interface BackendGeneralInfoResponse {
   currency: string | null;
   agentCode: string | null;
   agentNameSnapshot: string | null;
+  riskClassification: string | null;
+  businessType: string | null;
   observations: string | null;
 }
 
@@ -50,12 +52,19 @@ interface BackendLocationResponse {
   indice: number;
   nombreUbicacion: string;
   ciudad: string;
+  colonia: string | null;
+  municipio: string | null;
   departamento: string;
   direccion: string | null;
   codigoPostal: string | null;
   tipoConstructivo: string;
+  nivelConstruccion: number | null;
+  anioConstruccion: number | null;
   ocupacion: string;
+  claveBomberos: string | null;
+  zonaCatastrofica: boolean | null;
   valorAsegurado: number;
+  garantias: string[] | null;
 }
 
 interface BackendLocationsSummaryResponse {
@@ -165,6 +174,8 @@ export class QuoteApiService {
       customerName: generalInfo.customerName,
       currency: generalInfo.currency,
       agentCode: generalInfo.agentCode,
+      riskClassification: generalInfo.riskClassification,
+      businessType: generalInfo.businessType,
       observations: generalInfo.observations
     };
     return this.http
@@ -297,6 +308,8 @@ export class QuoteApiService {
       currency: data.currency ?? '',
       agentCode: data.agentCode ?? undefined,
       agentNameSnapshot: data.agentNameSnapshot ?? undefined,
+      riskClassification: data.riskClassification ?? undefined,
+      businessType: data.businessType ?? undefined,
       observations: data.observations ?? undefined
     };
   }
@@ -315,11 +328,18 @@ export class QuoteApiService {
       indice: data.indice,
       locationName: data.nombreUbicacion,
       city: data.ciudad,
+      colony: data.colonia ?? undefined,
+      municipality: data.municipio ?? undefined,
       department: data.departamento,
       address: data.direccion ?? undefined,
       postalCode: data.codigoPostal ?? undefined,
       constructionType: data.tipoConstructivo,
+      constructionLevel: data.nivelConstruccion ?? undefined,
+      constructionYear: data.anioConstruccion ?? undefined,
       occupancyType: data.ocupacion,
+      fireKey: data.claveBomberos ?? undefined,
+      catastrophicZone: data.zonaCatastrofica ?? undefined,
+      guarantees: data.garantias ?? undefined,
       insuredValue: data.valorAsegurado
     };
   }

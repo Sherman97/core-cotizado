@@ -36,6 +36,14 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
               <span class="value">{{ generalInfo?.agentNameSnapshot || generalInfo?.agentCode || 'No seleccionado' }}</span>
             </div>
             <div class="summary-item">
+              <span class="label">Clasificación de riesgo:</span>
+              <span class="value">{{ generalInfo?.riskClassification || 'N/D' }}</span>
+            </div>
+            <div class="summary-item">
+              <span class="label">Tipo de negocio:</span>
+              <span class="value">{{ generalInfo?.businessType || 'N/D' }}</span>
+            </div>
+            <div class="summary-item">
               <span class="label">Observaciones:</span>
               <span class="value">{{ generalInfo?.observations || 'Ninguna' }}</span>
             </div>
@@ -80,6 +88,18 @@ import { GeneralInfoFormData, LocationFormData, CoverageFormData } from '../../.
                 <div class="summary-item">
                   <span class="label">Construcción:</span>
                   <span class="value badge">{{ loc.constructionType }}</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Nivel construcción:</span>
+                  <span class="value">{{ loc.constructionLevel ?? 'N/D' }}</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Año construcción:</span>
+                  <span class="value">{{ loc.constructionYear ?? 'N/D' }}</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Fire key:</span>
+                  <span class="value">{{ loc.fireKey || 'N/D' }}</span>
                 </div>
                 <div class="summary-item">
                   <span class="label">Valor asegurado:</span>
@@ -458,14 +478,35 @@ export class StepSummaryComponent {
    * Validate general info
    */
   isGeneralInfoValid(): boolean {
-    return this.generalInfo !== null && !!this.generalInfo.customerName;
+    return !!(
+      this.generalInfo &&
+      this.generalInfo.customerName &&
+      this.generalInfo.currency &&
+      this.generalInfo.riskClassification &&
+      this.generalInfo.businessType
+    );
   }
 
   /**
    * Validate locations
    */
   isLocationsValid(): boolean {
-    return this.locations && this.locations.length > 0;
+    return this.locations.length > 0 && this.locations.every((loc) =>
+      !!(
+        loc.locationName &&
+        loc.city &&
+        loc.department &&
+        loc.postalCode &&
+        loc.occupancyType &&
+        loc.constructionType &&
+        loc.constructionLevel &&
+        loc.constructionLevel > 0 &&
+        loc.constructionYear &&
+        loc.constructionYear >= 1900 &&
+        loc.fireKey &&
+        loc.insuredValue > 0
+      )
+    );
   }
 
   /**

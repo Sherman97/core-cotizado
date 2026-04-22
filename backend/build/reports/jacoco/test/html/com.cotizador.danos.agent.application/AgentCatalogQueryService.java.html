@@ -18,12 +18,12 @@ public class AgentCatalogQueryService {
 
   @Transactional(readOnly = true)
   public List&lt;AgentItem&gt; findAgents(Boolean active, String code) {
-<span class="pc bpc" id="L21" title="3 of 4 branches missed.">    if (code != null &amp;&amp; !code.isBlank()) {</span>
-<span class="nc" id="L22">      return repository.findById(code)</span>
-<span class="nc bnc" id="L23" title="All 4 branches missed.">          .filter(agent -&gt; active == null || agent.isActive() == active)</span>
-<span class="nc" id="L24">          .map(this::toItem)</span>
-<span class="nc" id="L25">          .map(List::of)</span>
-<span class="nc" id="L26">          .orElse(List.of());</span>
+<span class="fc bfc" id="L21" title="All 4 branches covered.">    if (code != null &amp;&amp; !code.isBlank()) {</span>
+<span class="fc" id="L22">      return repository.findById(code)</span>
+<span class="fc bfc" id="L23" title="All 4 branches covered.">          .filter(agent -&gt; active == null || agent.isActive() == active)</span>
+<span class="fc" id="L24">          .map(this::toItem)</span>
+<span class="fc" id="L25">          .map(List::of)</span>
+<span class="fc" id="L26">          .orElse(List.of());</span>
     }
 
 <span class="fc bfc" id="L29" title="All 2 branches covered.">    List&lt;AgentJpaEntity&gt; entities = active == null</span>
@@ -36,15 +36,15 @@ public class AgentCatalogQueryService {
   public AgentItem getByCode(String code) {
 <span class="fc" id="L37">    return repository.findById(code)</span>
 <span class="fc" id="L38">        .map(this::toItem)</span>
-<span class="pc" id="L39">        .orElseThrow(() -&gt; new AgentNotFoundException(code));</span>
+<span class="fc" id="L39">        .orElseThrow(() -&gt; new AgentNotFoundException(code));</span>
   }
 
   @Transactional(readOnly = true)
   public Optional&lt;AgentItem&gt; findActiveByCode(String code) {
-<span class="nc bnc" id="L44" title="All 4 branches missed.">    if (code == null || code.isBlank()) {</span>
-<span class="nc" id="L45">      return Optional.empty();</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">    if (code == null || code.isBlank()) {</span>
+<span class="fc" id="L45">      return Optional.empty();</span>
     }
-<span class="nc" id="L47">    return repository.findByAgentCodeAndActiveTrue(code).map(this::toItem);</span>
+<span class="fc" id="L47">    return repository.findByAgentCodeAndActiveTrue(code).map(this::toItem);</span>
   }
 
   private AgentItem toItem(AgentJpaEntity entity) {

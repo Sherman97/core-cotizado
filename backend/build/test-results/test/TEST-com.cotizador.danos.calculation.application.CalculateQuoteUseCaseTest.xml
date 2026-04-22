@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:52.590Z" hostname="MacBook-Pro-de-German.local" time="0.323">
+<testsuite name="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:42.742Z" hostname="MacBook-Pro-de-German.local" time="0.071">
   <properties/>
-  <testcase name="shouldGeneratePreValidationAlertAndSkipCalculationWhenNoCoveragesConfigured()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.231"/>
-  <testcase name="shouldExcludeInvalidLocationsAndRegisterExclusionReason()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.047"/>
-  <testcase name="shouldCalculateOnlyValidLocationsAndUpdateQuoteStatus()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.013"/>
-  <testcase name="shouldExcludeLocationWhenPostalCodeIsInvalid()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.007"/>
-  <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.01"/>
-  <testcase name="shouldExcludeLocationWhenGiroClaveIncendioIsMissing()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.008"/>
+  <testcase name="shouldGeneratePreValidationAlertAndSkipCalculationWhenNoCoveragesConfigured()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.012"/>
+  <testcase name="shouldExcludeInvalidLocationsAndRegisterExclusionReason()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.015"/>
+  <testcase name="shouldCalculateOnlyValidLocationsAndUpdateQuoteStatus()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.008"/>
+  <testcase name="shouldAddPrecalculationAlertsWhenQuoteDataAndLocationsAreMissing()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.005"/>
+  <testcase name="shouldExcludeLocationWhenPostalCodeIsInvalid()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.006"/>
+  <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.005"/>
+  <testcase name="shouldExcludeLocationWhenGiroClaveIncendioIsMissing()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.006"/>
+  <testcase name="shouldExcludeLocationWhenConstructionDataIsMissing()" classname="com.cotizador.danos.calculation.application.CalculateQuoteUseCaseTest" time="0.005"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

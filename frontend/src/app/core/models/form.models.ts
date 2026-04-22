@@ -4,6 +4,8 @@ export interface GeneralInfoFormData {
   currency: string;
   agentCode?: string;
   agentNameSnapshot?: string;
+  riskClassification?: string;
+  businessType?: string;
   observations?: string;
 }
 
@@ -14,7 +16,11 @@ export interface LocationFormData {
   address?: string;
   postalCode?: string;
   constructionType: string;
+  constructionLevel?: number;
+  constructionYear?: number;
   occupancyType: string;
+  fireKey?: string;
+  guarantees?: string[];
   insuredValue: number;
 }
 

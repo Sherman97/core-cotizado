@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.calculation.domain.QuoteLocationResultViewTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53.038Z" hostname="MacBook-Pro-de-German.local" time="0.003">
+<testsuite name="com.cotizador.danos.calculation.domain.QuoteLocationResultViewTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:42.928Z" hostname="MacBook-Pro-de-German.local" time="0.0">
   <properties/>
-  <testcase name="shouldCreateLocationResultViewWithPremiumAndValidationStatus()" classname="com.cotizador.danos.calculation.domain.QuoteLocationResultViewTest" time="0.003"/>
+  <testcase name="shouldCreateLocationResultViewWithPremiumAndValidationStatus()" classname="com.cotizador.danos.calculation.domain.QuoteLocationResultViewTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

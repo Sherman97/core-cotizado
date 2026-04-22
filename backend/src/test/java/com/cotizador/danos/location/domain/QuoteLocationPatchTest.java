@@ -8,32 +8,14 @@ class QuoteLocationPatchTest {
 
   @Test
   void shouldReturnFalseWhenAddressIsBlank() {
-    QuoteLocationPatch patch = new QuoteLocationPatch(
-        "Sede 1",
-        "Bogota",
-        "Cundinamarca",
-        "   ",
-        "110111",
-        "CONCRETE",
-        "OFFICE",
-        500_000
-    );
+    QuoteLocationPatch patch = new QuoteLocationPatch(0, "Sede 1", "Bogota", null, null, "Cundinamarca", "   ", "110111", "CONCRETE", 0, 0, "OFFICE", null, null, 500_000, java.util.List.of());
 
     assertThat(patch.hasRequiredData()).isFalse();
   }
 
   @Test
   void shouldReturnFalseWhenPostalCodeIsBlank() {
-    QuoteLocationPatch patch = new QuoteLocationPatch(
-        "Sede 2",
-        "Bogota",
-        "Cundinamarca",
-        "Calle 1 # 1-01",
-        "  ",
-        "CONCRETE",
-        "OFFICE",
-        500_000
-    );
+    QuoteLocationPatch patch = new QuoteLocationPatch(0, "Sede 2", "Bogota", null, null, "Cundinamarca", "Calle 1 # 1-01", "  ", "CONCRETE", 0, 0, "OFFICE", null, null, 500_000, java.util.List.of());
 
     assertThat(patch.hasRequiredData()).isFalse();
   }

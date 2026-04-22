@@ -31,8 +31,7 @@ class QuoteGeneralDataTest {
 
   @Test
   void shouldUpdateOnlyProvidedFieldsAndPreserveNonSentFields() {
-    Quote quote = Quote.createNew(FOLIO, CREATED_AT)
-        .updateGeneralData(completePatch(), FIRST_MODIFIED_AT);
+    Quote quote = Quote.createNew(FOLIO, CREATED_AT).updateGeneralData(completePatch(), FIRST_MODIFIED_AT);
 
     Quote updatedQuote = quote.updateGeneralData(
         new QuoteGeneralDataPatch(
@@ -42,7 +41,7 @@ class QuoteGeneralDataTest {
             null,
             null,
             null
-        ),
+        , null, null),
         SECOND_MODIFIED_AT
     );
 
@@ -64,6 +63,6 @@ class QuoteGeneralDataTest {
         "Observacion inicial",
         "AGT-001",
         "Juan Perez"
-    );
+    , null, null);
   }
 }

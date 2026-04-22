@@ -33,6 +33,7 @@ public class QuoteCoverageRepositoryAdapter implements QuoteCoverageRepository {
   @Override
   public List<QuoteCoverageSelection> replaceForQuote(String quoteFolio, List<QuoteCoveragePatch> coverages) {
     jpaRepository.deleteByQuoteFolio(quoteFolio);
+    jpaRepository.flush();
     return jpaRepository.saveAll(
             coverages.stream()
                 .map(coverage -> mapper.toEntity(quoteFolio, coverage))

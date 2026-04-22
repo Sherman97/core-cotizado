@@ -1,127 +1,238 @@
 # Cotizador de Seguros de Danos
 
-Este proyecto tiene dos partes:
+Proyecto fullstack para gestionar cotizaciones de danos con guardado por pasos.
 
-- `backend`: API en Spring Boot
-- `frontend`: app Angular para capturar y consultar cotizaciones
+- `backend`: Spring Boot + JPA + Flyway + MariaDB
+- `frontend`: Angular (wizard de cotizacion)
 
-La idea general es simple: creas un folio, llenas datos, agregas ubicaciones, eliges coberturas, calculas, y ves el resultado.
+## Estado funcional actual
 
-## Que ya hace hoy
+El sistema ya permite:
 
-- Crear folios de cotizacion
-- Guardar datos generales
-- Guardar ubicaciones (una o varias)
+- Crear folio de cotizacion (con soporte de idempotencia)
+- Guardar informacion general por pasos
+- Guardar layout de ubicaciones
+- Guardar y editar ubicaciones
 - Configurar coberturas
 - Calcular prima
-- Ver estado final
-- Consultar resultados por ubicacion
-- Usar catalogos desde BD (incluyendo geografia en cascada)
+- Consultar estado final y resultados por ubicacion
+- Guardar cotizacion final
+- Consultar catalogo de agentes
+- Consultar catalogo geografico en cascada (departamento -> ciudad -> codigo postal)
 
-## Como levantarlo rapido
+## Levantar entorno rapido
 
-Desde la raiz del repo:
+Desde la raiz:
 
 ```bash
 docker compose up -d
 ```
 
-Esto levanta:
+Servicios:
 
 - MariaDB
-- Backend (`http://localhost:8080`)
-- Frontend (`http://localhost:4200`)
+- Backend: `http://localhost:8080`
+- Frontend: `http://localhost:4200`
 
-Si prefieres correr frontend local:
+## Flujo de negocio (paso a paso)
 
-```bash
-cd frontend
-npm install
-ng serve
-```
+1. Crear cotizacion (`POST /v1/folios`)
+2. Guardar informacion general (`PUT /v1/quotes/{folio}/general-info`)
+3. Guardar ubicaciones (`PUT /v1/quotes/{folio}/locations`)
+4. Guardar coberturas (`PUT /v1/quotes/{folio}/coverage-options`)
+5. Calcular (`POST /v1/quotes/{folio}/calculate`)
+6. Consultar estado/resultados (`GET /state`, `GET /locations/results`)
+7. Guardar final (`POST /v1/quotes/{folio}/save`)
 
-## Flujo funcional (sin tecnicismos)
+## Persistencia por pasos
 
-1. Crear cotizacion
-2. Completar informacion general
-3. Agregar ubicaciones
-4. Elegir coberturas
-5. Calcular
-6. Revisar resultado y alertas
+El sistema conserva datos en cada paso del wizard:
 
-## Datos base que ya vienen en la BD
+- General info se guarda de forma parcial y no depende de ubicaciones/coberturas.
+- Ubicaciones se guardan como reemplazo de lista y se pueden actualizar por item.
+- Coberturas se guardan de forma independiente.
+- El calculo usa lo que ya este persistido.
 
-Estos datos se crean por migraciones (seeds), para que el sistema funcione desde el primer arranque.
+## Reglas minimas para que el calculo salga bien
 
-### Geografia (catalogo en cascada)
+Una ubicacion puede estar guardada pero quedar excluida del calculo si falta informacion minima.
 
-Se crearon 3 departamentos, cada uno con 3 ciudades, y cada ciudad con 2 codigos postales.
+Campos minimos relevantes:
 
-- **Cundinamarca**
+- Quote:
+  - `riskClassification`
+  - `businessType`
+- Ubicacion:
+  - `address`
+  - `postalCode` valido (5-6 digitos)
+  - `occupancyType`
+  - `fireKey`
+  - `constructionLevel > 0`
+  - `constructionYear >= 1900`
+- Debe existir al menos una cobertura seleccionada.
+
+Si algo falta, el backend responde alertas de exclusion y prima en `0` para esos casos.
+
+## Catalogos y relaciones
+
+### Geografia (seed en BD, cascada real)
+
+Se crea un catalogo jerarquico:
+
+- Departamento -> Ciudades -> Codigos postales
+
+Datos semilla actuales:
+
+- Cundinamarca:
   - Bogota: `110111`, `110121`
   - Soacha: `250051`, `250052`
   - Chia: `250001`, `250002`
-- **Antioquia**
+- Antioquia:
   - Medellin: `050001`, `050021`
   - Envigado: `055420`, `055421`
   - Rionegro: `054040`, `054041`
-- **Atlantico**
+- Atlantico:
   - Barranquilla: `080001`, `080020`
   - Soledad: `083001`, `083002`
   - Puerto Colombia: `081001`, `081002`
 
-En el front, esto se ve como:
+### Agentes (seed en BD)
 
-- primero eliges **departamento**
-- luego se filtran las **ciudades**
-- luego se filtran los **codigos postales**
+Catalogo de agentes:
 
-### Coberturas base
+- `AGT-001` / Juan Perez / BROKER / Bogota Centro / activo
+- `AGT-002` / Maria Gomez / DIRECT / Medellin Norte / activo
 
-- `FIRE` (Incendio)
-- `EARTHQUAKE` (Terremoto)
-- `FLOOD` (Inundacion)
+Comportamiento:
 
-### Ocupaciones base
+- Si llega `agentCode` en general-info, backend valida que exista y este activo.
+- Se persiste `agentCode` y `agentNameSnapshot` en la cotizacion.
 
-- `OFFICE`
-- `COMMERCE`
-- `WAREHOUSE`
-- `RESTAURANT`
-- `LIGHT_INDUSTRY`
+### Ocupacion y fireKey
 
-### Tipos constructivos base
+Mapa base actual:
 
-- `CONCRETE`
-- `MIXED`
-- `WOOD`
+- `OFFICE` -> `GIR-OFF-01`
+- `COMMERCE` -> `GIR-RET-01`
+- `WAREHOUSE` -> `GIR-WAR-01`
+- `RESTAURANT` -> `GIR-RES-01`
+- `LIGHT_INDUSTRY` -> `GIR-IND-01`
+
+### Nivel y anio de construccion
+
+No existe hoy una tabla catalogo dedicada para `constructionLevel` ni `constructionYear`.
+En frontend se manejan como listas controladas (`select`) para evitar valores invalidos.
+
+## Comportamiento actual del frontend (wizard)
+
+En el paso de ubicaciones:
+
+- `department`, `city`, `postalCode` son selects en cascada.
+- `occupancyType` y `constructionType` son selects.
+- `fireKey` es select dependiente de `occupancyType`.
+- `constructionLevel` y `constructionYear` son selects controlados.
+- Ya no se permite enviar `postalCode` fuera del catalogo de la ciudad seleccionada.
 
 ## Endpoints principales
 
 Base URL: `http://localhost:8080/v1`
 
-- `POST /folios`
-- `GET/PUT /quotes/{folio}/general-info`
-- `GET/PUT /quotes/{folio}/locations/layout`
-- `GET/PUT/PATCH /quotes/{folio}/locations...`
-- `GET/PUT /quotes/{folio}/coverage-options`
-- `POST /quotes/{folio}/calculate`
-- `GET /quotes/{folio}/state`
-- `GET /quotes/{folio}/locations/results`
-- `GET /catalogs/geography`
+- Folios:
+  - `POST /folios`
+- Cotizaciones:
+  - `GET /quotes`
+  - `GET /quotes/{folio}/general-info`
+  - `PUT /quotes/{folio}/general-info`
+  - `GET /quotes/{folio}/locations/layout`
+  - `PUT /quotes/{folio}/locations/layout`
+  - `GET /quotes/{folio}/state`
+  - `POST /quotes/{folio}/save`
+- Ubicaciones:
+  - `GET /quotes/{folio}/locations`
+  - `PUT /quotes/{folio}/locations`
+  - `PATCH /quotes/{folio}/locations/{indice}`
+  - `GET /quotes/{folio}/locations/summary`
+  - `GET /quotes/{folio}/locations/results`
+- Coberturas:
+  - `GET /quotes/{folio}/coverage-options`
+  - `PUT /quotes/{folio}/coverage-options`
+- Calculo:
+  - `POST /quotes/{folio}/calculate`
+- Catalogos:
+  - `GET /catalogs/geography`
+  - `GET /agents`
+  - `GET /agents/{code}`
 
-## Nota importante sobre validaciones de ubicacion
+## Payload minimo recomendado para calcular
 
-Para que una ubicacion pase bien hacia calculo:
+### General info
 
-- debe tener direccion
-- debe tener codigo postal valido
-- debe tener ocupacion
-- debe existir al menos una cobertura seleccionada
+```json
+{
+  "productCode": "DANOS",
+  "customerName": "Cliente Demo",
+  "currency": "COP",
+  "agentCode": "AGT-001",
+  "riskClassification": "LOW",
+  "businessType": "RETAIL",
+  "observations": "Texto opcional"
+}
+```
 
-Si no, el sistema puede guardarla, pero luego la excluye del calculo y deja alertas.
+### Item de ubicacion
 
-## Estructura rapida del repo
+```json
+{
+  "locationIndex": 1,
+  "locationName": "Matriz Centro",
+  "city": "Bogota",
+  "department": "Cundinamarca",
+  "address": "Calle 100 #10-20",
+  "postalCode": "110111",
+  "constructionType": "CONCRETE",
+  "constructionLevel": 2,
+  "constructionYear": 2018,
+  "occupancyType": "OFFICE",
+  "fireKey": "GIR-OFF-01",
+  "insuredValue": 1500000
+}
+```
+
+## Migraciones relevantes recientes
+
+- `V14__seed_geography_catalog.sql`
+- `V15__create_agents_catalog_and_quote_agent_fields.sql`
+- `V16__add_challenge_minimum_quote_fields.sql`
+
+## Pruebas y cobertura backend
+
+Ultima ejecucion registrada: **21 de abril de 2026**
+
+Comandos:
+
+```bash
+cd backend
+./gradlew clean test
+./gradlew jacocoTestReport
+```
+
+Resultado:
+
+- Tests: **91**
+- Fallos: **0**
+- Errores: **0**
+- Omitidos: **0**
+
+Cobertura JaCoCo global:
+
+- Lineas: **92.52%** (594/642)
+- Ramas: **91.38%** (106/116)
+- Instrucciones: **92.62%** (2824/3049)
+- Metodos: **91.03%** (203/223)
+- Clases: **93.65%** (59/63)
+- Complejidad: **89.32%** (251/281)
+
+## Estructura del repo
 
 ```text
 core_seguros/
@@ -130,10 +241,8 @@ core_seguros/
   docker-compose.yml
 ```
 
-## Si algo no responde
+## Diagnostico rapido
 
-- Revisa contenedores: `docker ps`
-- Revisa logs backend: `docker compose logs -f backend`
-- Revisa logs frontend: `docker compose logs -f frontend`
-
-Si quieres una guia paso a paso para pruebas funcionales (tipo checklist), la puedo agregar tambien.
+- Contenedores: `docker ps`
+- Logs backend: `docker compose logs -f backend`
+- Logs frontend: `docker compose logs -f frontend`

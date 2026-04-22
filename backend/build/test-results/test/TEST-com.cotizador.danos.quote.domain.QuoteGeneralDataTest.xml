@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.quote.domain.QuoteGeneralDataTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.846Z" hostname="MacBook-Pro-de-German.local" time="0.002">
+<testsuite name="com.cotizador.danos.quote.domain.QuoteGeneralDataTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:46.689Z" hostname="MacBook-Pro-de-German.local" time="0.005">
   <properties/>
-  <testcase name="shouldUpdateOnlyProvidedFieldsAndPreserveNonSentFields()" classname="com.cotizador.danos.quote.domain.QuoteGeneralDataTest" time="0.001"/>
+  <testcase name="shouldUpdateOnlyProvidedFieldsAndPreserveNonSentFields()" classname="com.cotizador.danos.quote.domain.QuoteGeneralDataTest" time="0.002"/>
   <testcase name="shouldUpdateGeneralDataAndModificationDate()" classname="com.cotizador.danos.quote.domain.QuoteGeneralDataTest" time="0.001"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

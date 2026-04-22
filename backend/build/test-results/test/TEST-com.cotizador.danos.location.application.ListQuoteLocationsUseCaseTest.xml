@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.location.application.ListQuoteLocationsUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:56.378Z" hostname="MacBook-Pro-de-German.local" time="0.009">
+<testsuite name="com.cotizador.danos.location.application.ListQuoteLocationsUseCaseTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:46.066Z" hostname="MacBook-Pro-de-German.local" time="0.006">
   <properties/>
-  <testcase name="shouldReturnAllLocationsForQuoteWithValidationStatusAndAlerts()" classname="com.cotizador.danos.location.application.ListQuoteLocationsUseCaseTest" time="0.004"/>
-  <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.location.application.ListQuoteLocationsUseCaseTest" time="0.004"/>
+  <testcase name="shouldReturnAllLocationsForQuoteWithValidationStatusAndAlerts()" classname="com.cotizador.danos.location.application.ListQuoteLocationsUseCaseTest" time="0.003"/>
+  <testcase name="shouldThrowControlledErrorWhenQuoteDoesNotExist()" classname="com.cotizador.danos.location.application.ListQuoteLocationsUseCaseTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

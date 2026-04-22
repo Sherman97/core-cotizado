@@ -13,6 +13,8 @@ public final class Quote {
   private final String currency;
   private final String agentCode;
   private final String agentNameSnapshot;
+  private final String riskClassification;
+  private final String businessType;
   private final String observations;
   private final QuoteLocationLayout locationLayout;
   private final QuoteStatus status;
@@ -28,6 +30,8 @@ public final class Quote {
       String currency,
       String agentCode,
       String agentNameSnapshot,
+      String riskClassification,
+      String businessType,
       String observations,
       QuoteLocationLayout locationLayout,
       QuoteStatus status,
@@ -42,6 +46,8 @@ public final class Quote {
     this.currency = currency;
     this.agentCode = agentCode;
     this.agentNameSnapshot = agentNameSnapshot;
+    this.riskClassification = riskClassification;
+    this.businessType = businessType;
     this.observations = observations;
     this.locationLayout = locationLayout;
     this.status = status;
@@ -53,6 +59,8 @@ public final class Quote {
   public static Quote createNew(String folio, Instant createdAt) {
     return new Quote(
         folio,
+        null,
+        null,
         null,
         null,
         null,
@@ -77,6 +85,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         QuoteStatus.DRAFT,
@@ -93,6 +103,8 @@ public final class Quote {
         keepCurrentIfMissing(patch.currency(), currency),
         keepCurrentIfMissing(patch.agentCode(), agentCode),
         keepCurrentIfMissing(patch.agentNameSnapshot(), agentNameSnapshot),
+        keepCurrentIfMissing(patch.riskClassification(), riskClassification),
+        keepCurrentIfMissing(patch.businessType(), businessType),
         keepCurrentIfMissing(patch.observations(), observations),
         locationLayout,
         modifiedAt,
@@ -107,6 +119,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         modifiedAt,
@@ -129,6 +143,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         modifiedAt,
@@ -145,6 +161,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         status,
@@ -164,6 +182,8 @@ public final class Quote {
       String currency,
       String agentCode,
       String agentNameSnapshot,
+      String riskClassification,
+      String businessType,
       String observations,
       QuoteLocationLayout locationLayout,
       Instant modifiedAt,
@@ -177,6 +197,8 @@ public final class Quote {
         currency,
         agentCode,
         agentNameSnapshot,
+        riskClassification,
+        businessType,
         observations,
         locationLayout,
         status,
@@ -216,6 +238,14 @@ public final class Quote {
 
   public String getAgentNameSnapshot() {
     return agentNameSnapshot;
+  }
+
+  public String getRiskClassification() {
+    return riskClassification;
+  }
+
+  public String getBusinessType() {
+    return businessType;
   }
 
   public QuoteLocationLayout getLocationLayout() {

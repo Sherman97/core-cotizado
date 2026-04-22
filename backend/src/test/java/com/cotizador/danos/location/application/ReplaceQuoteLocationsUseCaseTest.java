@@ -43,7 +43,7 @@ class ReplaceQuoteLocationsUseCaseTest {
     );
     Quote existingQuote = Quote.createNew(FOLIO, CREATED_AT);
     List<QuoteLocationPatch> request = List.of(
-        new QuoteLocationPatch("Matriz", "Bogota", "Cundinamarca", "Calle 100", "110111", "CONCRETE", "OFFICE", 1000000)
+        new QuoteLocationPatch(0, "Matriz", "Bogota", null, null, "Cundinamarca", "Calle 100", "110111", "CONCRETE", 0, 0, "OFFICE", null, null, 1000000, java.util.List.of())
     );
 
     when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(existingQuote));

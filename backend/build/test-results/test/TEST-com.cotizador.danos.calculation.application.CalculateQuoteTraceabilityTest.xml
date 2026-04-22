@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.calculation.application.CalculateQuoteTraceabilityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:51.660Z" hostname="MacBook-Pro-de-German.local" time="0.923">
+<testsuite name="com.cotizador.danos.calculation.application.CalculateQuoteTraceabilityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:42.354Z" hostname="MacBook-Pro-de-German.local" time="0.384">
   <properties/>
-  <testcase name="shouldPersistTraceOnlyForCalculatedLocations()" classname="com.cotizador.danos.calculation.application.CalculateQuoteTraceabilityTest" time="0.912"/>
-  <testcase name="shouldPersistAppliedFactorDetailsWhenCalculationFinishes()" classname="com.cotizador.danos.calculation.application.CalculateQuoteTraceabilityTest" time="0.01"/>
+  <testcase name="shouldPersistTraceOnlyForCalculatedLocations()" classname="com.cotizador.danos.calculation.application.CalculateQuoteTraceabilityTest" time="0.377"/>
+  <testcase name="shouldPersistAppliedFactorDetailsWhenCalculationFinishes()" classname="com.cotizador.danos.calculation.application.CalculateQuoteTraceabilityTest" time="0.006"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

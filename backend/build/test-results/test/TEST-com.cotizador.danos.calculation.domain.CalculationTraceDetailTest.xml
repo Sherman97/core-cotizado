@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.cotizador.danos.calculation.domain.CalculationTraceDetailTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-21T21:43:53Z" hostname="MacBook-Pro-de-German.local" time="0.028">
+<testsuite name="com.cotizador.danos.calculation.domain.CalculationTraceDetailTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-04-22T00:40:42.895Z" hostname="MacBook-Pro-de-German.local" time="0.026">
   <properties/>
-  <testcase name="shouldCreateTraceDetailAssociatedToQuoteAndLocation()" classname="com.cotizador.danos.calculation.domain.CalculationTraceDetailTest" time="0.028"/>
+  <testcase name="shouldCreateTraceDetailAssociatedToQuoteAndLocation()" classname="com.cotizador.danos.calculation.domain.CalculationTraceDetailTest" time="0.026"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>

@@ -40,6 +40,14 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
         <label>Valor asegurado</label>
         <input type="number" formControlName="insuredValue">
       </div>
+      <div class="field">
+        <label>Clasificación Riesgo</label>
+        <input formControlName="riskClassification">
+      </div>
+      <div class="field">
+        <label>Giro Empresarial</label>
+        <input formControlName="businessType">
+      </div>
       <div class="field" style="grid-column: 1 / -1;">
         <label>Observaciones</label>
         <textarea formControlName="observations"></textarea>
@@ -64,6 +72,8 @@ export class GeneralDataFormComponent {
     policyType: 'ANUAL',
     currency: 'COP',
     insuredValue: 0,
+    riskClassification: '',
+    businessType: '',
     observations: ''
   });
 

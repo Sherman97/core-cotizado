@@ -44,6 +44,7 @@ class GetQuoteLocationSummaryUseCaseTest {
         quoteCalculationResultRepository
     );
     Quote quote = Quote.createNew(FOLIO, Instant.parse("2026-04-21T10:00:00Z"));
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation complete = QuoteLocation.create(1L, FOLIO, patch("Site A", "Calle 1", "110111"));
     QuoteLocation incomplete = QuoteLocation.create(2L, FOLIO, patch("Site B", null, "110112"));
     QuoteLocation invalid = QuoteLocation.invalid(3L, FOLIO, "Site C", List.of("Missing data"));
@@ -78,6 +79,7 @@ class GetQuoteLocationSummaryUseCaseTest {
         quoteCalculationResultRepository
     );
     Quote quote = Quote.createNew(FOLIO, Instant.parse("2026-04-21T10:00:00Z"));
+    quote = quote.updateGeneralData(new com.cotizador.danos.quote.domain.QuoteGeneralDataPatch(quote.getProductCode(), quote.getCustomerName(), quote.getCurrency(), quote.getObservations(), "AGT01", "Agent", "LOW", "RETAIL"), quote.getCreatedAt());
     QuoteLocation complete = QuoteLocation.create(1L, FOLIO, patch("Site A", "Calle 1", "110111"));
 
     when(quoteRepository.findByFolio(FOLIO)).thenReturn(Optional.of(quote));
@@ -106,15 +108,6 @@ class GetQuoteLocationSummaryUseCaseTest {
   }
 
   private static QuoteLocationPatch patch(String name, String address, String postalCode) {
-    return new QuoteLocationPatch(
-        name,
-        "Bogota",
-        "Cundinamarca",
-        address,
-        postalCode,
-        "CONCRETE",
-        "OFFICE",
-        1_000_000
-    );
+    return new QuoteLocationPatch(0, name, "Bogota", null, null, "Cundinamarca", address, postalCode, "CONCRETE", 0, 0, "OFFICE", null, null, 1_000_000, java.util.List.of());
   }
 }
